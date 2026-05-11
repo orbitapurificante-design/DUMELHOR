@@ -560,7 +560,7 @@
     <input type="text" id="in-cli-search" class="in-cli-search" placeholder="CLIENTE..." onclick="abrirBuscaGlobal()" readonly style="flex:0.7;">
     <div style="flex:1; position:relative; display:flex; align-items:center;">
         <button onclick="limparPesquisaProduto()" style="position:absolute; left:5px; width:44px; height:44px; border-radius:12px; border:none; background:white; color:#2563a8; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
-        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender(); const _pm=document.getElementById('painel-sem-resultado'); if(_pm && _pm.style.display!=='none'){ const _id=document.getElementById('inp-manual-desc'); if(_id) _id.value=this.value; }" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:54px;">
+        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender()" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:54px;">
     </div>
     <div class="cart-float-top" onclick="fecharTeclado(); nav('m3')">🛒<div id="cart-badge" class="badge-vermelha" style="display:none">0</div></div>
 </header>
@@ -837,7 +837,7 @@
     <div id="cart-list-content"></div>
     <div style="padding: 16px 16px 0;">
         <label style="font-size: 15px; font-weight: bold; color: var(--wave);">📝 NOTAS DO PEDIDO:</label>
-        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Escreva uma nota por linha..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}" oninput="sincronizarObsParaLinhas()"></textarea>
+        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Escreva uma nota por linha..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}"></textarea>
     </div>
 </div>
 
@@ -1818,7 +1818,7 @@ function aplicarFiltroDOM() {
 let LINHAS_MANUAIS = []; // [{desc, qtd}]
 
 function sincronizarDescManual(val) {
-    // não usado directamente - sincronização feita via oninput do in-busca
+    // Preenche automaticamente o campo de descrição com o que se escreve no in-busca
 }
 
 function mostrarPainelSemResultado() {
@@ -1881,29 +1881,11 @@ function alterarQtdManual(i, val) {
 }
 
 function sincronizarNotasManual() {
+    // Gera texto estruturado para o campo de notas do pedido (obs-pedido-final)
+    if(!LINHAS_MANUAIS.length) return;
+    const linhas = LINHAS_MANUAIS.map(l => `${l.qtd}x ${l.desc}`).join('\n');
     const obs = document.getElementById('obs-pedido-final');
-    if(!obs) return;
-    if(!LINHAS_MANUAIS.length) {
-        obs.value = '';
-        return;
-    }
-    obs.value = LINHAS_MANUAIS.map(l => l.qtd + 'x ' + l.desc).join('\n');
-}
-
-// Sincronizar em sentido inverso: editar obs → actualizar LINHAS_MANUAIS
-function sincronizarObsParaLinhas() {
-    const obs = document.getElementById('obs-pedido-final');
-    if(!obs) return;
-    const texto = obs.value.trim();
-    if(!texto) { LINHAS_MANUAIS = []; renderTabelaManual(); return; }
-    // Tentar parsear linhas no formato "Nx desc" ou só "desc"
-    const novas = texto.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
-        const m = l.match(/^(\d+)x\s+(.+)$/i);
-        if(m) return { qtd: parseInt(m[1]), desc: m[2] };
-        return { qtd: 1, desc: l };
-    });
-    LINHAS_MANUAIS = novas;
-    renderTabelaManual();
+    if(obs) obs.value = linhas;
 }
 
 // Verificação de sem resultados — chamada no fim de aplicarFiltroDOM
@@ -1946,32 +1928,17 @@ function abrirLeitorBarras() {
 }
 
 async function iniciarCamera() {
-    const status = document.getElementById('barcode-status');
-    // Verificar se mediaDevices está disponível (requer HTTPS ou localhost)
-    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        status.textContent = '⚠️ Câmara requer HTTPS. Use o campo manual abaixo.';
-        return;
-    }
     try {
-        status.textContent = 'A pedir acesso à câmara...';
         BARCODE_STREAM = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' } }
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
         });
         const video = document.getElementById('barcode-video');
         video.srcObject = BARCODE_STREAM;
-        video.onloadedmetadata = () => {
-            video.play();
-            status.textContent = 'Aponte para o código de barras...';
-            iniciarDetecao(video);
-        };
+        await video.play();
+        document.getElementById('barcode-status').textContent = 'Aponte para o código de barras do produto...';
+        iniciarDetecao(video);
     } catch(e) {
-        if(e.name === 'NotAllowedError') {
-            status.textContent = '⚠️ Permissão negada. Autorize a câmara nas definições do browser.';
-        } else if(e.name === 'NotFoundError') {
-            status.textContent = '⚠️ Nenhuma câmara encontrada neste dispositivo.';
-        } else {
-            status.textContent = '⚠️ Erro câmara: ' + e.message + '. Use o campo manual.';
-        }
+        document.getElementById('barcode-status').textContent = '⚠️ Câmara não disponível. Use o campo manual abaixo.';
     }
 }
 
@@ -1999,8 +1966,12 @@ async function iniciarDetecao(video) {
 function processarCodigoBarras(codigo) {
     if(!codigo) return;
     fecharLeitorBarras();
-    // Procurar produto por código de barras (coluna A do Excel)
-    let prod = DADOS.find(p => p.ean && String(p.ean).trim() === String(codigo).trim());
+    // Procurar produto por código de barras (campo ean/barcode) ou pelo nome
+    let prod = DADOS.find(p => p.ean && String(p.ean).trim() === codigo);
+    if(!prod) {
+        // Fallback: pesquisar por nome que contenha o código
+        prod = DADOS.find(p => p.nome && p.nome.toLowerCase().includes(codigo.toLowerCase()));
+    }
     if(prod) {
         // Produto encontrado — abrir modal de quantidade
         BARCODE_PROD_ATUAL = prod;
@@ -2270,7 +2241,7 @@ document.getElementById('f-excel').onchange = e => {
         const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'}); 
         DADOS = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""}).slice(1).map((r,i) => ({ 
             id: i, 
-            ean: String(r[0]||"").trim(),
+            ean: String(r[1]||"").trim(),
             cat: String(r[8]||"GERAL").toUpperCase(), 
             nome: r[2], 
             preco: parseFloat(String(r[3]).replace(',','.'))||0,
