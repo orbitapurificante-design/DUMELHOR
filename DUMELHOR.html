@@ -2,6 +2,12 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#0e2040">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DUMELHOR">
+    <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DUMELHOR PRO V32 ENHANCED</title>
     <meta name="mobile-web-app-capable" content="yes">
@@ -560,7 +566,7 @@
     <input type="text" id="in-cli-search" class="in-cli-search" placeholder="CLIENTE..." onclick="abrirBuscaGlobal()" readonly style="flex:0.7;">
     <div style="flex:1; position:relative; display:flex; align-items:center;">
         <button onclick="limparPesquisaProduto()" style="position:absolute; left:5px; width:44px; height:44px; border-radius:12px; border:none; background:white; color:#2563a8; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
-        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender()" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:54px;">
+        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender(); const _pm=document.getElementById('painel-sem-resultado'); if(_pm && _pm.style.display!=='none'){ const _id=document.getElementById('inp-manual-desc'); if(_id) _id.value=this.value; }" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:54px;">
     </div>
     <div class="cart-float-top" onclick="fecharTeclado(); nav('m3')">🛒<div id="cart-badge" class="badge-vermelha" style="display:none">0</div></div>
 </header>
@@ -643,6 +649,16 @@
             <img class="btn-img" data-nome="verfotos.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">🖼️</div>
             <div class="icon-text" style="background:var(--gold); color:var(--navy);">VER FOTOS</div>
+        </button>
+        <button class="menu-btn-icon" onclick="exportarBackup(); toggleMenu()">
+            <img class="btn-img" data-nome="backup.jpg" src="" onerror="this.style.display='none'">
+            <div class="icon-emoji">💾</div>
+            <div class="icon-text" style="background:#16a34a; color:white;">EXPORTAR</div>
+        </button>
+        <button class="menu-btn-icon" onclick="document.getElementById('f-backup').click(); toggleMenu()">
+            <img class="btn-img" data-nome="importar.jpg" src="" onerror="this.style.display='none'">
+            <div class="icon-emoji">📥</div>
+            <div class="icon-text" style="background:#0369a1; color:white;">IMPORTAR</div>
         </button>
     </div>
     
@@ -837,7 +853,7 @@
     <div id="cart-list-content"></div>
     <div style="padding: 16px 16px 0;">
         <label style="font-size: 15px; font-weight: bold; color: var(--wave);">📝 NOTAS DO PEDIDO:</label>
-        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Escreva uma nota por linha..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}"></textarea>
+        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Escreva uma nota por linha..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}" oninput="sincronizarObsParaLinhas()"></textarea>
     </div>
 </div>
 
@@ -1164,6 +1180,7 @@
 </div>
 <input type="file" id="f-excel" accept=".xlsx" style="display:none">
 <input type="file" id="f-fotos" accept="image/*" multiple style="display:none">
+<input type="file" id="f-backup" accept=".json" style="display:none">
 
 <script>
 let DADOS = JSON.parse(localStorage.getItem('DM_PRODUTOS_AUTO')) || [];
@@ -1818,7 +1835,7 @@ function aplicarFiltroDOM() {
 let LINHAS_MANUAIS = []; // [{desc, qtd}]
 
 function sincronizarDescManual(val) {
-    // Preenche automaticamente o campo de descrição com o que se escreve no in-busca
+    // não usado directamente - sincronização feita via oninput do in-busca
 }
 
 function mostrarPainelSemResultado() {
@@ -1881,11 +1898,29 @@ function alterarQtdManual(i, val) {
 }
 
 function sincronizarNotasManual() {
-    // Gera texto estruturado para o campo de notas do pedido (obs-pedido-final)
-    if(!LINHAS_MANUAIS.length) return;
-    const linhas = LINHAS_MANUAIS.map(l => `${l.qtd}x ${l.desc}`).join('\n');
     const obs = document.getElementById('obs-pedido-final');
-    if(obs) obs.value = linhas;
+    if(!obs) return;
+    if(!LINHAS_MANUAIS.length) {
+        obs.value = '';
+        return;
+    }
+    obs.value = LINHAS_MANUAIS.map(l => l.qtd + 'x ' + l.desc).join('\n');
+}
+
+// Sincronizar em sentido inverso: editar obs → actualizar LINHAS_MANUAIS
+function sincronizarObsParaLinhas() {
+    const obs = document.getElementById('obs-pedido-final');
+    if(!obs) return;
+    const texto = obs.value.trim();
+    if(!texto) { LINHAS_MANUAIS = []; renderTabelaManual(); return; }
+    // Tentar parsear linhas no formato "Nx desc" ou só "desc"
+    const novas = texto.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+        const m = l.match(/^(\d+)x\s+(.+)$/i);
+        if(m) return { qtd: parseInt(m[1]), desc: m[2] };
+        return { qtd: 1, desc: l };
+    });
+    LINHAS_MANUAIS = novas;
+    renderTabelaManual();
 }
 
 // Verificação de sem resultados — chamada no fim de aplicarFiltroDOM
@@ -1928,17 +1963,59 @@ function abrirLeitorBarras() {
 }
 
 async function iniciarCamera() {
+    const status = document.getElementById('barcode-status');
+
+    // HTTP sem localhost → Chrome bloqueia câmara mesmo com permissão
+    const isSeguro = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.startsWith('192.168.');
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if(!isSeguro) {
+            status.innerHTML = '⚠️ Chrome bloqueia câmara em HTTP.<br><b>Solução:</b> No Chrome do tablet vá a <b>chrome://flags</b>, pesquise <b>insecure origins</b>, adicione o endereço desta app e reinicie o Chrome.';
+        } else {
+            status.textContent = '⚠️ Browser não suporta câmara. Use o campo manual.';
+        }
+        return;
+    }
     try {
-        BARCODE_STREAM = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
+        status.textContent = 'A pedir acesso à câmara...';
+        // Tentar câmara traseira primeiro, depois qualquer câmara
+        let stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { exact: 'environment' } }
+            });
+        } catch(e1) {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+        BARCODE_STREAM = stream;
         const video = document.getElementById('barcode-video');
-        video.srcObject = BARCODE_STREAM;
-        await video.play();
-        document.getElementById('barcode-status').textContent = 'Aponte para o código de barras do produto...';
-        iniciarDetecao(video);
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+            video.play();
+            status.textContent = 'Aponte para o código de barras...';
+            iniciarDetecao(video);
+        };
     } catch(e) {
-        document.getElementById('barcode-status').textContent = '⚠️ Câmara não disponível. Use o campo manual abaixo.';
+        if(e.name === 'NotAllowedError') {
+            if(!isSeguro) {
+                status.innerHTML = '🔒 Chrome bloqueou (HTTP não seguro).<br><b>Correção rápida:</b> Chrome → <b>chrome://flags</b> → "Insecure origins treated as secure" → adicione o endereço desta página → Relaunch.';
+            } else {
+                status.innerHTML = '⚠️ Permissão negada pelo browser.<br>Toque no 🔒 ou ℹ️ na barra de endereço → Permissões → Câmara → Permitir.';
+            }
+        } else if(e.name === 'NotFoundError') {
+            status.textContent = '⚠️ Nenhuma câmara encontrada.';
+        } else if(e.name === 'OverconstrainedError') {
+            // facingMode:exact falhou, tentar sem constraint
+            try {
+                BARCODE_STREAM = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('barcode-video');
+                video.srcObject = BARCODE_STREAM;
+                video.onloadedmetadata = () => { video.play(); iniciarDetecao(video); };
+                status.textContent = 'Câmara aberta. Aponte para o código...';
+            } catch(e2) { status.textContent = '⚠️ Erro: ' + e2.message; }
+        } else {
+            status.textContent = '⚠️ Erro: ' + e.name + ' — ' + e.message;
+        }
     }
 }
 
@@ -1966,12 +2043,8 @@ async function iniciarDetecao(video) {
 function processarCodigoBarras(codigo) {
     if(!codigo) return;
     fecharLeitorBarras();
-    // Procurar produto por código de barras (campo ean/barcode) ou pelo nome
-    let prod = DADOS.find(p => p.ean && String(p.ean).trim() === codigo);
-    if(!prod) {
-        // Fallback: pesquisar por nome que contenha o código
-        prod = DADOS.find(p => p.nome && p.nome.toLowerCase().includes(codigo.toLowerCase()));
-    }
+    // Procurar produto por código de barras (coluna A do Excel)
+    let prod = DADOS.find(p => p.ean && String(p.ean).trim() === String(codigo).trim());
     if(prod) {
         // Produto encontrado — abrir modal de quantidade
         BARCODE_PROD_ATUAL = prod;
@@ -2241,7 +2314,7 @@ document.getElementById('f-excel').onchange = e => {
         const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'}); 
         DADOS = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""}).slice(1).map((r,i) => ({ 
             id: i, 
-            ean: String(r[1]||"").trim(),
+            ean: String(r[0]||"").trim(),
             cat: String(r[8]||"GERAL").toUpperCase(), 
             nome: r[2], 
             preco: parseFloat(String(r[3]).replace(',','.'))||0,
@@ -4754,6 +4827,106 @@ function exportarProdutosExcel() {
         alert('Erro ao exportar Excel.');
     }
 }
+</script>
+
+<script>
+if('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('✅ Service Worker registado:', reg.scope))
+            .catch(err => console.log('❌ SW erro:', err));
+    });
+}
+// ═══════════════════════════════════════════════════════════
+// EXPORTAR / IMPORTAR BACKUP COMPLETO
+// ═══════════════════════════════════════════════════════════
+async function exportarBackup() {
+    try {
+        const backup = {
+            versao: 1,
+            data: new Date().toISOString(),
+            // Dados do localStorage
+            pedidos: JSON.parse(localStorage.getItem('DM_PEDIDOS_V11') || '[]'),
+            pagamentos: JSON.parse(localStorage.getItem('DM_PAGAMENTOS') || '[]'),
+            clientes: JSON.parse(localStorage.getItem('DM_CLIENTES_V3') || '[]'),
+            produtos: JSON.parse(localStorage.getItem('DM_PRODUTOS_AUTO') || '[]'),
+            config: {
+                vendedor: localStorage.getItem('DM_VENDEDOR') || '',
+                empresa: localStorage.getItem('DM_EMPRESA') || '',
+                morada: localStorage.getItem('DM_MORADA') || '',
+                nif: localStorage.getItem('DM_NIF') || '',
+                segmento: localStorage.getItem('DM_SEGMENTO') || '',
+            }
+        };
+
+        const json = JSON.stringify(backup, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
+        a.href = url;
+        a.download = 'dumelhor-backup-' + dataStr + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        // Confirmar
+        const total = backup.pedidos.length + backup.pagamentos.length;
+        alert('✅ Backup exportado!\n\n' +
+              '📦 Pedidos: ' + backup.pedidos.length + '\n' +
+              '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
+              '👥 Clientes: ' + backup.clientes.length + '\n' +
+              '🛒 Produtos: ' + backup.produtos.length);
+    } catch(e) {
+        alert('Erro ao exportar: ' + e.message);
+    }
+}
+
+function importarBackup(file) {
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const backup = JSON.parse(e.target.result);
+            if(!backup.versao) throw new Error('Ficheiro inválido');
+
+            const pedidosExist = JSON.parse(localStorage.getItem('DM_PEDIDOS_V11') || '[]').length;
+            const msg = 'Importar backup de ' + new Date(backup.data).toLocaleDateString('pt-PT') + '?\n\n' +
+                '📦 Pedidos: ' + backup.pedidos.length + '\n' +
+                '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
+                '👥 Clientes: ' + backup.clientes.length + '\n' +
+                '🛒 Produtos: ' + backup.produtos.length +
+                (pedidosExist ? '\n\n⚠️ Já existem ' + pedidosExist + ' pedidos aqui — serão substituídos.' : '');
+
+            if(!confirm(msg)) return;
+
+            // Restaurar localStorage
+            if(backup.pedidos) localStorage.setItem('DM_PEDIDOS_V11', JSON.stringify(backup.pedidos));
+            if(backup.pagamentos) localStorage.setItem('DM_PAGAMENTOS', JSON.stringify(backup.pagamentos));
+            if(backup.clientes) localStorage.setItem('DM_CLIENTES_V3', JSON.stringify(backup.clientes));
+            if(backup.produtos) localStorage.setItem('DM_PRODUTOS_AUTO', JSON.stringify(backup.produtos));
+            if(backup.config) {
+                if(backup.config.vendedor) localStorage.setItem('DM_VENDEDOR', backup.config.vendedor);
+                if(backup.config.empresa) localStorage.setItem('DM_EMPRESA', backup.config.empresa);
+                if(backup.config.morada) localStorage.setItem('DM_MORADA', backup.config.morada);
+                if(backup.config.nif) localStorage.setItem('DM_NIF', backup.config.nif);
+                if(backup.config.segmento) localStorage.setItem('DM_SEGMENTO', backup.config.segmento);
+            }
+
+            alert('✅ Backup importado com sucesso!\nA app vai recarregar.');
+            location.reload();
+        } catch(err) {
+            alert('❌ Erro ao importar: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+document.getElementById('f-backup').onchange = e => {
+    importarBackup(e.target.files[0]);
+    e.target.value = '';
+};
+
+
 </script>
 </body>
 </html>
