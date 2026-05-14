@@ -77,55 +77,56 @@
         html { scroll-padding-top: 70px; }
         body { font-family: 'DM Sans', 'Roboto', 'Segoe UI', sans-serif; margin: 0; background: var(--bg-light); color: #1a1a2e; -webkit-tap-highlight-color: transparent; font-size: 17px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         /* Android mobile optimizations */
-        input, button, select, textarea { font-family: 'DM Sans', 'Roboto', sans-serif; font-size: 16px !important; } /* 16px prevents iOS/Android zoom */
-        input[type="text"], input[type="number"], input[type="search"] { min-height: 48px; }
-        button { min-height: 44px; }
+        input, button, select, textarea { font-family: 'DM Sans', 'Roboto', sans-serif; font-size: 15px !important; }
+        input[type="text"], input[type="number"], input[type="search"] { min-height: 36px; }
+        button { min-height: 36px; }
 
         /* ── HEADER ── */
         header { 
             background: linear-gradient(135deg, var(--navy) 0%, var(--sea) 100%); 
-            padding: 5px 12px; display: flex; align-items: center; gap: 10px; 
+            padding: 4px 8px; display: flex; align-items: center; gap: 6px; 
             position: fixed; top: 0; left: 0; right: 0; z-index: 3000; 
-            box-shadow: 0 3px 15px rgba(0,0,0,0.3); height: 65px; box-sizing: border-box; transition: all 0.1s; 
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3); height: 48px; box-sizing: border-box; transition: all 0.1s; 
         }
         header.hidden { transform: translateY(-100%); }
         header button[onclick="toggleMenu()"] { 
-            font-size: 26px; background: rgba(255,255,255,0.12); border: none; cursor: pointer; 
-            color: white; border-radius: 10px; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center;
+            font-size: 22px; background: rgba(255,255,255,0.12); border: none; cursor: pointer; 
+            color: white; border-radius: 8px; width: 34px; height: 34px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
         }
         .in-cli-search { 
-            flex: 1; padding: 9px 14px; border-radius: 20px; font-size: 13px; 
+            flex: 0.65; padding: 6px 10px; border-radius: 16px; font-size: 12px; 
             font-weight: 700; outline: none; color: #ffffff !important;
             background: linear-gradient(135deg, rgba(0,160,255,0.22), rgba(0,80,200,0.18)) !important;
             border: 2px solid rgba(0, 210, 255, 0.75) !important;
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 12px rgba(0, 210, 255, 0.6), 0 0 24px rgba(0, 160, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.15);
-            letter-spacing: 0.04em;
-            text-shadow: 0 0 8px rgba(0,220,255,0.8);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            letter-spacing: 0.03em;
+            text-shadow: 0 0 6px rgba(0,220,255,0.7);
             transition: box-shadow 0.25s, border-color 0.25s;
+            min-width: 0;
         }
         .in-cli-search:focus {
             border-color: rgba(0, 240, 255, 1) !important;
-            box-shadow: 0 0 18px rgba(0, 240, 255, 0.9), 0 0 40px rgba(0, 180, 255, 0.45), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+            box-shadow: 0 0 14px rgba(0, 240, 255, 0.8), inset 0 1px 0 rgba(255,255,255,0.15) !important;
         }
-        .in-cli-search::placeholder { color: rgba(120, 220, 255, 0.75); letter-spacing: 0.1em; font-weight: 600; }
+        .in-cli-search::placeholder { color: rgba(120, 220, 255, 0.75); letter-spacing: 0.05em; font-weight: 600; }
         #in-busca { 
-            flex: 1; padding: 9px 14px; border-radius: 12px; border: none; font-size: 15px; 
+            flex: 1; padding: 6px 10px; border-radius: 10px; border: none; font-size: 13px; 
             font-weight: 600; outline: none; background: rgba(255,255,255,0.15) !important; 
-            color: white !important;
+            color: white !important; min-width: 0;
         }
         #in-busca::placeholder { color: rgba(255,255,255,0.55); }
         .cart-float-top { 
-            position: relative; width: 44px; height: 44px; 
+            position: relative; width: 36px; height: 36px; flex-shrink: 0;
             background: linear-gradient(135deg, var(--gold), var(--gold-light)); 
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; 
-            color: var(--navy); font-size: 20px; cursor: pointer; transition: all 0.1s;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; 
+            color: var(--navy); font-size: 17px; cursor: pointer; transition: all 0.1s;
             box-shadow: 0 3px 10px rgba(201,168,76,0.4);
         }
         .cart-float-top:active { transform: scale(0.9); }
         .badge-vermelha { 
-            position: absolute; top: -6px; right: -6px; background: var(--red); color: white; 
-            min-width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: bold; 
+            position: absolute; top: -5px; right: -5px; background: var(--red); color: white; 
+            min-width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: bold; 
             display: flex; align-items: center; justify-content: center; border: 2px solid white; z-index: 3100; 
         }
 
@@ -215,7 +216,7 @@
         }
 
         /* ── SCREENS ── */
-        .screen { display: none; padding: 75px 10px 80px 10px; }
+        .screen { display: none; padding: 55px 10px 48px 10px; }
         .screen.active { display: block; }
         #m1 { padding: 0 !important; min-height: 100vh; position: relative; background: linear-gradient(160deg, #0a1628 0%, #1a4a7a 100%); background-size: cover; background-position: center; background-repeat: no-repeat; }
         #m1.active { display: flex !important; flex-direction: column; justify-content: space-between; }
@@ -244,39 +245,33 @@
         .bottom-bar, .cart-bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: linear-gradient(135deg, #0a1628 0%, #0e2040 100%);
-            padding: 0 4px;
+            padding: 0 2px;
             display: flex; align-items: stretch; justify-content: space-around;
-            z-index: 2500; box-sizing: border-box; height: 66px;
+            z-index: 2500; box-sizing: border-box; height: 40px;
             border-top: 1px solid rgba(255,255,255,0.12);
         }
         .bbar-btn {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 5px; border: none; background: transparent;
-            padding: 8px 4px 10px; cursor: pointer;
+            display: flex; flex-direction: row; align-items: center; justify-content: center;
+            gap: 4px; border: none; background: transparent;
+            padding: 4px 2px; cursor: pointer;
             color: #8a9ab0;
-            font-size: 9px; font-weight: 700; letter-spacing: 0.6px;
+            font-size: 8px; font-weight: 700; letter-spacing: 0.4px;
             text-transform: uppercase; flex: 1;
             transition: all 0.1s;
             -webkit-tap-highlight-color: transparent;
             position: relative;
         }
         .bbar-btn svg {
-            width: 24px; height: 24px;
+            width: 16px; height: 16px;
             stroke: currentColor; fill: none;
             stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
         }
-        /* Estado ativo: amarelo dourado — como a lâmpada acesa */
-        .bbar-btn.active {
-            color: #c9a84c;
-        }
+        .bbar-btn.active { color: #c9a84c; }
         .bbar-btn.active::after {
-            content: '';
-            position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px;
+            content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px;
             background: #c9a84c; border-radius: 2px 2px 0 0;
         }
-        /* Toque: acende brevemente */
         .bbar-btn:active { color: #c9a84c; transform: scale(0.92); }
-        /* Cores por função — visíveis mas apagadas, acendem no toque */
         .bbar-btn.col-green  { color: #4ade80; }
         .bbar-btn.col-green:active  { color: #86efac; }
         .bbar-btn.col-blue   { color: #60a5fa; }
@@ -499,18 +494,18 @@
         }
 
         .btn-dumelhor { 
-            width: 48px; height: 48px; border-radius: 10px; 
+            width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
             border: 1.5px solid rgba(255,255,255,0.3); background: #ffffff; 
             cursor: pointer; overflow: hidden; display: flex; align-items: center; 
             justify-content: center; transition: all 0.1s; 
         }
         .btn-dumelhor:active { transform: scale(0.95); }
         .btn-dumelhor img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        #text-dumelhor { font-size: 9px; font-weight: 800; color: #0e2040; text-align: center; line-height: 1.1; }
+        #text-dumelhor { font-size: 7px; font-weight: 800; color: #0e2040; text-align: center; line-height: 1.1; }
 
         /* ── MARCAS ── */
         .marcas-horizontal-container { 
-            position: fixed; left: 0; right: 0; top: -100%; height: auto; max-height: calc(100vh - 65px); overflow-y:auto;
+            position: fixed; left: 0; right: 0; top: -100%; height: auto; max-height: calc(100vh - 48px); overflow-y:auto;
             background: linear-gradient(180deg, #0a1628 0%, #0e2040 60%, #1a4a7a 100%);
             border-bottom: 2px solid rgba(201,168,76,0.3);
             z-index: 2700; 
@@ -569,8 +564,8 @@
     </div>
     <input type="text" id="in-cli-search" class="in-cli-search" placeholder="CLIENTE..." onclick="abrirBuscaGlobal()" readonly style="flex:0.7;">
     <div style="flex:1; position:relative; display:flex; align-items:center;">
-        <button onclick="limparPesquisaProduto()" style="position:absolute; left:5px; width:44px; height:44px; border-radius:12px; border:none; background:white; color:#2563a8; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
-        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender(); const _pm=document.getElementById('painel-sem-resultado'); if(_pm && _pm.style.display!=='none'){ const _id=document.getElementById('inp-manual-desc'); if(_id) _id.value=this.value; }" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:54px;">
+        <button onclick="limparPesquisaProduto()" style="position:absolute; left:4px; width:32px; height:32px; border-radius:8px; border:none; background:white; color:#2563a8; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
+        <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender(); const _pm=document.getElementById('painel-sem-resultado'); if(_pm && _pm.style.display!=='none'){ const _id=document.getElementById('inp-manual-desc'); if(_id) _id.value=this.value; }" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding-left:40px;">
     </div>
     <div class="cart-float-top" onclick="fecharTeclado(); nav('m3')">🛒<div id="cart-badge" class="badge-vermelha" style="display:none">0</div></div>
 </header>
@@ -693,42 +688,6 @@
 </div>
 
 <div id="m2" class="screen active">
-    <!-- Botão ON/OFF Scroll Automático -->
-    <!-- BOTÃO POWER TECH SCROLL -->
-    <div id="btn-scroll-toggle" style="display:none; position:fixed; bottom:80px; left:10px; z-index:900;">
-        <!-- Fundo pattern -->
-        <div style="width:160px; height:60px; background:#0a0a0a; border-radius:12px; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.8);">
-            <!-- Pattern hexágonos -->
-            <div style="position:absolute; top:0; left:0; width:100%; height:10px; background:repeating-linear-gradient(45deg, #1a1a1a 0px, #1a1a1a 3px, transparent 3px, transparent 6px); opacity:0.3;"></div>
-            <div style="position:absolute; bottom:0; left:0; width:100%; height:10px; background:repeating-linear-gradient(45deg, #1a1a1a 0px, #1a1a1a 3px, transparent 3px, transparent 6px); opacity:0.3;"></div>
-            
-            <!-- Container setas e botão -->
-            <div style="display:flex; align-items:center; justify-content:space-between; height:100%; padding:0 8px;">
-                <!-- Setas ESQUERDA (diminuir) -->
-                <div id="scroll-arrows-left" ontouchstart="handleScrollSwipe('left')" ontouchend="stopScrollSwipe()" style="display:flex; gap:1px; cursor:pointer;">
-                    <svg id="arrow-left-1" width="15" height="40" viewBox="0 0 20 50"><polygon points="15,10 5,25 15,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-left-2" width="15" height="40" viewBox="0 0 20 50"><polygon points="15,10 5,25 15,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-left-3" width="15" height="40" viewBox="0 0 20 50"><polygon points="15,10 5,25 15,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-left-4" width="15" height="40" viewBox="0 0 20 50"><polygon points="15,10 5,25 15,40" fill="#00a8ff" opacity="0.2"/></svg>
-                </div>
-                
-                <!-- BOTÃO POWER -->
-                <button id="power-btn" onclick="toggleScrollAutomatico()" style="width:40px; height:40px; border-radius:50%; border:3px solid #333; background:radial-gradient(circle, #2a2a2a, #0a0a0a); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; box-shadow:inset 0 2px 5px rgba(0,0,0,0.5), 0 0 15px rgba(255,0,0,0.4);">
-                    <div id="power-icon" style="width:18px; height:18px; border:3px solid #ff0033; border-radius:50%; border-top:3px solid transparent; transform:rotate(45deg); position:relative;">
-                        <div style="position:absolute; width:3px; height:10px; background:#ff0033; left:50%; top:-7px; transform:translateX(-50%);"></div>
-                    </div>
-                </button>
-                
-                <!-- Setas DIREITA (aumentar) -->
-                <div id="scroll-arrows-right" ontouchstart="handleScrollSwipe('right')" ontouchend="stopScrollSwipe()" style="display:flex; gap:1px; cursor:pointer;">
-                    <svg id="arrow-right-1" width="15" height="40" viewBox="0 0 20 50"><polygon points="5,10 15,25 5,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-right-2" width="15" height="40" viewBox="0 0 20 50"><polygon points="5,10 15,25 5,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-right-3" width="15" height="40" viewBox="0 0 20 50"><polygon points="5,10 15,25 5,40" fill="#00a8ff" opacity="0.2"/></svg>
-                    <svg id="arrow-right-4" width="15" height="40" viewBox="0 0 20 50"><polygon points="5,10 15,25 5,40" fill="#00a8ff" opacity="0.2"/></svg>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Indicador de filtro de segmento ativo -->
     <div id="indicador-segmento" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); padding:5px 16px; border-radius:20px; font-size:12px; font-weight:900; z-index:800; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer;" onclick="FILTRO_SEGMENTO=null; document.getElementById('indicador-segmento').style.display='none'; LOJA_RENDERIZADA=false; renderLoja();">
         <span id="indicador-segmento-texto">🍽️ RESTAURAÇÃO</span> &nbsp;✕
@@ -4077,186 +4036,17 @@ window.addEventListener('load', function() {
 
 renderLoja();
 
-// ═══════════════════════════════════════════════════════════
-// SCROLL AUTOMÁTICO NO M2
-// ═══════════════════════════════════════════════════════════
+// ── Stubs do scroll automático (removido) ──
+window.startAutoScroll = function() {};
+window.stopAutoScroll = function() {};
+window.resetScrollTimer = function() {};
+function toggleScrollAutomatico() {}
+function handleScrollSwipe() {}
+function stopScrollSwipe() {}
+function mudarVelocidadeScroll() {}
+function atualizarSetasVisuais() {}
 
-let scrollTimer = null;
-let scrollInterval = null;
-let scrollDir = 1;
-let scrollAutomaticoAtivo = false; // INICIAR EM PAUSA
-let scrollVelocidade = 1; // Velocidade: 0.5, 1, 2, 3
-const VELOCIDADES = [0.5, 1, 2, 3];
 
-function atualizarSetasVisuais() {
-    // Resetar todas as setas
-    for(let i = 1; i <= 4; i++) {
-        document.getElementById(`arrow-left-${i}`).setAttribute('fill', '#00a8ff');
-        document.getElementById(`arrow-left-${i}`).style.opacity = '0.2';
-        document.getElementById(`arrow-right-${i}`).setAttribute('fill', '#00a8ff');
-        document.getElementById(`arrow-right-${i}`).style.opacity = '0.2';
-    }
-    
-    // Acender setas conforme velocidade
-    // x0.5 = 1 seta, x1 = 2 setas, x2 = 3 setas, x3 = 4 setas
-    let numSetas = 1;
-    if(scrollVelocidade === 0.5) numSetas = 1;
-    else if(scrollVelocidade === 1) numSetas = 2;
-    else if(scrollVelocidade === 2) numSetas = 3;
-    else if(scrollVelocidade === 3) numSetas = 4;
-    
-    // Acender da direita para esquerda COM COR VERDE
-    for(let i = 1; i <= numSetas; i++) {
-        document.getElementById(`arrow-left-${i}`).setAttribute('fill', '#00ff41');
-        document.getElementById(`arrow-left-${i}`).style.opacity = '1';
-        document.getElementById(`arrow-right-${i}`).setAttribute('fill', '#00ff41');
-        document.getElementById(`arrow-right-${i}`).style.opacity = '1';
-    }
-}
-
-window.startAutoScroll = function() {
-    if(!scrollAutomaticoAtivo) return; // Se desligado, não inicia
-    
-    const m2 = document.getElementById('m2');
-    if(!m2 || !m2.classList.contains('active')) return;
-    
-    if(scrollInterval) clearInterval(scrollInterval);
-    
-    // Velocidade base 3px → ajustada por scrollVelocidade
-    const pixelsPorFrame = 3 * scrollVelocidade;
-    
-    scrollInterval = setInterval(function() {
-        if(!m2 || !m2.classList.contains('active')) {
-            if(scrollInterval) { clearInterval(scrollInterval); scrollInterval = null; }
-            return;
-        }
-        
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        
-        // Não fazer scroll se não houver conteúdo suficiente para scrollar
-        if(maxScroll < 200) return;
-        
-        window.scrollBy(0, scrollDir * pixelsPorFrame);
-        
-        const scrollPos = window.scrollY;
-        
-        if(scrollPos >= maxScroll - 50 && scrollDir === 1) {
-            scrollDir = -1;
-        } else if(scrollPos <= 50 && scrollDir === -1) {
-            scrollDir = 1;
-        }
-    }, 30);
-};
-
-window.stopAutoScroll = function() {
-    if(scrollInterval) {
-        clearInterval(scrollInterval);
-        scrollInterval = null;
-    }
-};
-
-window.resetScrollTimer = function(delay) {
-    window.stopAutoScroll();
-    
-    const m2 = document.getElementById('m2');
-    if(!m2 || !m2.classList.contains('active')) return;
-    
-    if(scrollTimer) clearTimeout(scrollTimer);
-    
-    const waitTime = delay || 2000;
-    
-    scrollTimer = setTimeout(function() {
-        window.startAutoScroll();
-    }, waitTime);
-};
-
-// Função para ligar/desligar scroll automático
-function toggleScrollAutomatico() {
-    scrollAutomaticoAtivo = !scrollAutomaticoAtivo;
-    const powerIcon = document.getElementById('power-icon');
-    
-    if(scrollAutomaticoAtivo) {
-        // LIGADO - VERDE
-        powerIcon.style.borderColor = '#00ff41';
-        powerIcon.querySelector('div').style.background = '#00ff41';
-        document.getElementById('power-btn').style.boxShadow = 'inset 0 2px 5px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,65,0.6)';
-        atualizarSetasVisuais();
-        window.resetScrollTimer(500);
-    } else {
-        // DESLIGADO - VERMELHO
-        powerIcon.style.borderColor = '#ff0033';
-        powerIcon.querySelector('div').style.background = '#ff0033';
-        document.getElementById('power-btn').style.boxShadow = 'inset 0 2px 5px rgba(0,0,0,0.5), 0 0 15px rgba(255,0,0,0.4)';
-        // Apagar todas as setas
-        for(let i = 1; i <= 4; i++) {
-            document.getElementById(`arrow-left-${i}`).style.opacity = '0.2';
-            document.getElementById(`arrow-right-${i}`).style.opacity = '0.2';
-        }
-        window.stopAutoScroll();
-    }
-}
-
-// Função para mudar velocidade via swipe
-let swipeInterval = null;
-function handleScrollSwipe(direction) {
-    if(!scrollAutomaticoAtivo) return; // Só funciona se ligado
-    
-    // Clearar intervalo anterior
-    if(swipeInterval) clearInterval(swipeInterval);
-    
-    // Mudar velocidade imediatamente
-    mudarVelocidadeScroll(direction);
-    
-    // Continuar mudando enquanto segura
-    swipeInterval = setInterval(() => {
-        mudarVelocidadeScroll(direction);
-    }, 300);
-}
-
-function stopScrollSwipe() {
-    if(swipeInterval) {
-        clearInterval(swipeInterval);
-        swipeInterval = null;
-    }
-}
-
-function mudarVelocidadeScroll(direction) {
-    if(!scrollAutomaticoAtivo) return;
-    
-    const indexAtual = VELOCIDADES.indexOf(scrollVelocidade);
-    let proximoIndex;
-    
-    if(direction === 'right') {
-        // Aumentar velocidade
-        proximoIndex = Math.min(indexAtual + 1, VELOCIDADES.length - 1);
-    } else {
-        // Diminuir velocidade
-        proximoIndex = Math.max(indexAtual - 1, 0);
-    }
-    
-    scrollVelocidade = VELOCIDADES[proximoIndex];
-    
-    // Atualizar setas visuais
-    atualizarSetasVisuais();
-    
-    // Reiniciar com nova velocidade
-    window.resetScrollTimer(500);
-}
-
-// Eventos - parar e resetar ao tocar
-document.addEventListener('touchstart', function() {
-    const m2 = document.getElementById('m2');
-    if(m2 && m2.classList.contains('active')) {
-        window.resetScrollTimer();
-    }
-}, { passive: true });
-
-document.addEventListener('click', function() {
-    const m2 = document.getElementById('m2');
-    if(m2 && m2.classList.contains('active')) {
-        window.resetScrollTimer();
-    }
-});
 
 // ═══════════════════════════════════════════════════════════
 // CATÁLOGO DE VENDAS - Foto Grande Coluna L
