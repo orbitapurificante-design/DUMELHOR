@@ -13,7 +13,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --navy: #0a1628;
@@ -75,7 +75,11 @@
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         html { scroll-padding-top: 70px; }
-        body { font-family: 'DM Sans', 'Segoe UI', sans-serif; margin: 0; background: var(--bg-light); color: #1a1a2e; -webkit-tap-highlight-color: transparent; font-size: 16px; overflow-x: hidden; touch-action: manipulation; }
+        body { font-family: 'DM Sans', 'Roboto', 'Segoe UI', sans-serif; margin: 0; background: var(--bg-light); color: #1a1a2e; -webkit-tap-highlight-color: transparent; font-size: 17px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        /* Android mobile optimizations */
+        input, button, select, textarea { font-family: 'DM Sans', 'Roboto', sans-serif; font-size: 16px !important; } /* 16px prevents iOS/Android zoom */
+        input[type="text"], input[type="number"], input[type="search"] { min-height: 48px; }
+        button { min-height: 44px; }
 
         /* ── HEADER ── */
         header { 
@@ -191,7 +195,7 @@
         }
         .card-pro:active { transform: scale(0.97); }
         .card-pro img { width: 100%; aspect-ratio: 1/1; object-fit: contain; background: #ffffff; margin-bottom: 6px; display: block; border-radius: 8px; }
-        .card-pro-nome { font-size: 14px; font-weight: 700; height: 36px; overflow: hidden; line-height: 1.2; margin-bottom: 8px; color: #1a1a2e; }
+        .card-pro-nome { font-size: 13px; font-weight: 700; height: 34px; overflow: hidden; line-height: 1.2; margin-bottom: 8px; color: #1a1a2e; }
         .card-pro-preco { color: var(--red); font-weight: 900; font-size: 24px; margin-bottom: 0; }
         .card-pro-info { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
         .card-pro-un { 
@@ -778,42 +782,84 @@
     </button>
 
     <!-- MODAL LEITOR DE CÓDIGO DE BARRAS -->
-    <div id="modal-barcode" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.95); flex-direction:column; align-items:center; justify-content:center;">
-        <div style="color:#c9a84c; font-size:16px; font-weight:900; letter-spacing:2px; margin-bottom:14px;">📷 APONTAR PARA O CÓDIGO DE BARRAS</div>
-        <div style="position:relative; width:min(90vw,380px); height:260px; border-radius:14px; overflow:hidden; border:3px solid #c9a84c; box-shadow:0 0 30px rgba(201,168,76,0.4);">
-            <video id="barcode-video" style="width:100%; height:100%; object-fit:cover;" playsinline autoplay muted></video>
-            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
-                <div style="width:70%; height:2px; background:rgba(201,168,76,0.8); box-shadow:0 0 10px rgba(201,168,76,0.9);"></div>
-            </div>
-            <div style="position:absolute; inset:0; border:30px solid rgba(0,0,0,0.45); border-radius:14px; pointer-events:none;"></div>
+    <div id="modal-barcode" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.97); flex-direction:column; align-items:center; justify-content:flex-start; padding-top:env(safe-area-inset-top,10px); overflow-y:auto;">
+        <!-- TÍTULO -->
+        <div style="color:#c9a84c; font-size:15px; font-weight:900; letter-spacing:2px; margin:14px 0 10px; text-align:center;">📷 LEITOR DE CÓDIGO DE BARRAS</div>
+
+        <!-- SELECTOR MODO CÂMARA -->
+        <div style="display:flex; gap:0; border-radius:12px; overflow:hidden; border:2px solid #c9a84c; margin-bottom:12px; width:min(90vw,380px);">
+            <button id="btn-modo-consulta" onclick="setModoBarcode('consulta')"
+                style="flex:1; padding:12px 8px; border:none; background:#c9a84c; color:#0e2040; font-size:13px; font-weight:900; cursor:pointer; letter-spacing:0.5px; transition:all 0.15s;">
+                🔍 CONSULTA
+            </button>
+            <button id="btn-modo-encomenda" onclick="setModoBarcode('encomenda')"
+                style="flex:1; padding:12px 8px; border:none; background:rgba(201,168,76,0.15); color:#c9a84c; font-size:13px; font-weight:900; cursor:pointer; letter-spacing:0.5px; transition:all 0.15s;">
+                🛒 ENCOMENDA
+            </button>
         </div>
-        <div id="barcode-status" style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:14px; text-align:center; min-height:20px;"></div>
-        <div style="display:flex; gap:8px; margin-top:12px; width:min(90vw,380px);">
-            <input type="text" id="inp-barcode-manual" placeholder="Ou escreva o código manualmente..."
-                style="flex:1; padding:10px 14px; border-radius:8px; border:2px solid #c9a84c; background:rgba(255,255,255,0.1); color:white; font-size:14px; font-weight:700; outline:none;"
-                onkeypress="if(event.key==='Enter') processarCodigoBarras(this.value.trim())">
-            <button onclick="processarCodigoBarras(document.getElementById('inp-barcode-manual').value.trim())"
-                style="background:#c9a84c; color:#0e2040; border:none; border-radius:8px; padding:10px 16px; font-size:13px; font-weight:900; cursor:pointer;">OK</button>
+        <div id="barcode-modo-label" style="color:rgba(255,255,255,0.5); font-size:11px; font-weight:700; letter-spacing:1px; margin-bottom:10px; text-align:center;">MODO: SÓ CONSULTA — mostra produto sem adicionar</div>
+
+        <!-- VIEWFINDER -->
+        <div style="position:relative; width:min(90vw,380px); height:240px; border-radius:14px; overflow:hidden; border:3px solid #c9a84c; box-shadow:0 0 30px rgba(201,168,76,0.4);">
+            <video id="barcode-video" style="width:100%; height:100%; object-fit:cover;" playsinline autoplay muted></video>
+            <!-- Linha de scan animada -->
+            <div id="scan-line" style="position:absolute; left:5%; right:5%; height:2px; background:rgba(201,168,76,0.9); box-shadow:0 0 10px rgba(201,168,76,0.9); top:50%; animation:scanAnim 2s ease-in-out infinite; pointer-events:none;"></div>
+            <!-- Cantos do viewfinder -->
+            <div style="position:absolute; top:10px; left:10px; width:28px; height:28px; border-top:3px solid #c9a84c; border-left:3px solid #c9a84c; border-radius:3px 0 0 0; pointer-events:none;"></div>
+            <div style="position:absolute; top:10px; right:10px; width:28px; height:28px; border-top:3px solid #c9a84c; border-right:3px solid #c9a84c; border-radius:0 3px 0 0; pointer-events:none;"></div>
+            <div style="position:absolute; bottom:10px; left:10px; width:28px; height:28px; border-bottom:3px solid #c9a84c; border-left:3px solid #c9a84c; border-radius:0 0 0 3px; pointer-events:none;"></div>
+            <div style="position:absolute; bottom:10px; right:10px; width:28px; height:28px; border-bottom:3px solid #c9a84c; border-right:3px solid #c9a84c; border-radius:0 0 3px 0; pointer-events:none;"></div>
+        </div>
+        <style>
+        @keyframes scanAnim { 0%{top:15%} 50%{top:85%} 100%{top:15%} }
+        </style>
+
+        <div id="barcode-status" style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:10px; text-align:center; min-height:20px; padding:0 16px;"></div>
+
+        <!-- INPUT MANUAL -->
+        <div style="display:flex; gap:8px; margin-top:10px; width:min(90vw,380px);">
+            <input type="text" id="inp-barcode-manual" placeholder="Código manual..." inputmode="numeric"
+                style="flex:1; padding:12px 14px; border-radius:10px; border:2px solid #c9a84c; background:rgba(255,255,255,0.1); color:white; font-size:16px; font-weight:700; outline:none;"
+                onkeypress="if(event.key==='Enter'){ processarCodigoBarras(this.value.trim()); this.value=''; }">
+            <button onclick="processarCodigoBarras(document.getElementById('inp-barcode-manual').value.trim()); document.getElementById('inp-barcode-manual').value='';"
+                style="background:#c9a84c; color:#0e2040; border:none; border-radius:10px; padding:12px 18px; font-size:14px; font-weight:900; cursor:pointer; min-width:60px;">OK</button>
         </div>
         <button onclick="fecharLeitorBarras()"
-            style="margin-top:18px; background:rgba(255,255,255,0.1); color:white; border:2px solid rgba(255,255,255,0.3); border-radius:10px; padding:12px 32px; font-size:14px; font-weight:700; cursor:pointer;">FECHAR</button>
+            style="margin-top:14px; margin-bottom:20px; background:rgba(255,255,255,0.1); color:white; border:2px solid rgba(255,255,255,0.3); border-radius:12px; padding:14px 40px; font-size:15px; font-weight:700; cursor:pointer; min-height:50px;">✕ FECHAR</button>
+    </div>
+
+    <!-- PAINEL CONSULTA RÁPIDA (modo consulta) -->
+    <div id="painel-consulta-barcode" style="display:none; position:fixed; inset:0; z-index:10100; background:rgba(0,0,0,0.92); flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#0e2040; border:2px solid #c9a84c; border-radius:18px; padding:28px 22px; width:min(92vw,360px); text-align:center;">
+            <div style="color:#c9a84c; font-size:11px; font-weight:900; letter-spacing:1.5px; margin-bottom:8px;">🔍 CONSULTA DE PRODUTO</div>
+            <div id="consulta-prod-nome" style="color:white; font-size:20px; font-weight:900; margin-bottom:6px; line-height:1.3;"></div>
+            <div id="consulta-prod-codigo" style="color:rgba(255,255,255,0.45); font-size:12px; font-weight:600; margin-bottom:8px;"></div>
+            <div id="consulta-prod-preco" style="color:#c9a84c; font-size:38px; font-weight:900; margin-bottom:4px;"></div>
+            <div id="consulta-prod-un" style="color:rgba(255,255,255,0.55); font-size:14px; margin-bottom:20px;"></div>
+            <div id="consulta-prod-cat" style="color:rgba(255,255,255,0.4); font-size:12px; margin-bottom:20px;"></div>
+            <button onclick="fecharConsultaBarcode()"
+                style="width:100%; padding:15px; border-radius:12px; border:none; background:#c9a84c; color:#0e2040; font-size:16px; font-weight:900; cursor:pointer;">
+                ✓ OK
+            </button>
+        </div>
     </div>
 
     <!-- MODAL QUANTIDADE PRODUTO POR CÓDIGO -->
-    <div id="modal-barcode-qtd" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.85); flex-direction:column; align-items:center; justify-content:center;">
-        <div style="background:#0e2040; border:2px solid #c9a84c; border-radius:16px; padding:24px; width:min(90vw,340px); text-align:center;">
-            <div style="color:#c9a84c; font-size:11px; font-weight:900; letter-spacing:1px; margin-bottom:6px;">PRODUTO ENCONTRADO</div>
-            <div id="barcode-prod-nome" style="color:white; font-size:17px; font-weight:900; margin-bottom:4px; line-height:1.3;"></div>
-            <div id="barcode-prod-preco" style="color:rgba(255,255,255,0.6); font-size:13px; margin-bottom:20px;"></div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:20px;">
-                <button onclick="ajustarQtdBarcode(-1)" style="width:44px; height:44px; border-radius:50%; border:2px solid #c9a84c; background:rgba(201,168,76,0.15); color:#c9a84c; font-size:26px; font-weight:900; cursor:pointer; line-height:1;">−</button>
-                <input type="number" id="inp-barcode-qtd" value="1" min="1"
-                    style="width:80px; text-align:center; font-size:28px; font-weight:900; border:2px solid #c9a84c; border-radius:10px; background:rgba(255,255,255,0.08); color:white; padding:8px; outline:none;">
-                <button onclick="ajustarQtdBarcode(1)" style="width:44px; height:44px; border-radius:50%; border:2px solid #c9a84c; background:rgba(201,168,76,0.15); color:#c9a84c; font-size:26px; font-weight:900; cursor:pointer; line-height:1;">+</button>
+    <div id="modal-barcode-qtd" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.88); flex-direction:column; align-items:center; justify-content:center;">
+        <div style="background:#0e2040; border:2px solid #c9a84c; border-radius:18px; padding:28px 22px; width:min(92vw,360px); text-align:center;">
+            <div style="color:#c9a84c; font-size:11px; font-weight:900; letter-spacing:1.5px; margin-bottom:8px;">✓ PRODUTO ENCONTRADO</div>
+            <div id="barcode-prod-nome" style="color:white; font-size:18px; font-weight:900; margin-bottom:4px; line-height:1.3;"></div>
+            <div id="barcode-prod-preco" style="color:rgba(255,255,255,0.6); font-size:15px; margin-bottom:22px;"></div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:22px;">
+                <button onclick="ajustarQtdBarcode(-1)" style="width:52px; height:52px; border-radius:50%; border:2px solid #c9a84c; background:rgba(201,168,76,0.15); color:#c9a84c; font-size:30px; font-weight:900; cursor:pointer; line-height:1; touch-action:manipulation;">−</button>
+                <input type="number" id="inp-barcode-qtd" value="1" min="1" inputmode="numeric"
+                    style="width:90px; text-align:center; font-size:32px; font-weight:900; border:2px solid #c9a84c; border-radius:12px; background:rgba(255,255,255,0.08); color:white; padding:10px; outline:none;"
+                    onkeypress="if(event.key==='Enter') confirmarQtdBarcode()">
+                <button onclick="ajustarQtdBarcode(1)" style="width:52px; height:52px; border-radius:50%; border:2px solid #c9a84c; background:rgba(201,168,76,0.15); color:#c9a84c; font-size:30px; font-weight:900; cursor:pointer; line-height:1; touch-action:manipulation;">+</button>
             </div>
             <div style="display:flex; gap:10px;">
-                <button onclick="fecharModalBarcodeQtd()" style="flex:1; padding:12px; border-radius:10px; border:2px solid rgba(255,255,255,0.2); background:transparent; color:white; font-size:14px; font-weight:700; cursor:pointer;">CANCELAR</button>
-                <button onclick="confirmarQtdBarcode()" style="flex:2; padding:12px; border-radius:10px; border:none; background:#c9a84c; color:#0e2040; font-size:15px; font-weight:900; cursor:pointer;">✓ ADICIONAR</button>
+                <button onclick="fecharModalBarcodeQtd()" style="flex:1; padding:14px; border-radius:12px; border:2px solid rgba(255,255,255,0.2); background:transparent; color:white; font-size:14px; font-weight:700; cursor:pointer; min-height:52px;">CANCELAR</button>
+                <button onclick="confirmarQtdBarcode()" style="flex:2; padding:14px; border-radius:12px; border:none; background:#c9a84c; color:#0e2040; font-size:16px; font-weight:900; cursor:pointer; min-height:52px;">✓ ADICIONAR</button>
             </div>
         </div>
     </div>
@@ -1947,9 +1993,51 @@ function verificarSemResultados() {
 let BARCODE_STREAM = null;
 let BARCODE_INTERVAL = null;
 let BARCODE_PROD_ATUAL = null;
+let BARCODE_MODO = 'encomenda'; // 'consulta' ou 'encomenda'
+let BARCODE_ULTIMO_CODIGO = ''; // evitar leituras duplicadas
+let BARCODE_EM_PROCESSAMENTO = false; // lock anti-duplo
+
+// ─── SOM BEEP ao ler código ───────────────────────────────
+function tocarBeepBarcode(sucesso) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        if(sucesso) {
+            // Beep duplo curto (produto encontrado)
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            osc.frequency.setValueAtTime(1320, ctx.currentTime + 0.08);
+        } else {
+            // Beep único grave (não encontrado)
+            osc.frequency.setValueAtTime(330, ctx.currentTime);
+        }
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.28);
+    } catch(e) {}
+}
+
+// ─── MODO DA CÂMARA ────────────────────────────────────────
+function setModoBarcode(modo) {
+    BARCODE_MODO = modo;
+    const btnC = document.getElementById('btn-modo-consulta');
+    const btnE = document.getElementById('btn-modo-encomenda');
+    const label = document.getElementById('barcode-modo-label');
+    if(modo === 'consulta') {
+        btnC.style.background = '#c9a84c'; btnC.style.color = '#0e2040';
+        btnE.style.background = 'rgba(201,168,76,0.15)'; btnE.style.color = '#c9a84c';
+        label.textContent = 'MODO: SÓ CONSULTA — mostra produto sem adicionar';
+    } else {
+        btnE.style.background = '#c9a84c'; btnE.style.color = '#0e2040';
+        btnC.style.background = 'rgba(201,168,76,0.15)'; btnC.style.color = '#c9a84c';
+        label.textContent = 'MODO: ENCOMENDA — adiciona produto ao carrinho';
+    }
+}
 
 function mostrarBotaoBarcode() {
-    // Mostra o botão se estamos no M2 e há dados
     const btn = document.getElementById('btn-barcode');
     if(btn) btn.style.display = 'flex';
 }
@@ -1959,13 +2047,14 @@ function abrirLeitorBarras() {
     modal.style.display = 'flex';
     document.getElementById('barcode-status').textContent = 'A iniciar câmara...';
     document.getElementById('inp-barcode-manual').value = '';
+    BARCODE_ULTIMO_CODIGO = '';
+    BARCODE_EM_PROCESSAMENTO = false;
+    setModoBarcode(BARCODE_MODO); // refresca visual
     iniciarCamera();
 }
 
 async function iniciarCamera() {
     const status = document.getElementById('barcode-status');
-
-    // HTTP sem localhost → Chrome bloqueia câmara mesmo com permissão
     const isSeguro = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.startsWith('192.168.');
 
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -1978,14 +2067,13 @@ async function iniciarCamera() {
     }
     try {
         status.textContent = 'A pedir acesso à câmara...';
-        // Tentar câmara traseira primeiro, depois qualquer câmara
         let stream;
         try {
             stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: { exact: 'environment' } }
+                video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
             });
         } catch(e1) {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         }
         BARCODE_STREAM = stream;
         const video = document.getElementById('barcode-video');
@@ -2005,7 +2093,6 @@ async function iniciarCamera() {
         } else if(e.name === 'NotFoundError') {
             status.textContent = '⚠️ Nenhuma câmara encontrada.';
         } else if(e.name === 'OverconstrainedError') {
-            // facingMode:exact falhou, tentar sem constraint
             try {
                 BARCODE_STREAM = await navigator.mediaDevices.getUserMedia({ video: true });
                 const video = document.getElementById('barcode-video');
@@ -2026,35 +2113,71 @@ async function iniciarDetecao(video) {
     }
     const detector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code'] });
     BARCODE_INTERVAL = setInterval(async () => {
-        if(video.readyState < 2) return;
+        if(video.readyState < 2 || BARCODE_EM_PROCESSAMENTO) return;
         try {
             const barcodes = await detector.detect(video);
             if(barcodes.length > 0) {
                 const codigo = barcodes[0].rawValue;
+                if(codigo === BARCODE_ULTIMO_CODIGO) return; // evitar duplicados
+                BARCODE_ULTIMO_CODIGO = codigo;
+                BARCODE_EM_PROCESSAMENTO = true;
                 clearInterval(BARCODE_INTERVAL);
                 BARCODE_INTERVAL = null;
-                document.getElementById('barcode-status').textContent = '✓ Código lido: ' + codigo;
-                setTimeout(() => processarCodigoBarras(codigo), 300);
+                document.getElementById('barcode-status').textContent = '✓ Código: ' + codigo;
+                // SOM imediato
+                const prod = DADOS.find(p => p.ean && String(p.ean).trim() === String(codigo).trim());
+                tocarBeepBarcode(!!prod);
+                // Enter automático — processa após breve delay (para o beep soar)
+                setTimeout(() => processarCodigoBarras(codigo), 250);
             }
         } catch(e) {}
-    }, 400);
+    }, 350);
 }
 
 function processarCodigoBarras(codigo) {
     if(!codigo) return;
+    const prod = DADOS.find(p => p.ean && String(p.ean).trim() === String(codigo).trim());
+
+    if(BARCODE_MODO === 'consulta') {
+        // MODO CONSULTA: mostra info sem fechar câmara nem adicionar
+        if(prod) {
+            document.getElementById('consulta-prod-nome').textContent = prod.nome;
+            document.getElementById('consulta-prod-codigo').textContent = 'Código: ' + codigo;
+            document.getElementById('consulta-prod-preco').textContent = prod.preco > 0 ? prod.preco.toFixed(2) + ' €' : '—';
+            document.getElementById('consulta-prod-un').textContent = prod.un ? 'Unidade: ' + prod.un + (prod.unidades ? ' | Cx: ' + prod.unidades + ' un' : '') : '';
+            document.getElementById('consulta-prod-cat').textContent = prod.cat ? 'Família: ' + prod.cat : '';
+            document.getElementById('painel-consulta-barcode').style.display = 'flex';
+            tocarBeepBarcode(true);
+        } else {
+            tocarBeepBarcode(false);
+            document.getElementById('barcode-status').textContent = '⚠️ Código não encontrado: ' + codigo;
+            // Permitir nova leitura após 2s
+            setTimeout(() => {
+                BARCODE_ULTIMO_CODIGO = '';
+                BARCODE_EM_PROCESSAMENTO = false;
+                if(document.getElementById('modal-barcode').style.display !== 'none') {
+                    const video = document.getElementById('barcode-video');
+                    if(video && video.srcObject) iniciarDetecao(video);
+                    document.getElementById('barcode-status').textContent = 'Aponte para o código de barras...';
+                }
+            }, 2000);
+        }
+        return;
+    }
+
+    // MODO ENCOMENDA
     fecharLeitorBarras();
-    // Procurar produto por código de barras (coluna A do Excel)
-    let prod = DADOS.find(p => p.ean && String(p.ean).trim() === String(codigo).trim());
     if(prod) {
-        // Produto encontrado — abrir modal de quantidade
         BARCODE_PROD_ATUAL = prod;
         document.getElementById('barcode-prod-nome').textContent = prod.nome;
         document.getElementById('barcode-prod-preco').textContent = prod.preco > 0 ? prod.preco.toFixed(2) + ' €' : '';
         document.getElementById('inp-barcode-qtd').value = 1;
         const m = document.getElementById('modal-barcode-qtd');
         m.style.display = 'flex';
+        // Focar no input de quantidade para facilitar edição
+        setTimeout(() => document.getElementById('inp-barcode-qtd').focus(), 100);
     } else {
-        // Não encontrado — abrir painel manual com código pré-preenchido
+        tocarBeepBarcode(false);
         const inp = document.getElementById('inp-busca') || document.getElementById('in-busca');
         if(inp) { inp.value = codigo; debounceRender(); }
         const desc = document.getElementById('inp-manual-desc');
@@ -2065,12 +2188,27 @@ function processarCodigoBarras(codigo) {
     }
 }
 
+function fecharConsultaBarcode() {
+    document.getElementById('painel-consulta-barcode').style.display = 'none';
+    // Retomar leitura
+    BARCODE_ULTIMO_CODIGO = '';
+    BARCODE_EM_PROCESSAMENTO = false;
+    const video = document.getElementById('barcode-video');
+    if(video && video.srcObject) {
+        document.getElementById('barcode-status').textContent = 'Aponte para o código de barras...';
+        iniciarDetecao(video);
+    }
+}
+
 function fecharLeitorBarras() {
     if(BARCODE_INTERVAL) { clearInterval(BARCODE_INTERVAL); BARCODE_INTERVAL = null; }
     if(BARCODE_STREAM) { BARCODE_STREAM.getTracks().forEach(t => t.stop()); BARCODE_STREAM = null; }
     const video = document.getElementById('barcode-video');
     if(video) { video.srcObject = null; }
     document.getElementById('modal-barcode').style.display = 'none';
+    document.getElementById('painel-consulta-barcode').style.display = 'none';
+    BARCODE_EM_PROCESSAMENTO = false;
+    BARCODE_ULTIMO_CODIGO = '';
 }
 
 function ajustarQtdBarcode(delta) {
