@@ -84,17 +84,18 @@
         /* ── HEADER ── */
         header { 
             background: linear-gradient(135deg, var(--navy) 0%, var(--sea) 100%); 
-            padding: 4px 8px; display: flex; align-items: center; gap: 6px; 
+            padding: 4px 6px; display: flex; align-items: center; gap: 4px; 
             position: fixed; top: 0; left: 0; right: 0; z-index: 3000; 
             box-shadow: 0 3px 15px rgba(0,0,0,0.3); height: 48px; box-sizing: border-box; transition: all 0.1s; 
+            width: 100%; overflow: hidden;
         }
         header.hidden { transform: translateY(-100%); }
         header button[onclick="toggleMenu()"] { 
-            font-size: 22px; background: rgba(255,255,255,0.12); border: none; cursor: pointer; 
-            color: white; border-radius: 8px; width: 34px; height: 34px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            font-size: 20px; background: rgba(255,255,255,0.12); border: none; cursor: pointer; 
+            color: white; border-radius: 8px; width: 32px; height: 34px; min-width:32px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
         }
         .in-cli-search { 
-            flex: 0.65; padding: 6px 10px; border-radius: 16px; font-size: 12px; 
+            flex: 1; min-width: 0; width: 0; padding: 5px 8px; border-radius: 14px; font-size: 11px; 
             font-weight: 700; outline: none; color: #ffffff !important;
             background: linear-gradient(135deg, rgba(0,160,255,0.22), rgba(0,80,200,0.18)) !important;
             border: 2px solid rgba(0, 210, 255, 0.75) !important;
@@ -103,7 +104,6 @@
             letter-spacing: 0.03em;
             text-shadow: 0 0 6px rgba(0,220,255,0.7);
             transition: box-shadow 0.25s, border-color 0.25s;
-            min-width: 0;
         }
         .in-cli-search:focus {
             border-color: rgba(0, 240, 255, 1) !important;
@@ -111,16 +111,16 @@
         }
         .in-cli-search::placeholder { color: rgba(120, 220, 255, 0.75); letter-spacing: 0.05em; font-weight: 600; }
         #in-busca { 
-            flex: 1; padding: 6px 10px; border-radius: 10px; border: none; font-size: 13px; 
+            flex: 1; min-width: 0; width: 0; padding: 5px 8px; padding-left: 36px; border-radius: 10px; border: none; font-size: 12px; 
             font-weight: 600; outline: none; background: rgba(255,255,255,0.15) !important; 
-            color: white !important; min-width: 0;
+            color: white !important;
         }
         #in-busca::placeholder { color: rgba(255,255,255,0.55); }
         .cart-float-top { 
-            position: relative; width: 36px; height: 36px; flex-shrink: 0;
+            position: relative; width: 34px; height: 34px; flex-shrink: 0; min-width: 34px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light)); 
             border-radius: 10px; display: flex; align-items: center; justify-content: center; 
-            color: var(--navy); font-size: 17px; cursor: pointer; transition: all 0.1s;
+            color: var(--navy); font-size: 16px; cursor: pointer; transition: all 0.1s;
             box-shadow: 0 3px 10px rgba(201,168,76,0.4);
         }
         .cart-float-top:active { transform: scale(0.9); }
@@ -216,7 +216,7 @@
         }
 
         /* ── SCREENS ── */
-        .screen { display: none; padding: 55px 10px 48px 10px; }
+        .screen { display: none; padding: 54px 10px 50px 10px; }
         .screen.active { display: block; }
         #m1 { padding: 0 !important; min-height: 100vh; position: relative; background: linear-gradient(160deg, #0a1628 0%, #1a4a7a 100%); background-size: cover; background-position: center; background-repeat: no-repeat; }
         #m1.active { display: flex !important; flex-direction: column; justify-content: space-between; }
@@ -247,15 +247,15 @@
             background: linear-gradient(135deg, #0a1628 0%, #0e2040 100%);
             padding: 0 2px;
             display: flex; align-items: stretch; justify-content: space-around;
-            z-index: 2500; box-sizing: border-box; height: 40px;
+            z-index: 2500; box-sizing: border-box; height: 44px;
             border-top: 1px solid rgba(255,255,255,0.12);
         }
         .bbar-btn {
             display: flex; flex-direction: row; align-items: center; justify-content: center;
             gap: 4px; border: none; background: transparent;
-            padding: 4px 2px; cursor: pointer;
+            padding: 4px 1px; cursor: pointer;
             color: #8a9ab0;
-            font-size: 8px; font-weight: 700; letter-spacing: 0.4px;
+            font-size: 7.5px; font-weight: 700; letter-spacing: 0.3px;
             text-transform: uppercase; flex: 1;
             transition: all 0.1s;
             -webkit-tap-highlight-color: transparent;
@@ -296,172 +296,153 @@
         .filtro-box { background: rgba(255,255,255,0.97); padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
         .btn-mini { padding: 8px 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; color: white; margin: 2px; cursor: pointer; }
 
-        /* ── M3 CARRINHO COM CARDS ── */
-        #cardex-content { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; padding: 8px; background: var(--sea); }
-        #m3 { padding-top: 0; background: var(--sea); }
+        /* ── M3 CARRINHO LISTA ESTILO FOTO ── */
+        #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #f0f2f4; }
+        #m3 { padding-top: 54px; padding-left: 0; padding-right: 0; padding-bottom: 54px; background: #f0f2f4; }
         
         #m3 .fam-header { 
-            padding: 6px 10px; margin-top: 3px; font-size: 12px;
-            background: linear-gradient(135deg, rgba(10,22,40,0.9) 0%, rgba(37,99,168,0.3) 100%);
-            color: #7dd3fc; font-weight: 900;
-            grid-column: 1 / -1; cursor: pointer;
-            border-radius: 6px; border: 1px solid rgba(125,211,252,0.4);
-            box-shadow: 0 0 10px rgba(56,189,248,0.2);
-            text-shadow: 0 0 6px rgba(125,211,252,0.5);
-            backdrop-filter: blur(4px);
-        }
-        
-        .card-carrinho {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 5px;
-            border: 1.5px solid rgba(37,99,168,0.15);
-            box-shadow: 0 2px 6px rgba(10,22,40,0.15);
-        }
-        
-        .card-carrinho-img-wrap {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: #ffffff;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            overflow: hidden;
-        }
-        
-        .card-carrinho-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: #ffffff;
-            display: block;
-        }
-        
-        .card-carrinho-controls {
-            position: absolute;
-            bottom: 3px;
-            left: 3px;
-            right: 3px;
-            display: flex;
-            gap: 3px;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-        
-        .card-carrinho-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: none;
-            font-size: 16px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px 14px; margin-top: 0; font-size: 12px;
+            background: #e2e5e9;
+            color: #555; font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            transition: all 0.1s;
+            border-radius: 0; border: none;
+            border-bottom: 1px solid #d0d3d8;
+            box-shadow: none;
+            text-shadow: none;
+            backdrop-filter: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         
-        .card-carrinho-btn:active { transform: scale(0.9); }
-        
-        .card-carrinho-btn-minus {
-            background: #e63946;
-            color: white;
-        }
-        
-        .card-carrinho-btn-plus {
-            background: var(--sea);
-            color: white;
-        }
-        
-        .card-carrinho-qty {
-            background: white;
-            color: var(--navy);
-            padding: 4px 6px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 900;
-            min-width: 32px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            border: 2px solid var(--navy);
-        }
-        
-        .card-carrinho-body {
+        /* Cart list item — estilo da foto */
+        .cart-list-item {
+            background: #ffffff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 8px 12px;
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            height: 48px;
-            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            min-height: 64px;
         }
         
-        .card-carrinho-nome-input {
-            width: 100%;
-            border: none;
-            border-bottom: 1px solid #e0e0e0;
-            background: transparent;
-            font-size: 9px;
+        .cart-list-item-img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: #f8f9fa;
+            flex-shrink: 0;
+            border: 1px solid #eee;
+        }
+        
+        .cart-list-item-img-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            background: #f0f4f8;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 22px;
+            border: 1px solid #eee;
+        }
+        
+        .cart-list-item-body {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .cart-list-item-nome {
+            font-size: 13px;
             font-weight: 700;
             color: #1a1a2e;
-            padding: 2px;
-            outline: none;
-            text-align: center;
-            height: 24px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            margin-bottom: 2px;
         }
         
-        .card-carrinho-nome-input.alterado {
-            border-bottom: 2px solid #c9a84c;
-            background: #fff9ec;
-            border-radius: 3px 3px 0 0;
+        .cart-list-item-info {
+            font-size: 11px;
+            color: #888;
+            font-weight: 500;
         }
         
-        .card-carrinho-preco-wrap {
+        .cart-list-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        
+        .cart-list-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            font-size: 18px;
+            font-weight: 900;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2px;
-            position: relative;
-            height: 20px;
-        }
-        
-        .card-carrinho-preco-input {
-            width: 45px;
-            border: 1px solid #e0e0e0;
-            background: #f8f9fa;
-            font-size: 11px;
-            font-weight: 900;
-            color: var(--red);
-            padding: 2px 3px;
-            text-align: center;
-            outline: none;
-            border-radius: 4px;
-            height: 20px;
-        }
-        
-        .card-carrinho-preco-input.alterado {
-            border: 2px solid #c9a84c;
-            background: #fff3cd;
-            color: #c0392b;
-        }
-        
-        .card-carrinho-preco-simbolo {
-            font-size: 9px;
-            color: #888;
-            font-weight: 600;
-        }
-        
-        .card-carrinho-reset {
-            border: none;
-            background: none;
             cursor: pointer;
-            font-size: 14px;
-            color: #888;
-            padding: 2px 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            transition: all 0.1s;
+            line-height: 1;
+        }
+        .cart-list-btn:active { transform: scale(0.88); }
+        
+        .cart-list-btn-minus { background: #e63946; color: white; }
+        .cart-list-btn-plus  { background: #1a6bbf; color: white; }
+        
+        .cart-list-qty {
+            min-width: 28px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 900;
+            color: #1a1a2e;
+        }
+        
+        .cart-list-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #bbb;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            margin-right: 2px;
+        }
+        .fam-arrow-cardex { color: #999; float: right; font-size: 10px; }
+            background: #2563a8;
+            border-color: #2563a8;
+            color: white;
+        }
+        
+        /* Resumo total no carrinho */
+        .cart-resumo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+        .cart-resumo-row:last-child { border-bottom: none; }
+        .cart-resumo-total {
+            background: linear-gradient(135deg, #0a1628, #1a4a7a);
+            color: white;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 900;
         }
         /* ── LOGO M1 ── */
         .logo-m1-container { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 30px; }
@@ -830,10 +811,6 @@
         <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         <span>ECRÃ</span>
     </button>
-    <button class="bbar-btn" id="btn-seg-picker" onclick="abrirSegmentoPicker()" title="Segmento">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-        <span id="seg-btn-label">GERAL</span>
-    </button>
     <button class="bbar-btn active" id="bbar-familias" onclick="toggleTodasFamiliasBtn()" title="Abrir/Fechar famílias">
         <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
         <span>FAMÍLIAS</span>
@@ -853,7 +830,7 @@
 </div>
 
 <div id="m3" class="screen">
-    <h3 id="label-cli-m3" style="text-align:center; margin:5px 0; padding:10px; background:var(--dm-verde); color:white; border-radius:8px; font-size:20px; font-weight:900;"></h3>
+    <h3 id="label-cli-m3" style="text-align:center; margin:0; padding:10px 14px; background:#2e7d32; color:white; font-size:15px; font-weight:900; border-radius:0; letter-spacing:0.3px; position:sticky; top:48px; z-index:100;"></h3>
     <div id="cardex-content"></div> 
     <div id="cart-list-content"></div>
     <div style="padding: 16px 16px 0;">
@@ -1369,9 +1346,7 @@ function entrarApp(segmento) {
     document.body.classList.remove('seg-lares','seg-restauracao');
     if(segmento === 'lares') document.body.classList.add('seg-lares');
     else if(segmento === 'restauracao') document.body.classList.add('seg-restauracao');
-    // Actualizar label do botão seg na bbar
-    const lbl = document.getElementById('seg-btn-label');
-    if(lbl) { const labels={restauracao:'REST.',lares:'LARES',geral:'GERAL'}; lbl.textContent=labels[segmento]||'GERAL'; }
+    // Actualizar label do botão seg na bbar (removido)
     nav('m2');
     // Abrir marcas automaticamente ao entrar
     const menu = document.getElementById('marcas-horizontal');
@@ -2264,14 +2239,14 @@ function renderCardexTotal() {
 
     let lastC = '';
     prods.forEach(it => {
-        // Cabeçalho de família
+        // Cabeçalho de família — estilo lista cinza
         if(it.cat !== lastC) {
             lastC = it.cat;
             if(FAM_CARDEX[lastC] === undefined) FAM_CARDEX[lastC] = false;
             const fh = document.createElement('div');
             fh.className = 'fam-header';
             fh.dataset.cat = lastC;
-            fh.innerHTML = `${lastC} <span class="fam-arrow-cardex" style="color:#38bdf8;text-shadow:0 0 6px rgba(56,189,248,0.8);">${FAM_CARDEX[lastC]?'▶':'▼'}</span>`;
+            fh.innerHTML = `${lastC} <span class="fam-arrow-cardex">${FAM_CARDEX[lastC]?'▶':'▼'}</span>`;
             fh.ondblclick = function(e) { e.stopPropagation(); toggleTodasFamiliasCardex(); };
             fh.onclick = function() { toggleFamCardex(this.dataset.cat); };
             container.appendChild(fh);
@@ -2281,127 +2256,87 @@ function renderCardexTotal() {
         const qAt = CART[it.id]?.q || 0;
         const nomeFoto = String(it.f).toLowerCase();
         const imgUrl = IMGS.get(nomeFoto) || IMGS.get(nomeFoto+'.jpg') || IMGS.get(nomeFoto+'.png') || '';
-        // ✕ aparece em TODOS os produtos do cardex (persistente ou via pedido histórico)
-        const podeApagar = !!CLI_ATUAL;
+        const precoVal = (CART[it.id]?.precoCustom ?? it.preco);
         const nomeVal = CART[it.id]?.nomeCustom ?? it.nome;
-        const precoVal = (CART[it.id]?.precoCustom ?? it.preco).toFixed(2);
-        const nomeAlterado = CART[it.id]?.nomeCustom != null;
-        const precoAlterado = CART[it.id]?.precoCustom != null;
+        const subTotal = qAt > 0 ? (qAt * precoVal).toFixed(2) : precoVal.toFixed(2);
 
-        const card = document.createElement('div');
-        card.className = 'card-carrinho';
-        card.dataset.produtoId = it.id;
-        card.dataset.cat = it.cat;
+        const row = document.createElement('div');
+        row.className = 'cart-list-item';
+        row.dataset.produtoId = it.id;
+        row.dataset.cat = it.cat;
 
-        card.innerHTML = `
-            <div class="card-carrinho-img-wrap">
-                <img src="${imgUrl}" onerror="this.onerror=null;this.src=''">
-                <div class="cardex-checkbox" id="checkbox-${it.id}" style="display:none;position:absolute;top:5px;right:5px;width:32px;height:32px;border-radius:50%;background:white;border:3px solid #ccc;cursor:pointer;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
-                    <span id="check-${it.id}" style="display:none;font-size:20px;color:#00ff41;font-weight:900;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">✓</span>
-                </div>
-                <button class="cardex-del-btn" style="position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:rgba(230,57,70,0.92);border:none;color:white;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:101;box-shadow:0 2px 5px rgba(0,0,0,0.35);line-height:1;" title="Apagar do cardex">✕</button>
-                <div class="card-carrinho-controls">
-                    <button class="card-carrinho-btn card-carrinho-btn-minus" data-id="${it.id}" data-v="-1">−</button>
-                    <div class="card-carrinho-qty" id="qty-card-${it.id}">${qAt}</div>
-                    <button class="card-carrinho-btn card-carrinho-btn-plus" data-id="${it.id}" data-v="1">+</button>
+        // Imagem ou placeholder
+        const imgHtml = imgUrl
+            ? `<img class="cart-list-item-img" src="${imgUrl}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="cart-list-item-img-placeholder" style="display:none">🛒</div>`
+            : `<div class="cart-list-item-img-placeholder">🛒</div>`;
+
+        row.innerHTML = `
+            ${imgHtml}
+            <div class="cart-list-item-body">
+                <div class="cart-list-item-nome" title="${nomeVal}">${nomeVal}</div>
+                <div class="cart-list-item-info">
+                    <span style="color:#e63946;font-weight:800;">${precoVal.toFixed(2)}€</span>
+                    ${qAt > 0 ? `<span style="color:#888;"> · Total: <b style="color:#1a1a2e">${subTotal}€</b></span>` : ''}
                 </div>
             </div>
-            <div class="card-carrinho-body">
-                <input type="text" class="card-carrinho-nome-input${nomeAlterado?' alterado':''}" data-id="${it.id}" data-orig="${it.nome.replace(/"/g,'&quot;')}" value="${nomeVal.replace(/"/g,'&quot;')}" placeholder="${it.nome}">
-                ${nomeAlterado ? `<button class="card-carrinho-reset cardex-reset-nome" data-id="${it.id}" title="Repor nome">↩</button>` : ''}
-                <div class="card-carrinho-preco-wrap">
-                    <input type="number" step="0.01" min="0" class="card-carrinho-preco-input${precoAlterado?' alterado':''}" data-id="${it.id}" data-orig="${it.preco}" value="${precoVal}">
-                    <span class="card-carrinho-preco-simbolo">€</span>
-                    ${precoAlterado ? `<button class="card-carrinho-reset cardex-reset-preco" data-id="${it.id}" title="Repor preço">↩</button>` : ''}
-                </div>
+            <div class="cart-list-item-controls">
+                <button class="cart-list-btn cart-list-btn-minus" data-id="${it.id}" data-v="-1">−</button>
+                <div class="cart-list-qty" id="qty-card-${it.id}">${qAt}</div>
+                <button class="cart-list-btn cart-list-btn-plus" data-id="${it.id}" data-v="1">+</button>
+                <button style="width:24px;height:24px;border-radius:50%;background:rgba(230,57,70,0.15);border:1px solid rgba(230,57,70,0.4);color:#e63946;font-size:12px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:2px;" class="cardex-del-btn" title="Apagar do cardex">✕</button>
             </div>`;
 
+        // Botões +/-
+        row.querySelectorAll('.cart-list-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                change(parseInt(btn.dataset.id), parseInt(btn.dataset.v));
+                // Atualizar info de subtotal inline sem rebuild
+                const pid = parseInt(btn.dataset.id);
+                const qNew = CART[pid]?.q || 0;
+                const pNew = CART[pid]?.precoCustom ?? CART[pid]?.preco ?? it.preco;
+                const qtyEl = row.querySelector(`#qty-card-${pid}`);
+                if(qtyEl) qtyEl.textContent = qNew;
+                const infoEl = row.querySelector('.cart-list-item-info');
+                if(infoEl) infoEl.innerHTML = `<span style="color:#e63946;font-weight:800;">${pNew.toFixed(2)}€</span>${qNew > 0 ? `<span style="color:#888;"> · Total: <b style="color:#1a1a2e">${(qNew*pNew).toFixed(2)}€</b></span>` : ''}`;
+            });
+        });
+
         // Botão ✕ — apagar do cardex
-        card.querySelector('.cardex-del-btn').addEventListener('click', e => {
+        row.querySelector('.cardex-del-btn').addEventListener('click', e => {
             e.stopPropagation();
             apagarDoCardex(it.id);
         });
 
-        // Checkbox long-press
-        const cb = card.querySelector('.cardex-checkbox');
-        if(cb) cb.addEventListener('click', e => { e.stopPropagation(); toggleCheckboxCardex(it.id, e); });
-
-        // Botões +/-
-        card.querySelectorAll('.card-carrinho-btn').forEach(btn => {
-            btn.addEventListener('click', e => {
-                e.stopPropagation();
-                change(parseInt(btn.dataset.id), parseInt(btn.dataset.v));
-            });
-        });
-
-        // Input nome — usar 'change' (perde foco) para não rebuildar a cada tecla
-        const inputNome = card.querySelector('.card-carrinho-nome-input');
-        inputNome.addEventListener('change', () => {
-            const pid = parseInt(inputNome.dataset.id);
-            const orig = inputNome.dataset.orig;
-            const val = inputNome.value.trim();
-            if(!CART[pid]) { const p=DADOS.find(x=>x.id===pid); if(p) CART[pid]={...p,q:0}; }
-            if(!CART[pid]) return;
-            if(val === orig || val === '') { delete CART[pid].nomeCustom; inputNome.classList.remove('alterado'); }
-            else { CART[pid].nomeCustom = val; inputNome.classList.add('alterado'); }
-            atualizarResumoCarrinho();
-        });
-
-        // Botão reset nome
-        const btnResetNome = card.querySelector('.cardex-reset-nome');
-        if(btnResetNome) {
-            btnResetNome.addEventListener('click', () => {
-                const pid = parseInt(btnResetNome.dataset.id);
-                if(CART[pid]) { delete CART[pid].nomeCustom; if(CART[pid].q===0&&CART[pid].precoCustom==null) delete CART[pid]; }
-                renderCardexTotal();
-            });
-        }
-
-        // Input preço
-        const inputPreco = card.querySelector('.card-carrinho-preco-input');
-        inputPreco.addEventListener('change', () => {
-            const pid = parseInt(inputPreco.dataset.id);
-            const novoPreco = parseFloat(inputPreco.value);
-            if(isNaN(novoPreco) || novoPreco < 0) return;
-            if(!CART[pid]) { const p=DADOS.find(x=>x.id===pid); if(p) CART[pid]={...p,q:0}; }
-            if(!CART[pid]) return;
-            const orig = parseFloat(inputPreco.dataset.orig);
-            if(Math.abs(novoPreco - orig) < 0.001) { delete CART[pid].precoCustom; CART[pid].preco=orig; inputPreco.classList.remove('alterado'); }
-            else { CART[pid].precoCustom = novoPreco; CART[pid].preco = novoPreco; inputPreco.classList.add('alterado'); }
-            atualizarResumoCarrinho();
-        });
-
-        // Botão reset preço
-        const btnResetPreco = card.querySelector('.cardex-reset-preco');
-        if(btnResetPreco) {
-            btnResetPreco.addEventListener('click', () => {
-                const pid = parseInt(btnResetPreco.dataset.id);
-                const orig = DADOS.find(x=>x.id===pid)?.preco;
-                if(CART[pid] && orig!=null) { CART[pid].preco=orig; delete CART[pid].precoCustom; if(CART[pid].q===0&&CART[pid].nomeCustom==null) delete CART[pid]; }
-                renderCardexTotal();
-            });
-        }
-
-        // Long press
-        card.addEventListener('touchstart', e => iniciarLongPressCardex(it.id, e), {passive:true});
-        card.addEventListener('touchend', cancelarLongPressCardex);
-        card.addEventListener('touchmove', cancelarLongPressCardex);
-
-        if(catFechada) card.style.display = 'none';
-        container.appendChild(card);
+        if(catFechada) row.style.display = 'none';
+        container.appendChild(row);
     });
 
     atualizarResumoCarrinho();
 }
 
 function atualizarResumoCarrinho() {
-    let tot = 0, hRes = "<table class='table-doc'><tr><th>QTD</th><th>PRODUTO</th><th>TOTAL</th></tr>";
-    Object.values(CART).filter(i => i.q > 0).sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||'')).forEach(i => {
-        let sub = i.q * (i.precoCustom ?? i.preco);
+    const itens = Object.values(CART).filter(i => i.q > 0).sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||''));
+    let tot = 0;
+    let hRes = '';
+    itens.forEach(i => {
+        const sub = i.q * (i.precoCustom ?? i.preco);
         tot += sub;
-        hRes += `<tr><td align="center"><b>${i.q}</b></td><td>${i.nomeCustom||i.nome}</td><td align="right"><b>${sub.toFixed(2)}€</b></td></tr>`;
+        hRes += `<div class="cart-resumo-row">
+            <span style="font-weight:800;color:#1a1a2e;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${i.nomeCustom||i.nome}</span>
+            <span style="color:#555;margin:0 10px;flex-shrink:0;">${i.q}×${(i.precoCustom??i.preco).toFixed(2)}€</span>
+            <span style="font-weight:900;color:#e63946;flex-shrink:0;">${sub.toFixed(2)}€</span>
+        </div>`;
     });
-    document.getElementById('cart-list-content').innerHTML = hRes + `</table><h2 align="right" class="total-destaque">TOTAL: ${tot.toFixed(2)}€</h2>`;
+    const totalHtml = `<div class="cart-resumo-total">
+        <span>TOTAL (${itens.length} art.)</span>
+        <span>${tot.toFixed(2)} €</span>
+    </div>`;
+    document.getElementById('cart-list-content').innerHTML = `
+        <div style="background:white;border-radius:0;margin-top:6px;border-top:3px solid #1a4a7a;border-bottom:3px solid #1a4a7a;">
+            ${hRes || '<div style="text-align:center;padding:16px;color:#aaa;font-size:13px;">Carrinho vazio</div>'}
+            ${totalHtml}
+        </div>`;
 }
 
 document.getElementById('f-excel').onchange = e => { 
@@ -3035,8 +2970,8 @@ function toggleFamCardex(cat) {
         const arrow = header.querySelector('.fam-arrow-cardex');
         if(arrow) arrow.textContent = fechado ? '▶' : '▼';
     }
-    // Mostrar/esconder cards desta família (sem rebuild)
-    container.querySelectorAll(`.card-carrinho[data-cat="${cat}"]`).forEach(card => {
+    // Mostrar/esconder rows desta família (sem rebuild)
+    container.querySelectorAll(`.cart-list-item[data-cat="${cat}"]`).forEach(card => {
         card.style.display = fechado ? 'none' : '';
     });
 }
@@ -3240,7 +3175,7 @@ function toggleTodasFamiliasCardex() {
             const arrow = header.querySelector('.fam-arrow-cardex');
             if(arrow) arrow.textContent = novoEstado ? '▶' : '▼';
         }
-        container.querySelectorAll(`.card-carrinho[data-cat="${cat}"]`).forEach(card => {
+        container.querySelectorAll(`.cart-list-item[data-cat="${cat}"]`).forEach(card => {
             card.style.display = novoEstado ? 'none' : '';
         });
     }
@@ -4338,8 +4273,7 @@ document.addEventListener('touchend', function() {
         // Fechar picker ao clicar fora
         document.addEventListener('click', function(e) {
             const picker = document.getElementById('seg-picker');
-            const btn = document.getElementById('btn-seg-picker');
-            if(picker && !picker.contains(e.target) && btn && !btn.contains(e.target)) {
+            if(picker && !picker.contains(e.target)) {
                 picker.style.display = 'none';
             }
         }, true);
