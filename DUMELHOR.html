@@ -75,9 +75,9 @@
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         html { scroll-padding-top: 70px; }
-        body { font-family: 'DM Sans', 'Roboto', 'Segoe UI', sans-serif; margin: 0; background: var(--bg-light); color: #1a1a2e; -webkit-tap-highlight-color: transparent; font-size: 17px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { font-family: 'DM Sans', sans-serif; margin: 0; background: var(--bg-light); color: #1a1a2e; -webkit-tap-highlight-color: transparent; font-size: 17px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         /* Android mobile optimizations */
-        input, button, select, textarea { font-family: 'DM Sans', 'Roboto', sans-serif; font-size: 15px !important; }
+        input, button, select, textarea { font-family: 'DM Sans', sans-serif; font-size: 15px !important; }
         input[type="text"], input[type="number"], input[type="search"] { min-height: 36px; }
         button { min-height: 36px; }
 
@@ -146,23 +146,42 @@
             display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
             letter-spacing: 0.5px;
         }
-        .cli-input, .obs-final, .pag-input { 
-            background: var(--foam) !important; color: #1a1a2e !important; 
-            border: 1.5px solid rgba(37,99,168,0.2); padding: 12px; border-radius: 10px; 
-            width: 100%; box-sizing: border-box; margin-bottom: 8px; font-size: 15px; 
+        .cli-input, .obs-final, .pag-input, .in-busca-input { 
+            background: #eef2f7 !important;
+            color: #0a1628 !important; 
+            border: 1.5px solid rgba(26,74,138,0.14) !important;
+            padding: 12px 14px;
+            border-radius: 12px; 
+            width: 100%; box-sizing: border-box; margin-bottom: 10px; 
+            font-size: 15px; 
             font-family: 'DM Sans', sans-serif;
+            outline: none;
+            -webkit-appearance: none;
         }
         .cli-input:focus, .obs-final:focus, .pag-input:focus { 
-            border-color: var(--wave); outline: none; box-shadow: 0 0 0 3px rgba(37,99,168,0.15); 
+            border-color: #1a4a8a !important; 
+            background: #fff !important;
+            outline: none;
+        }
+        /* Global label style matching index.html */
+        .lbl-field {
+            font-size: 11px; font-weight: 700; color: #7a8a9a;
+            letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 5px; display: block;
+        }
+        /* Global card style */
+        .card-form {
+            background: #fff; border-radius: 16px; padding: 16px;
+            box-shadow: 0 2px 12px rgba(10,22,40,0.06); margin-bottom: 14px;
         }
 
         /* ── FAMÍLIA / CATEGORIA HEADER ── */
         .fam-header { 
             background: linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(37,99,168,0.25) 100%);
             color: #7dd3fc;
-            padding: 7px 15px;
-            margin-top: 5px;
-            display: flex; justify-content: space-between; font-size: 13px; font-weight: 800;
+            padding: 5px 12px;
+            margin-top: 4px;
+            display: flex; justify-content: space-between; font-size: 11px; font-weight: 800;
             border-radius: 10px; cursor: pointer; user-select: none;
             letter-spacing: 0.8px;
             border: 1px solid rgba(125,211,252,0.35);
@@ -196,23 +215,24 @@
         }
         .card-pro:active { transform: scale(0.97); }
         .card-pro img { width: 100%; aspect-ratio: 1/1; object-fit: contain; background: #ffffff; margin-bottom: 6px; display: block; border-radius: 8px; }
-        .card-pro-nome { font-size: 13px; font-weight: 700; height: 34px; overflow: hidden; line-height: 1.2; margin-bottom: 8px; color: #1a1a2e; }
-        .card-pro-preco { color: var(--red); font-weight: 900; font-size: 24px; margin-bottom: 0; }
+        .card-pro-nome { font-size: 11px; font-weight: 700; height: 30px; overflow: hidden; line-height: 1.2; margin-bottom: 5px; color: #1a1a2e; }
+        .card-pro-preco { color: var(--red); font-weight: 900; font-size: 18px; margin-bottom: 0; }
         .card-pro-info { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
         .card-pro-un { 
-            background: var(--foam); color: var(--sea); padding: 2px 6px; border-radius: 8px; 
-            font-size: 9px; font-weight: bold; border: 1.5px solid rgba(37,99,168,0.3); 
-            min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; 
-            flex-direction: column; line-height: 1; position: absolute; right: 0; top: -6px; 
+            background: var(--foam); color: var(--sea); padding: 2px 4px; border-radius: 7px; 
+            font-size: 8px; font-weight: bold; border: 1.5px solid rgba(37,99,168,0.3); 
+            min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; 
+            flex-direction: column; line-height: 1; position: absolute; right: 0; top: -4px; 
         }
-        .card-pro-un-label { font-size: 7px; opacity: 0.7; }
-        .card-pro-un-numero { font-size: 20px; font-weight: 900; }
+        .card-pro-un-label { font-size: 6px; opacity: 0.7; }
+        .card-pro-un-numero { font-size: 14px; font-weight: 900; }
         .b-qty { 
-            position: absolute; top: 5px; right: 5px; 
+            position: absolute; top: 4px; right: 4px; 
             background: #e63946;
-            color: white; width: 38px; height: 38px; border-radius: 50%; 
+            color: white; width: 28px; height: 28px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-weight: 900; 
-            border: 2.5px solid white; font-size: 17px; z-index: 100; box-shadow: 0 2px 10px rgba(230,57,70,0.5); 
+            border: 2px solid white; font-size: 13px; z-index: 100; box-shadow: 0 2px 8px rgba(230,57,70,0.45);
+            aspect-ratio: 1/1; min-width: 28px; min-height: 28px;
         }
 
         /* ── SCREENS ── */
@@ -299,36 +319,36 @@
 
         /* ── M3 CARRINHO LISTA ESTILO FOTO ── */
         #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #f0f2f4; }
-        #m3 { padding-top: 48px; padding-left: 0; padding-right: 0; padding-bottom: 60px; background: #f0f2f4; }
+        #m3 { padding-top: 0; padding-left: 0; padding-right: 0; padding-bottom: 60px; background: #f0f2f4; }
         
         #m3 .fam-header { 
-            padding: 8px 14px; margin-top: 0; font-size: 12px;
-            background: #e2e5e9;
-            color: #555; font-weight: 700;
+            padding: 5px 14px; margin-top: 0; font-size: 10px;
+            background: #dde1e7;
+            color: #6b7280; font-weight: 800;
             cursor: pointer;
             border-radius: 0; border: none;
-            border-bottom: 1px solid #d0d3d8;
+            border-bottom: 1px solid #c8cdd5;
             box-shadow: none;
             text-shadow: none;
             backdrop-filter: none;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
         
         /* Cart list item — estilo da foto */
         .cart-list-item {
             background: #ffffff;
-            border-bottom: 1px solid #e8e8e8;
-            padding: 8px 12px;
+            border-bottom: 1px solid #eef0f3;
+            padding: 6px 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            min-height: 64px;
+            gap: 8px;
+            min-height: 54px;
         }
         
         .cart-list-item-img {
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             object-fit: contain;
             border-radius: 6px;
             background: #f8f9fa;
@@ -337,8 +357,8 @@
         }
         
         .cart-list-item-img-placeholder {
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             border-radius: 6px;
             background: #f0f4f8;
             flex-shrink: 0;
@@ -346,7 +366,7 @@
             align-items: center;
             justify-content: center;
             color: #ccc;
-            font-size: 22px;
+            font-size: 18px;
             border: 1px solid #eee;
         }
         
@@ -377,7 +397,7 @@
         .cart-list-item-controls {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             flex-shrink: 0;
         }
         
@@ -430,17 +450,27 @@
         }
         
         /* Resumo total no carrinho */
-        .cart-resumo-row {
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            align-items: center;
-            padding: 7px 14px;
-            border-bottom: 1px solid #eee;
-            font-size: 12px;
-            gap: 8px;
-            min-height: 36px;
+        #cart-list-content .resumo-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .cart-resumo-row:last-child { border-bottom: none; }
+        #cart-list-content .resumo-table td {
+            padding: 5px 8px;
+            font-size: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        #cart-list-content .resumo-table .r-nome {
+            color: #1a1a2e; font-weight: 700; max-width: 120px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        #cart-list-content .resumo-table .r-qty {
+            color: #7a8a9a; font-size: 11px; text-align: right; white-space: nowrap;
+        }
+        #cart-list-content .resumo-table .r-total {
+            color: #e63946; font-weight: 900; text-align: right; white-space: nowrap;
+        }
+        .cart-resumo-row { display: none; } /* legacy, replaced by table */
         .cart-resumo-total {
             background: linear-gradient(135deg, #0a1628, #1a4a7a);
             color: white;
@@ -540,6 +570,48 @@
             @page { margin: 0.4cm; }
         }
         #m_pag h2 { color: #2563a8 !important; }
+
+        /* ── ESTILO GLOBAL INDEX.HTML — campos e etiquetas ── */
+        :root {
+            --ix-bg: #eef2f7;
+            --ix-border: rgba(26,74,138,0.14);
+            --ix-border-focus: #1a4a8a;
+            --ix-mu: #7a8a9a;
+            --ix-n: #0a1628;
+        }
+        .inp-g {
+            width: 100%; padding: 12px 14px;
+            background: var(--ix-bg); border: 1.5px solid var(--ix-border);
+            border-radius: 12px; font-size: 15px; color: var(--ix-n);
+            outline: none; margin-bottom: 10px;
+            font-family: 'DM Sans', sans-serif; -webkit-appearance: none;
+        }
+        .inp-g:focus { border-color: var(--ix-border-focus); background: #fff; }
+        .lbl-g {
+            font-size: 11px; font-weight: 700; color: var(--ix-mu);
+            letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 5px; display: block;
+        }
+        .sel-g {
+            width: 100%; padding: 12px 14px;
+            background: var(--ix-bg); border: 1.5px solid var(--ix-border);
+            border-radius: 12px; font-size: 15px; color: var(--ix-n);
+            outline: none; margin-bottom: 10px;
+            font-family: 'DM Sans', sans-serif; -webkit-appearance: none; cursor: pointer;
+        }
+        .sel-g:focus { border-color: var(--ix-border-focus); background: #fff; }
+        .card-g {
+            background: #fff; border-radius: 16px; padding: 16px;
+            box-shadow: 0 2px 12px rgba(10,22,40,0.06); margin-bottom: 14px;
+        }
+        .ct-g {
+            font-size: 11px; font-weight: 700; color: var(--ix-mu);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;
+        }
+        /* Override cli-input with DM Sans style for ALL screens */
+        .cli-input, .pag-input, .obs-final {
+            font-family: 'DM Sans', sans-serif !important;
+        }
     </style>
 </head>
 <body>
@@ -1089,7 +1161,7 @@
 
 <div id="modal-cli" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:7000;">
     <div style="background:#fff; width:95%; border-radius:15px; overflow:hidden;">
-        <div style="background:var(--dm-verde); color:white; padding:15px; text-align:center; font-weight:bold; font-size:18px;">FICHA DE CLIENTE</div>
+        <div style="background:linear-gradient(135deg,#0a1628,#1a4a8a); color:white; padding:14px 16px; font-weight:800; font-size:16px; letter-spacing:0.5px; font-family:'DM Sans',sans-serif;">FICHA DE CLIENTE</div>
         <div style="padding:20px;">
             <div style="display:flex; gap:8px;">
                 <input type="number" id="cli-num" placeholder="Nº" class="cli-input" style="flex:0.3; font-weight:bold;" onclick="abrirBuscaFicha()">
@@ -2327,21 +2399,20 @@ function renderCardexTotal() {
 function atualizarResumoCarrinho() {
     const itens = Object.values(CART).filter(i => i.q > 0).sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||''));
     let tot = 0;
-    let hRes = '';
+    let rows = '';
     let lastCat = '';
     itens.forEach(i => {
         const sub = i.q * (i.precoCustom ?? i.preco);
         tot += sub;
-        // Separator for each family/category
         if(i.cat && i.cat !== lastCat) {
             lastCat = i.cat;
-            hRes += `<div style="background:#f0f2f5;padding:4px 14px;font-size:10px;font-weight:800;color:#7a8a9a;letter-spacing:0.8px;text-transform:uppercase;border-bottom:1px solid #e0e0e0;">${i.cat}</div>`;
+            rows += `<tr><td colspan="3" style="background:#f0f2f5;padding:3px 8px;font-size:9px;font-weight:800;color:#7a8a9a;letter-spacing:0.8px;text-transform:uppercase;">${i.cat}</td></tr>`;
         }
-        hRes += `<div class="cart-resumo-row">
-            <span style="font-weight:700;color:#1a1a2e;font-size:12px;line-height:1.3;">${i.nomeCustom||i.nome}</span>
-            <span style="color:#7a8a9a;font-size:11px;white-space:nowrap;text-align:right;">${i.q}&nbsp;×&nbsp;${(i.precoCustom??i.preco).toFixed(2)}€</span>
-            <span style="font-weight:900;color:#e63946;font-size:13px;white-space:nowrap;text-align:right;">${sub.toFixed(2)}€</span>
-        </div>`;
+        rows += `<tr>
+            <td class="r-nome">${i.nomeCustom||i.nome}</td>
+            <td class="r-qty">${i.q}×${(i.precoCustom??i.preco).toFixed(2)}€</td>
+            <td class="r-total">${sub.toFixed(2)}€</td>
+        </tr>`;
     });
     const totalHtml = `<div class="cart-resumo-total">
         <span>TOTAL (${itens.length} art.)</span>
@@ -2349,7 +2420,7 @@ function atualizarResumoCarrinho() {
     </div>`;
     document.getElementById('cart-list-content').innerHTML = `
         <div style="background:white;border-radius:0;margin-top:6px;border-top:3px solid #1a4a7a;border-bottom:3px solid #1a4a7a;">
-            ${hRes || '<div style="text-align:center;padding:16px;color:#aaa;font-size:13px;">Carrinho vazio</div>'}
+            ${rows ? `<table class="resumo-table">${rows}</table>` : '<div style="text-align:center;padding:16px;color:#aaa;font-size:13px;">Carrinho vazio</div>'}
             ${totalHtml}
         </div>`;
 }
