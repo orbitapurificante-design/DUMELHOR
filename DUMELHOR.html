@@ -216,7 +216,7 @@
         }
 
         /* ── SCREENS ── */
-        .screen { display: none; padding: 54px 10px 50px 10px; }
+        .screen { display: none; padding: 54px 10px 62px 10px; }
         .screen.active { display: block; }
         #m1 { padding: 0 !important; min-height: 100vh; position: relative; background: linear-gradient(160deg, #0a1628 0%, #1a4a7a 100%); background-size: cover; background-position: center; background-repeat: no-repeat; }
         #m1.active { display: flex !important; flex-direction: column; justify-content: space-between; }
@@ -241,35 +241,36 @@
             font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; 
         }
 
-        /* ── BOTTOM BAR — estilo lâmpada moderno ── */
+        /* ── BOTTOM BAR — estilo app (ícone em cima, texto em baixo) ── */
         .bottom-bar, .cart-bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: linear-gradient(135deg, #0a1628 0%, #0e2040 100%);
-            padding: 0 2px;
+            padding: 4px 0 6px;
             display: flex; align-items: stretch; justify-content: space-around;
-            z-index: 2500; box-sizing: border-box; height: 44px;
+            z-index: 2500; box-sizing: border-box; height: 56px;
             border-top: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 -3px 16px rgba(0,0,0,0.35);
         }
         .bbar-btn {
-            display: flex; flex-direction: row; align-items: center; justify-content: center;
-            gap: 4px; border: none; background: transparent;
-            padding: 4px 1px; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2px; border: none; background: transparent;
+            padding: 2px 1px; cursor: pointer;
             color: #8a9ab0;
-            font-size: 7.5px; font-weight: 700; letter-spacing: 0.3px;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
             text-transform: uppercase; flex: 1;
             transition: all 0.1s;
             -webkit-tap-highlight-color: transparent;
             position: relative;
         }
         .bbar-btn svg {
-            width: 16px; height: 16px;
+            width: 20px; height: 20px;
             stroke: currentColor; fill: none;
-            stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+            stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
         }
         .bbar-btn.active { color: #c9a84c; }
         .bbar-btn.active::after {
-            content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px;
-            background: #c9a84c; border-radius: 2px 2px 0 0;
+            content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
+            background: #c9a84c; border-radius: 0 0 2px 2px;
         }
         .bbar-btn:active { color: #c9a84c; transform: scale(0.92); }
         .bbar-btn.col-green  { color: #4ade80; }
@@ -298,7 +299,7 @@
 
         /* ── M3 CARRINHO LISTA ESTILO FOTO ── */
         #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #f0f2f4; }
-        #m3 { padding-top: 54px; padding-left: 0; padding-right: 0; padding-bottom: 54px; background: #f0f2f4; }
+        #m3 { padding-top: 48px; padding-left: 0; padding-right: 0; padding-bottom: 60px; background: #f0f2f4; }
         
         #m3 .fam-header { 
             padding: 8px 14px; margin-top: 0; font-size: 12px;
@@ -358,10 +359,13 @@
             font-size: 13px;
             font-weight: 700;
             color: #1a1a2e;
-            white-space: nowrap;
+            white-space: normal;
             overflow: hidden;
-            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             margin-bottom: 2px;
+            line-height: 1.3;
         }
         
         .cart-list-item-info {
@@ -378,29 +382,30 @@
         }
         
         .cart-list-btn {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             border: none;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 900;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.1s;
             line-height: 1;
+            flex-shrink: 0;
         }
-        .cart-list-btn:active { transform: scale(0.88); }
+        .cart-list-btn:active { transform: scale(0.85); }
         
         .cart-list-btn-minus { background: #e63946; color: white; }
         .cart-list-btn-plus  { background: #1a6bbf; color: white; }
         
         .cart-list-qty {
-            min-width: 28px;
+            min-width: 24px;
             text-align: center;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             color: #1a1a2e;
         }
@@ -426,12 +431,14 @@
         
         /* Resumo total no carrinho */
         .cart-resumo-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
             align-items: center;
-            padding: 8px 14px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 13px;
+            padding: 7px 14px;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+            gap: 8px;
+            min-height: 36px;
         }
         .cart-resumo-row:last-child { border-bottom: none; }
         .cart-resumo-total {
@@ -532,7 +539,6 @@
             .cat-card { break-inside: avoid; }
             @page { margin: 0.4cm; }
         }
-        #label-cli-m3 { background: linear-gradient(135deg, #0a1628, #1a4a7a) !important; border-radius: 0 !important; margin: 0 !important; font-size: 18px !important; padding: 15px 20px !important; }
         #m_pag h2 { color: #2563a8 !important; }
     </style>
 </head>
@@ -582,11 +588,7 @@
             <div class="icon-emoji">👤</div>
             <div class="icon-text">CLIENTES</div>
         </button>
-        <button class="menu-btn-icon" onclick="nav('m_pag'); toggleMenu()">
-            <img class="btn-img" data-nome="pagamentos.jpg" src="" onerror="this.style.display='none'">
-            <div class="icon-emoji">💰</div>
-            <div class="icon-text">PAGAMENTOS</div>
-        </button>
+
         <button class="menu-btn-icon" onclick="abrirGestao(); toggleMenu()">
             <img class="btn-img" data-nome="pedidos.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">📦</div>
@@ -598,11 +600,7 @@
             <div class="icon-emoji">📊</div>
             <div class="icon-text">RESUMO</div>
         </button>
-        <button class="menu-btn-icon" onclick="abrirPlanoSemanal(); toggleMenu()">
-            <img class="btn-img" data-nome="visitas.jpg" src="" onerror="this.style.display='none'">
-            <div class="icon-emoji">📅</div>
-            <div class="icon-text">VISITAS</div>
-        </button>
+
         <button class="menu-btn-icon" onclick="novoPedido(); toggleMenu()">
             <img class="btn-img" data-nome="novopedido.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">➕</div>
@@ -830,7 +828,17 @@
 </div>
 
 <div id="m3" class="screen">
-    <h3 id="label-cli-m3" style="text-align:center; margin:0; padding:10px 14px; background:#2e7d32; color:white; font-size:15px; font-weight:900; border-radius:0; letter-spacing:0.3px; position:sticky; top:48px; z-index:100;"></h3>
+    <!-- CLIENTE SELECTOR - topo fixo ao abrir carrinho -->
+    <div style="position:sticky; top:48px; z-index:200; background:linear-gradient(135deg,#0a1628,#1a4a7a); padding:0;">
+        <div onclick="fecharTeclado(); abrirBuscaGlobal()" style="cursor:pointer; display:flex; align-items:center; gap:10px; padding:10px 14px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.2);border:1.5px solid rgba(201,168,76,0.6);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">👤</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;">CLIENTE</div>
+                <div id="label-cli-m3" style="font-size:14px;font-weight:900;color:#c9a84c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.3px;">SELECIONE O CLIENTE</div>
+            </div>
+            <div style="color:rgba(201,168,76,0.7);font-size:18px;flex-shrink:0;">›</div>
+        </div>
+    </div>
     <div id="cardex-content"></div> 
     <div id="cart-list-content"></div>
     <div style="padding: 16px 16px 0;">
@@ -2215,7 +2223,8 @@ function renderCardexTotal() {
     const agora = new Date();
     const dataStr = agora.toLocaleDateString('pt-PT', {day:'2-digit', month:'2-digit', year:'numeric'});
     const nomeLabel = CLI_ATUAL ? `${CLI_ATUAL.nome}  —  ${dataStr}` : "SELECIONE O CLIENTE";
-    document.getElementById('label-cli-m3').innerText = nomeLabel;
+    const labelEl = document.getElementById('label-cli-m3');
+    if(labelEl) labelEl.innerText = nomeLabel;
 
     let idsHab = new Set(Object.keys(CART).map(Number));
     if(CLI_ATUAL) {
@@ -2319,13 +2328,19 @@ function atualizarResumoCarrinho() {
     const itens = Object.values(CART).filter(i => i.q > 0).sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||''));
     let tot = 0;
     let hRes = '';
+    let lastCat = '';
     itens.forEach(i => {
         const sub = i.q * (i.precoCustom ?? i.preco);
         tot += sub;
+        // Separator for each family/category
+        if(i.cat && i.cat !== lastCat) {
+            lastCat = i.cat;
+            hRes += `<div style="background:#f0f2f5;padding:4px 14px;font-size:10px;font-weight:800;color:#7a8a9a;letter-spacing:0.8px;text-transform:uppercase;border-bottom:1px solid #e0e0e0;">${i.cat}</div>`;
+        }
         hRes += `<div class="cart-resumo-row">
-            <span style="font-weight:800;color:#1a1a2e;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${i.nomeCustom||i.nome}</span>
-            <span style="color:#555;margin:0 10px;flex-shrink:0;">${i.q}×${(i.precoCustom??i.preco).toFixed(2)}€</span>
-            <span style="font-weight:900;color:#e63946;flex-shrink:0;">${sub.toFixed(2)}€</span>
+            <span style="font-weight:700;color:#1a1a2e;font-size:12px;line-height:1.3;">${i.nomeCustom||i.nome}</span>
+            <span style="color:#7a8a9a;font-size:11px;white-space:nowrap;text-align:right;">${i.q}&nbsp;×&nbsp;${(i.precoCustom??i.preco).toFixed(2)}€</span>
+            <span style="font-weight:900;color:#e63946;font-size:13px;white-space:nowrap;text-align:right;">${sub.toFixed(2)}€</span>
         </div>`;
     });
     const totalHtml = `<div class="cart-resumo-total">
