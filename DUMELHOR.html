@@ -44,44 +44,10 @@
         }
 
         /* ── ESQUEMA LARES: laranja / cinza / branco ── */
-        body.seg-lares #m2 { background: #f8f9fa !important; }
-        body.seg-lares #m3 { background: #f0f2f4 !important; }
-        body.seg-lares #main-header { background: #374151 !important; }
-        body.seg-lares .bottom-bar, body.seg-lares .cart-bottom-bar { background: #ffffff !important; border-top:1px solid #E0E0E0 !important; }
-        body.seg-lares .marcas-horizontal-container { background: linear-gradient(180deg,#1f2937 0%,#374151 100%) !important; }
-        body.seg-lares #indicador-segmento { background:#4b5563 !important; color:white !important; }
         /* Famílias neon cinza sobre fundo branco */
-        body.seg-lares #m2 .fam-header {
-            background: rgba(31,41,55,0.07) !important;
-            border: 1px solid rgba(107,114,128,0.5) !important;
-            color: #1f2937 !important;
-            text-shadow: none !important;
-            box-shadow: 0 0 8px rgba(107,114,128,0.25), inset 0 1px 0 rgba(255,255,255,0.6) !important;
-        }
-        body.seg-lares #m2 .fam-arrow { color: #4b5563 !important; text-shadow: 0 0 4px rgba(107,114,128,0.5) !important; }
-        body.seg-lares #m3 .fam-header {
-            background: rgba(31,41,55,0.08) !important;
-            border: 1px solid rgba(107,114,128,0.4) !important;
-            color: #1f2937 !important;
-            text-shadow: none !important;
-            box-shadow: 0 0 6px rgba(107,114,128,0.2) !important;
-        }
         /* Cards brancos com sombra suave */
-        body.seg-lares .card-pro { background:#ffffff !important; border-color:rgba(0,0,0,0.08) !important; }
-        body.seg-lares .card-carrinho { background:#ffffff !important; border-color:rgba(0,0,0,0.08) !important; }
 
         /* ── ESQUEMA RESTAURAÇÃO: branco / cinza / preto ── */
-        body.seg-restauracao #m2 { background: #e5e7eb !important; }
-        body.seg-restauracao #m3 { background: #d1d5db !important; }
-        body.seg-restauracao #m2 .fam-header { background:rgba(0,0,0,0.12); border-color:rgba(0,0,0,0.15); color:#111827; }
-        body.seg-restauracao #m3 .fam-header { background:rgba(0,0,0,0.12); border-color:rgba(0,0,0,0.15); color:#111827; }
-        body.seg-restauracao .marcas-horizontal-container { background:linear-gradient(135deg,#d1d5db,#9ca3af) !important; }
-        body.seg-restauracao #indicador-segmento { background:#374151 !important; color:white !important; }
-        body.seg-restauracao .bottom-bar, body.seg-restauracao .cart-bottom-bar { background:linear-gradient(135deg,#374151 0%,#4b5563 100%) !important; border-top:1px solid rgba(255,255,255,0.1) !important; }
-        body.seg-restauracao #main-header { background:linear-gradient(135deg,#374151 0%,#4b5563 100%) !important; }
-        body.seg-restauracao .card-pro { border-color:rgba(0,0,0,0.1); }
-        body.seg-restauracao #m2 .in-cli-search, body.seg-restauracao #m2 #in-busca { background:rgba(0,0,0,0.1) !important; color:#111827 !important; }
-        body.seg-restauracao .in-cli-search::placeholder, body.seg-restauracao #in-busca::placeholder { color:rgba(0,0,0,0.45) !important; }
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         html { scroll-padding-top: 70px; }
@@ -322,8 +288,8 @@
         .btn-mini { padding: 8px 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; color: white; margin: 2px; cursor: pointer; }
 
         /* ── M3 CARRINHO LISTA ESTILO FOTO ── */
-        #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #F5F5F5; }
-        #m3 { padding: 0 0 56px 0 !important; background: #F5F5F5; }
+        #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #FFFFFF; }
+        #m3 { padding: 0 0 56px 0 !important; background: #FFFFFF; }
         
         #m3 .fam-header { 
             padding: 5px 14px; margin-top: 0; font-size: 9px;
@@ -487,13 +453,15 @@
         .cart-resumo-total {
             background: #E60000;
             color: #FFFFFF;
-            padding: 12px 14px;
+            padding: 11px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             letter-spacing: 0.2px;
+            overflow: hidden;
+            box-sizing: border-box;
         }
         /* ── LOGO M1 ── */
         .logo-m1-container { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 30px; }
@@ -630,18 +598,34 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:32px; background:none; border:none; cursor:pointer;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:22px; font-weight:900; background:rgba(255,255,255,0.18); border:none; border-radius:9px; cursor:pointer; color:white; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0; letter-spacing:-1px;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
     </div>
-    <input type="text" id="in-cli-search" class="in-cli-search" placeholder="CLIENTE..." onclick="abrirBuscaGlobal()" readonly style="flex:0.7;">
     <div style="flex:1; position:relative; display:flex; align-items:center;">
         <button onclick="limparPesquisaProduto()" style="position:absolute; left:4px; width:32px; height:32px; border-radius:8px; border:none; background:white; color:#E60000; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
         <input type="text" id="in-busca" placeholder="PRODUTO..." oninput="debounceRender(); const _pm=document.getElementById('painel-sem-resultado'); if(_pm && _pm.style.display!=='none'){ const _id=document.getElementById('inp-manual-desc'); if(_id) _id.value=this.value; }" onkeypress="if(event.key==='Enter') fecharTeclado()" style="flex:1; padding:6px 10px 6px 40px; border:none; border-radius:20px; font-size:12px; font-weight:600; background:#fff; color:#333; outline:none;">
     </div>
-    <div class="cart-float-top" onclick="fecharTeclado(); nav('m3')">🛒<div id="cart-badge" class="badge-vermelha" style="display:none">0</div></div>
+    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+        <div style="text-align:right; line-height:1.25; flex-shrink:0;">
+            <div id="header-weekday" style="font-size:8px; font-weight:500; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.8px;"></div>
+            <div id="header-daynum" style="font-size:14px; font-weight:800; color:#FFFFFF;"></div>
+        </div>
+        <div class="cart-float-top" onclick="fecharTeclado(); nav('m3')">🛒<div id="cart-badge" class="badge-vermelha" style="display:none">0</div></div>
+    </div>
 </header>
+<script>
+(function(){
+    var now=new Date();
+    var days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    var months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var wd=document.getElementById('header-weekday');
+    var dn=document.getElementById('header-daynum');
+    if(wd) wd.textContent=days[now.getDay()]+' '+months[now.getMonth()];
+    if(dn) dn.textContent=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0');
+})();
+</script>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <!-- BARRA DE PROGRESSO GLOBAL — fixed, sempre visível -->
@@ -760,7 +744,7 @@
 
 <div id="m2" class="screen active">
     <!-- Indicador de filtro de segmento ativo -->
-    <div id="indicador-segmento" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); background:#E60000; color:white; padding:5px 16px; border-radius:20px; font-size:12px; font-weight:900; z-index:800; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer;" onclick="FILTRO_SEGMENTO=null; document.getElementById('indicador-segmento').style.display='none'; LOJA_RENDERIZADA=false; renderLoja();">
+    <div id="indicador-segmento" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); background:#E60000; color:white; padding:5px 16px; border-radius:20px; font-size:12px; font-weight:900; z-index:800; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer;" onclick="FILTRO_SEGMENTO=null;  LOJA_RENDERIZADA=false; renderLoja();">
         <span id="indicador-segmento-texto">🍽️ RESTAURAÇÃO</span> &nbsp;✕
     </div>
 
@@ -1222,14 +1206,18 @@
     </div>
 </div>
 
-<div id="modal-global-cli" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#1A1A1A; z-index:9999; display:none; flex-direction:column; padding:16px; box-sizing:border-box;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-        <div style="font-size:22px;">🔍</div>
-        <input type="text" id="in-global-search" placeholder="Nome ou número..." oninput="filtrarGlobalCli(this.value)" onkeypress="if(event.key='Enter') fecharTeclado()" style="flex:1; padding:12px 18px; border-radius:24px; border:2px solid rgba(230,0,0,0.7); background:rgba(230,0,0,0.12); color:#fff; font-size:15px; font-weight:700; outline:none; box-shadow:0 0 14px rgba(230,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); letter-spacing:0.04em; backdrop-filter:blur(10px);" autofocus>
-        <button onclick="fecharBuscaGlobal()" style="width:40px; height:40px; border-radius:50%; border:2px solid rgba(230,0,0,0.4); background:rgba(230,0,0,0.2); color:rgba(230,0,0,0.9); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px rgba(230,0,0,0.3);">✕</button>
+<div id="modal-global-cli" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#F5F5F5; z-index:9999; display:none; flex-direction:column; padding:0; box-sizing:border-box;">
+    <div style="background:#E60000; padding:0 14px; height:48px; display:flex; align-items:center; gap:10px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+        <span style="font-size:13px; font-weight:700; color:white; flex:1; letter-spacing:0.3px;">SELECIONAR CLIENTE</span>
+        <button onclick="fecharBuscaGlobal()" style="width:32px; height:32px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:white; font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
     </div>
-    <div id="global-cli-results" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:2px 2px 20px;"></div>
-    <button class="btn-side" style="background:var(--dm-vermelho); margin-top:10px;" onclick="fecharTeclado(); fecharBuscaGlobal()">CANCELAR</button>
+    <div style="background:#FFFFFF; padding:10px 12px; border-bottom:1px solid #E0E0E0; flex-shrink:0; display:flex; align-items:center; gap:8px; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+        <span style="color:#B0B0B0; font-size:15px;">🔍</span>
+        <input type="text" id="in-global-search" placeholder="Pesquisar cliente..." oninput="filtrarGlobalCli(this.value)" onkeypress="if(event.key==='Enter') fecharTeclado()" autofocus
+            style="flex:1; border:none; outline:none; font-size:14px; font-weight:500; color:#333333; font-family:'Montserrat',sans-serif; background:transparent; padding:4px 0;">
+        <button onclick="document.getElementById('in-global-search').value=''; filtrarGlobalCli('');" style="border:none; background:none; color:#B0B0B0; font-size:16px; cursor:pointer; padding:2px;">✕</button>
+    </div>
+    <div id="global-cli-results" style="flex:1; overflow-y:auto; padding:0;"></div>
 </div>
 
 <div id="modal-edit-pag" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:8000;">
@@ -1248,18 +1236,6 @@
 </div>
 
 <!-- INPUTS DE ARQUIVO - antes do script para serem encontrados -->
-<!-- SEGMENTO PICKER POPUP -->
-<div id="seg-picker" style="display:none; position:fixed; bottom:76px; left:50%; transform:translateX(-50%); z-index:9000; background:#1A1A1A; border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:12px 16px; box-shadow:0 -8px 32px rgba(0,0,0,0.5); display:none; flex-direction:row; gap:10px; align-items:center;">
-    <button onclick="escolherSegmento('geral')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:rgba(255,255,255,0.08);color:white;font-size:10px;font-weight:800;cursor:pointer;letter-spacing:0.5px;">
-        <span style="font-size:22px;">📦</span>GERAL
-    </button>
-    <button onclick="escolherSegmento('lares')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border:2px solid rgba(249,115,22,0.5);border-radius:12px;background:rgba(249,115,22,0.12);color:#fb923c;font-size:10px;font-weight:800;cursor:pointer;letter-spacing:0.5px;">
-        <span style="font-size:22px;">🏠</span>LARES
-    </button>
-    <button onclick="escolherSegmento('restauracao')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border:2px solid rgba(156,163,175,0.5);border-radius:12px;background:rgba(156,163,175,0.12);color:#d1d5db;font-size:10px;font-weight:800;cursor:pointer;letter-spacing:0.5px;">
-        <span style="font-size:22px;">🍽️</span>REST.
-    </button>
-</div>
 <input type="file" id="f-excel" accept=".xlsx" style="display:none">
 <input type="file" id="f-fotos" accept="image/*" multiple style="display:none">
 <input type="file" id="f-backup" accept=".json" style="display:none">
@@ -1445,10 +1421,7 @@ function entrarApp(segmento) {
         const labels = { restauracao: '🍽️ RESTAURAÇÃO', lares: '🏠 LARES', geral: '📦 GERAL' };
         txt.textContent = labels[segmento] || segmento.toUpperCase();
     }
-    document.body.classList.remove('seg-lares','seg-restauracao');
-    if(segmento === 'lares') document.body.classList.add('seg-lares');
-    else if(segmento === 'restauracao') document.body.classList.add('seg-restauracao');
-    // Actualizar label do botão seg na bbar (removido)
+        // Actualizar label do botão seg na bbar (removido)
     nav('m2');
     // Abrir marcas automaticamente ao entrar
     const menu = document.getElementById('marcas-horizontal');
@@ -1466,11 +1439,7 @@ function abrirSegmentoPicker() {
     p.style.display = visivel ? 'none' : 'flex';
 }
 
-function escolherSegmento(seg) {
-    const p = document.getElementById('seg-picker');
-    if(p) p.style.display = 'none';
-    entrarApp(seg);
-}
+
 
 function setSplash(texto, pct, counter) {
     const bar  = document.getElementById('splash-bar');
@@ -1588,7 +1557,6 @@ function voltarParaLoja() {
     // Scroll instantâneo para o último produto (sem smooth para evitar piscar)
     if(ULTIMO_PRODUTO_ID) {
         const card = document.getElementById('card-prod-' + ULTIMO_PRODUTO_ID);
-        if(card) card.scrollIntoView({ behavior: 'instant', block: 'center' });
     }
 }
 
@@ -1928,7 +1896,6 @@ function mostrarPainelSemResultado() {
     const inp = document.getElementById('inp-manual-desc');
     if(busca && !inp.value) inp.value = busca;
     renderTabelaManual();
-    setTimeout(() => painel.scrollIntoView({ behavior:'smooth', block:'nearest' }), 80);
 }
 
 function fecharPainelSemResultado() {
@@ -2549,33 +2516,24 @@ function fecharBuscaGlobal() { document.getElementById('modal-global-cli').style
 function filtrarGlobalCli(val) {
     let v = val.toUpperCase();
     let matches = CLIENTES_DB.filter(c => c.nome.includes(v) || c.num.toString().includes(v)).sort((a, b) => a.nome.localeCompare(b.nome));
-    const cores = [
-        ['rgba(230,0,0,0.18)','rgba(230,0,0,0.7)','rgba(230,0,0,0.55)'],
-        ['rgba(0,120,255,0.18)','rgba(60,160,255,0.7)','rgba(80,180,255,0.55)'],
-        ['rgba(230,0,0,0.15)','rgba(230,0,0,0.65)','rgba(0,230,255,0.5)'],
-    ];
-    let h = matches.map((c, i) => {
-        const [bg, bord, glow] = cores[i % cores.length];
-        return `<div onclick="selecionarGlobal('${c.num}')" style="
-            padding:14px 18px; border-radius:16px; cursor:pointer;
-            background:${bg};
-            border:1.5px solid ${bord};
-            box-shadow:0 0 12px ${glow}, inset 0 1px 0 rgba(255,255,255,0.08);
-            backdrop-filter:blur(8px);
-            display:flex; align-items:center; gap:14px;
-            transition:transform 0.15s, box-shadow 0.15s;
-            active-transform:scale(0.97);"
-            onpointerdown="this.style.transform='scale(0.97)'"
-            onpointerup="this.style.transform='scale(1)'"
-            onpointerleave="this.style.transform='scale(1)'">
-            <div style="width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,rgba(230,0,0,0.35),rgba(0,100,220,0.4)); border:1.5px solid ${bord}; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; color:#90e0ff; box-shadow:0 0 8px ${glow}; flex-shrink:0;">${c.num}</div>
-            <div style="flex:1; min-width:0;">
-                <div style="font-size:16px; font-weight:800; color:#ffffff; letter-spacing:0.02em; text-shadow:0 0 10px rgba(230,0,0,0.7); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.nome}</div>
+    let h = matches.map(c => `
+        <div onclick="selecionarGlobal('${c.num}')" style="
+            display:flex; align-items:center; gap:12px;
+            padding:11px 14px;
+            background:#FFFFFF;
+            border-bottom:1px solid #F0F0F0;
+            cursor:pointer;"
+            onpointerdown="this.style.background='#FFF5F5'"
+            onpointerup="this.style.background='#FFFFFF'"
+            onpointerleave="this.style.background='#FFFFFF'">
+            <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:#E60000;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;flex-shrink:0;">${c.nome.charAt(0).toUpperCase()}</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:700;color:#333333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.nome}</div>
+                <div style="font-size:10px;color:#B0B0B0;margin-top:1px;">Nº ${c.num||'—'}</div>
             </div>
-            <div style="font-size:20px; color:rgba(230,0,0,0.5);">›</div>
-        </div>`;
-    }).join('');
-    document.getElementById('global-cli-results').innerHTML = h || "<p style='padding:30px; text-align:center; color:rgba(230,0,0,0.4); font-size:15px; letter-spacing:0.05em;'>Nenhum cliente encontrado</p>";
+            <div style="color:#E0E0E0;font-size:18px;font-weight:300;">›</div>
+        </div>`).join('');
+    document.getElementById('global-cli-results').innerHTML = h || "<div style='padding:40px;text-align:center;color:#B0B0B0;font-size:13px;'>Nenhum cliente encontrado</div>";
 }
 
 function selecionarGlobal(num) {
@@ -3315,7 +3273,7 @@ function limparTudo() {
 }
 function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 function sairApp() {
-    document.body.classList.remove('seg-lares','seg-restauracao'); if (confirm("Queres resetar a aplicação?")) window.location.reload(); }
+    if (confirm("Queres resetar a aplicação?")) window.location.reload(); }
 
 async function limparFotosMemoria() {
     // Verificar espaço ocupado
@@ -4146,7 +4104,6 @@ function abrirCatalogoVendasNoProduto(produtoId) {
             setTimeout(() => {
                 const card = document.querySelector(`.card-catalogo-vendas img[onclick*="change(${produtoId}"]`);
                 if(card) {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 100);
         });
@@ -4156,7 +4113,6 @@ function abrirCatalogoVendasNoProduto(produtoId) {
         setTimeout(() => {
             const card = document.querySelector(`.card-catalogo-vendas img[onclick*="change(${produtoId}"]`);
             if(card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }, 50);
     }
