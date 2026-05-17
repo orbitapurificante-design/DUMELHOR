@@ -97,16 +97,16 @@
         }
         .cart-float-top:active { transform: scale(0.9); }
         .badge-vermelha { 
-            position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; 
+            position: absolute; top: -4px; right: -4px; background: #1A1A1A; color: white; 
             min-width: 16px; height: 16px; border-radius: 50%; font-size: 9px; font-weight: 700; 
-            display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary); z-index: 3100; 
+            display: flex; align-items: center; justify-content: center; border: 2px solid #E60000; z-index: 3100; 
         }
 
         /* ── DRAWER ── */
         .drawer { 
-            position: fixed; left: -290px; top: 0; width: 290px; height: 100%; 
-            background: rgba(10,10,10,0.97); 
-            z-index: 4500; padding: 10px 12px; 
+            position: fixed; left: -200px; top: 0; width: 200px; height: 100%; 
+            background: rgba(30,30,30,0.95); 
+            z-index: 4500; padding: 8px 8px; 
             box-sizing: border-box; box-shadow: 8px 0 30px rgba(0,0,0,0.5); 
             transition: all 0.1s ease-out; overflow-y: auto; 
         }
@@ -471,21 +471,21 @@
         .logo-m1-text { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: 0.5px; }
 
         /* ── MENU GRID ── */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
         .menu-btn-icon { 
-            width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.07); 
+            width: 100%; aspect-ratio: 1; background: #FFFFFF; 
             border-radius: 10px; display: flex; flex-direction: column; align-items: center; 
-            justify-content: flex-start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
+            justify-content: flex-start; cursor: pointer; border: none; 
             padding: 0; transition: all 0.1s; position: relative; overflow: hidden; 
         }
         .menu-btn-icon:active { transform: scale(0.93); opacity: 0.8; }
         .menu-btn-icon img { width: 100%; height: calc(100% - 22px); object-fit: contain; display: none; position: absolute; top: 0; left: 0; border-radius: 10px 10px 0 0; padding: 6px 6px 0; }
         .menu-btn-icon .icon-emoji { font-size: 20px; margin-top: 8px; z-index: 1; }
         .menu-btn-icon .icon-text { 
-            color: #FFFFFF; font-size: 8px; font-weight: 700; text-align: center; 
-            line-height: 1.2; z-index: 1; background: transparent;
+            color: #333333; font-size: 8px; font-weight: 700; text-align: center; 
+            line-height: 1.2; z-index: 1; background: #F5F5F5;
             padding: 3px 4px 5px; position: absolute; bottom: 0; width: 100%; 
-            letter-spacing: 0.4px;
+            letter-spacing: 0.4px; border-top: 1px solid #E0E0E0;
         }
         .menu-btn-badge { 
             position: absolute; top: 5px; right: 5px; background: var(--red); color: white; 
@@ -599,7 +599,7 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:26px; line-height:1; background:rgba(0,0,0,0.35); border:none; border-radius:7px; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:26px; line-height:1; background:rgba(255,255,255,0.15); border:none; border-radius:7px; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
@@ -2542,19 +2542,30 @@ function filtrarGlobalCli(val) {
 function selecionarGlobal(num) {
     fecharTeclado();
     let cli = CLIENTES_DB.find(c => c.num == num);
+    if(!cli) return;
     if(BUSCA_DESTINO === 'VENDA') {
         CLI_ATUAL = cli;
-        const agora = new Date();
-        const dataStr = agora.toLocaleDateString('pt-PT', {day:'2-digit', month:'2-digit', year:'numeric'});
-        document.getElementById('in-cli-search').value = `${cli.nome}  ${dataStr}`;
-        nav('m2');
+        // If we're in the cart (m3), stay there and update immediately
+        const emCarrinho = document.getElementById('m3').classList.contains('active');
+        if(emCarrinho) {
+            fecharBuscaGlobal();
+            renderCardexTotal();
+        } else {
+            const agora = new Date();
+            const dataStr = agora.toLocaleDateString('pt-PT', {day:'2-digit', month:'2-digit', year:'numeric'});
+            const el = document.getElementById('in-cli-search');
+            if(el) el.value = `${cli.nome}  ${dataStr}`;
+            fecharBuscaGlobal();
+            nav('m2');
+        }
     } else if(BUSCA_DESTINO === 'PAG') {
         document.getElementById('pag-cliente').value = cli.nome;
         document.getElementById('pag-cliente').dataset.num = cli.num;
+        fecharBuscaGlobal();
     } else if(BUSCA_DESTINO === 'FICHA') {
         buscarClientePorNumero(num);
+        fecharBuscaGlobal();
     }
-    fecharBuscaGlobal();
 }
 
 let linhasPagamentoCount = 4;
@@ -3986,9 +3997,9 @@ function irParaCatalogo() {
                 ? `<div class="cat-card-img-wrap"><img src="${imgUrl}" class="cat-card-img" alt="${it.nome}"></div>`
                 : `<div class="cat-card-img-placeholder">📦</div>`;
 
-            const qPedida = (CART[it.id] && CART[it.id].q > 0) ? CART[it.id].q : '';
+            const qPedida = it.q > 0 ? it.q : '';
             const unBadge = qPedida !== '' 
-                ? `<div class="cat-card-un" style="background:#E60000;color:white;font-weight:800;">${qPedida}un</div>`
+                ? `<div class="cat-card-un" style="background:#E60000;color:white;font-weight:800;font-size:8px;">${qPedida} un</div>`
                 : `<div class="cat-card-un">&nbsp;</div>`;
 
             // Family separator — full row spanning all columns
