@@ -88,11 +88,12 @@
         }
         #in-busca::placeholder { color: #B0B0B0; }
         .cart-float-top { 
-            position: relative; width: 32px; height: 32px; flex-shrink: 0; min-width: 32px;
-            background: rgba(255,255,255,0.18); 
+            position: relative; width: 34px; height: 34px; flex-shrink: 0; min-width: 34px;
+            background: #FFFFFF; 
             border-radius: 9px; display: flex; align-items: center; justify-content: center; 
-            color: #ffffff; font-size: 16px; cursor: pointer; transition: all 0.1s;
-            border: 1px solid rgba(255,255,255,0.3);
+            color: #E60000; font-size: 18px; cursor: pointer; transition: all 0.1s;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         .cart-float-top:active { transform: scale(0.9); }
         .badge-vermelha { 
@@ -104,16 +105,16 @@
         /* ── DRAWER ── */
         .drawer { 
             position: fixed; left: -290px; top: 0; width: 290px; height: 100%; 
-            background: #1A1A1A; 
-            z-index: 4500; padding: 20px 15px; 
-            box-sizing: border-box; box-shadow: 8px 0 30px rgba(0,0,0,0.4); 
+            background: rgba(10,10,10,0.97); 
+            z-index: 4500; padding: 10px 12px; 
+            box-sizing: border-box; box-shadow: 8px 0 30px rgba(0,0,0,0.5); 
             transition: all 0.1s ease-out; overflow-y: auto; 
         }
         .drawer.open { left: 0; }
         .btn-side { 
             width: 100%; background: var(--primary);
-            color: white; border: none; padding: 14px 16px; border-radius: 10px; 
-            font-weight: 700; text-align: center; margin-bottom: 10px; font-size: 14px; 
+            color: white; border: none; padding: 11px 14px; border-radius: 8px; 
+            font-weight: 700; text-align: center; margin-bottom: 8px; font-size: 13px; 
             display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
             letter-spacing: 0.3px;
         }
@@ -470,22 +471,21 @@
         .logo-m1-text { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: 0.5px; }
 
         /* ── MENU GRID ── */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; margin-bottom: 10px; }
         .menu-btn-icon { 
-            width: 100%; aspect-ratio: 1; background: #ffffff; 
-            border-radius: 14px; display: flex; flex-direction: column; align-items: center; 
-            justify-content: flex-start; cursor: pointer; border: none; 
+            width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.07); 
+            border-radius: 10px; display: flex; flex-direction: column; align-items: center; 
+            justify-content: flex-start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
             padding: 0; transition: all 0.1s; position: relative; overflow: hidden; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        .menu-btn-icon:active { transform: scale(0.95); opacity: 0.85; }
-        .menu-btn-icon img { width: 100%; height: calc(100% - 30px); object-fit: contain; display: none; position: absolute; top: 0; left: 0; border-radius: 14px 14px 0 0; padding: 8px 8px 0; }
-        .menu-btn-icon .icon-emoji { font-size: 28px; margin-top: 12px; z-index: 1; }
+        .menu-btn-icon:active { transform: scale(0.93); opacity: 0.8; }
+        .menu-btn-icon img { width: 100%; height: calc(100% - 22px); object-fit: contain; display: none; position: absolute; top: 0; left: 0; border-radius: 10px 10px 0 0; padding: 6px 6px 0; }
+        .menu-btn-icon .icon-emoji { font-size: 20px; margin-top: 8px; z-index: 1; }
         .menu-btn-icon .icon-text { 
-            color: #1A1A1A; font-size: 11px; font-weight: 800; text-align: center; 
-            line-height: 1.2; z-index: 1; background: #f0f4f8;
-            padding: 5px 6px 7px; position: absolute; bottom: 0; width: 100%; 
-            letter-spacing: 0.5px; border-top: 1px solid rgba(0,0,0,0.08);
+            color: #FFFFFF; font-size: 8px; font-weight: 700; text-align: center; 
+            line-height: 1.2; z-index: 1; background: transparent;
+            padding: 3px 4px 5px; position: absolute; bottom: 0; width: 100%; 
+            letter-spacing: 0.4px;
         }
         .menu-btn-badge { 
             position: absolute; top: 5px; right: 5px; background: var(--red); color: white; 
@@ -598,7 +598,7 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:22px; font-weight:900; background:rgba(255,255,255,0.18); border:none; border-radius:9px; cursor:pointer; color:white; width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0; letter-spacing:-1px;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:28px; line-height:1; background:none; border:none; cursor:pointer; color:white; padding:4px 6px; flex-shrink:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
@@ -618,12 +618,11 @@
 <script>
 (function(){
     var now=new Date();
-    var days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    var months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
     var wd=document.getElementById('header-weekday');
     var dn=document.getElementById('header-daynum');
-    if(wd) wd.textContent=days[now.getDay()]+' '+months[now.getMonth()];
-    if(dn) dn.textContent=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0');
+    if(wd) wd.textContent=days[now.getDay()];
+    if(dn) dn.textContent=now.getDate()+'/'+( now.getMonth()+1);
 })();
 </script>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -641,14 +640,14 @@
 
 <div class="drawer" id="drawer">
     <!-- BOTÃO FECHAR (SETA ESTILO TECH) -->
-    <button onclick="toggleMenu()" style="position:absolute; top:15px; right:15px; width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.8); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; font-weight:700;">←</button>
+    <button onclick="toggleMenu()" style="position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;">✕</button>
     
     <!-- LOGO NO TOPO -->
-    <div style="padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.12); margin-bottom:15px;">
-        <div style="width:120px; height:120px; margin:0 auto 10px auto; background:transparent;">
+    <div style="padding:8px 6px 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:10px;">
+        <div style="width:70px; height:70px; margin:0 auto 6px auto; background:transparent;">
             <img id="logo-drawer" src="" style="width:100%; height:100%; object-fit:contain; display:block; visibility:hidden;" onerror="this.style.visibility='hidden'">
         </div>
-        <div style="font-family:'Montserrat',sans-serif; font-size:20px; font-weight:900; color:#FFFFFF; letter-spacing: 0.5px;">DUMELHOR PRO</div>
+        <div style="font-family:'Montserrat',sans-serif; font-size:14px; font-weight:800; color:#FFFFFF; letter-spacing:0.5px;">DUMELHOR PRO</div>
     </div>
     
     <!-- BOTÕES PRINCIPAIS EM GRID -->
@@ -681,13 +680,7 @@
     <!-- SEPARADOR -->
     <div style="border-top:1px solid rgba(255,255,255,0.15); margin:8px 0 10px;"></div>
 
-    <!-- AVISO DADOS PERSISTENTES -->
-    <div style="background:rgba(0,166,81,0.12); border:1px solid rgba(0,166,81,0.3); border-radius:10px; padding:10px 14px; margin:0 0 12px; font-size:10px; font-weight:500; color:#B0B0B0; line-height:1.6;">
-        💾 <span style="color:white;font-weight:700;">Dados guardados neste browser</span><br>
-        Atualizar o HTML no GitHub <span style="color:#00A651;font-weight:700;">não apaga</span> o Excel, clientes, fotos ou pedidos.
-    </div>
-
-    <!-- BOTÕES FICHEIROS (etiqueta amarela) -->
+    <!-- BOTÕES FICHEIROS -->
     <div class="menu-grid">
         <button class="menu-btn-icon" onclick="document.getElementById('f-excel').click(); toggleMenu()">
             <img class="btn-img" data-nome="excel.jpg" src="" onerror="this.style.display='none'">
