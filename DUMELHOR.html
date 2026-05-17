@@ -92,8 +92,8 @@
             background: #FFFFFF; 
             border-radius: 9px; display: flex; align-items: center; justify-content: center; 
             color: #E60000; font-size: 18px; cursor: pointer; transition: all 0.1s;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border: 1.5px solid #E0E0E0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
         }
         .cart-float-top:active { transform: scale(0.9); }
         .badge-vermelha { 
@@ -547,7 +547,8 @@
             /* Catálogo */
             .cat-page { page-break-after: always; }
             .cat-page:last-child { page-break-after: avoid; }
-            .cat-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
+            .cat-grid { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; }
+            .cat-fam-header { grid-column: 1 / -1 !important; }
             .cat-card { break-inside: avoid; }
             @page { margin: 0.4cm; }
         }
@@ -598,7 +599,7 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:28px; line-height:1; background:none; border:none; cursor:pointer; color:white; padding:4px 6px; flex-shrink:0;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:26px; line-height:1; background:rgba(0,0,0,0.35); border:none; border-radius:7px; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
@@ -2509,24 +2510,33 @@ function fecharBuscaGlobal() { document.getElementById('modal-global-cli').style
 function filtrarGlobalCli(val) {
     let v = val.toUpperCase();
     let matches = CLIENTES_DB.filter(c => c.nome.includes(v) || c.num.toString().includes(v)).sort((a, b) => a.nome.localeCompare(b.nome));
-    let h = matches.map(c => `
-        <div onclick="selecionarGlobal('${c.num}')" style="
-            display:flex; align-items:center; gap:12px;
-            padding:11px 14px;
-            background:#FFFFFF;
-            border-bottom:1px solid #F0F0F0;
-            cursor:pointer;"
-            onpointerdown="this.style.background='#FFF5F5'"
-            onpointerup="this.style.background='#FFFFFF'"
-            onpointerleave="this.style.background='#FFFFFF'">
-            <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:#E60000;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;flex-shrink:0;">${c.nome.charAt(0).toUpperCase()}</div>
+    const box = document.getElementById('global-cli-results');
+    box.innerHTML = '';
+    if(!matches.length) {
+        box.innerHTML = "<div style='padding:40px;text-align:center;color:#B0B0B0;font-size:13px;'>Nenhum cliente encontrado</div>";
+        return;
+    }
+    matches.forEach(cl => {
+        const d = document.createElement('div');
+        d.style.cssText = 'display:flex;align-items:center;gap:12px;padding:11px 14px;background:#FFFFFF;border-bottom:1px solid #F0F0F0;cursor:pointer;-webkit-tap-highlight-color:transparent;';
+        d.innerHTML = `
+            <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:#E60000;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;flex-shrink:0;">${cl.nome.charAt(0).toUpperCase()}</div>
             <div style="flex:1;min-width:0;">
-                <div style="font-size:13px;font-weight:700;color:#333333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.nome}</div>
-                <div style="font-size:10px;color:#B0B0B0;margin-top:1px;">Nº ${c.num||'—'}</div>
+                <div style="font-weight:700;color:#333333;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Montserrat',sans-serif;">${cl.nome}</div>
+                <div style="color:#B0B0B0;font-size:10px;margin-top:2px;">Nº ${cl.num||'—'}</div>
             </div>
-            <div style="color:#E0E0E0;font-size:18px;font-weight:300;">›</div>
-        </div>`).join('');
-    document.getElementById('global-cli-results').innerHTML = h || "<div style='padding:40px;text-align:center;color:#B0B0B0;font-size:13px;'>Nenhum cliente encontrado</div>";
+            <div style="color:#E0E0E0;font-size:18px;">›</div>`;
+        d.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            selecionarGlobal(cl.num);
+        });
+        d.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            selecionarGlobal(cl.num);
+        });
+        box.appendChild(d);
+    });
 }
 
 function selecionarGlobal(num) {
@@ -3811,6 +3821,7 @@ function resetarPreco(id) {
 function buscarClientePorNumero(num) { let cli = CLIENTES_DB.find(c => c.num == num); if(cli) { ['num','nome','morada','localidade','contato','pessoa','obs'].forEach(f => document.getElementById('cli-'+f).value = cli[f] || ''); document.getElementById('cli-dia-visita').value = cli.diaVisita || ''; document.getElementById('cli-frequencia').value = getClienteFrequencia(cli); updateFrequenciaCliButtons(); } }
 
 function irParaCatalogo() {
+    // Sort by family then by name
     const itens = Object.values(CART).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
     if(!itens.length) return alert("Carrinho vazio!");
 
@@ -3819,7 +3830,8 @@ function irParaCatalogo() {
     const hoje = new Date().toLocaleDateString('pt-PT', {day:'2-digit', month:'long', year:'numeric'});
     const logoUrl = IMGS.get('dumelhor.jpg') || IMGS.get('dumelhor.png') || '';
 
-    // Agrupar em páginas de 12 produtos (grelha 3×4)
+    // Build rows: family header row (full-width) + product rows
+    // We'll render all products on one page (or paginate keeping families together)
     const POR_PAGINA = 20;
     const paginas = [];
     for(let i = 0; i < itens.length; i += POR_PAGINA) {
@@ -3868,6 +3880,18 @@ function irParaCatalogo() {
                 flex: 1;
                 align-content: start;
             }
+            .cat-fam-header {
+                grid-column: 1 / -1;
+                background: #1A1A1A;
+                color: #FFFFFF;
+                font-size: 9px;
+                font-weight: 800;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+                padding: 4px 8px;
+                border-radius: 4px;
+                margin-top: 4px;
+            }
             .cat-iva-lateral {
                 writing-mode: vertical-rl;
                 text-orientation: mixed;
@@ -3903,10 +3927,7 @@ function irParaCatalogo() {
                 display: flex; flex-direction: column; gap: 1px; flex: 1;
                 text-align: center;
             }
-            .cat-card-cat { 
-                font-size: 6px; font-weight: 700; color: #666666; 
-                text-transform: uppercase; letter-spacing: 0.4px; opacity: 0.8;
-            }
+            .cat-card-cat { display: none; }
             .cat-card-nome { 
                 font-size: 7.5px; font-weight: 700; color: #333333; 
                 line-height: 1.15; flex: 1; overflow: hidden;
@@ -3942,8 +3963,8 @@ function irParaCatalogo() {
             <div class="cat-header">
                 ${logoTag}
                 <div class="cat-titulo-bloco">
-                    <div class="cat-titulo">Catálogo de Preços</div>
-                    <div class="cat-subtitulo">Lista personalizada de produtos</div>
+                    <div class="cat-titulo">ENCOMENDA</div>
+                    <div class="cat-subtitulo">Lista de produtos pedidos</div>
                 </div>
                 <div class="cat-cliente-bloco">
                     <div class="cat-cliente-label">Preparado para</div>
@@ -3957,22 +3978,33 @@ function irParaCatalogo() {
             <div class="cat-body">
                 <div class="cat-grid">`;
 
-        paginaItens.forEach(it => {
+        let lastCat = null;
+        paginaItens.forEach((it, idx) => {
             const nomeFoto = String(it.f).toLowerCase();
             const imgUrl = IMGS.get(nomeFoto) || IMGS.get(nomeFoto+'.jpg') || IMGS.get(nomeFoto+'.png') || '';
             const imgTag = imgUrl 
                 ? `<div class="cat-card-img-wrap"><img src="${imgUrl}" class="cat-card-img" alt="${it.nome}"></div>`
                 : `<div class="cat-card-img-placeholder">📦</div>`;
 
+            const qPedida = (CART[it.id] && CART[it.id].q > 0) ? CART[it.id].q : '';
+            const unBadge = qPedida !== '' 
+                ? `<div class="cat-card-un" style="background:#E60000;color:white;font-weight:800;">${qPedida}un</div>`
+                : `<div class="cat-card-un">&nbsp;</div>`;
+
+            // Family separator — full row spanning all columns
+            if(it.cat !== lastCat) {
+                lastCat = it.cat;
+                html += `<div class="cat-fam-header">${it.cat}</div>`;
+            }
+
             html += `
                 <div class="cat-card">
                     ${imgTag}
                     <div class="cat-card-body">
-                        <div class="cat-card-cat">${it.cat}</div>
                         <div class="cat-card-nome">${it.nome}</div>
                         <div class="cat-card-preco-wrap">
                             <div class="cat-card-preco">${it.preco.toFixed(2)}€</div>
-                            <div class="cat-card-un">CX ${it.unidades}un</div>
+                            ${unBadge}
                         </div>
                     </div>
                 </div>`;
