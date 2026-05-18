@@ -3993,12 +3993,8 @@ function irParaCatalogo() {
         paginaItens.forEach((it, idx) => {
             const nomeFoto = String(it.f).toLowerCase();
             const imgUrl = IMGS.get(nomeFoto) || IMGS.get(nomeFoto+'.jpg') || IMGS.get(nomeFoto+'.png') || '';
-            const imgTag = imgUrl 
-                ? `<div class="cat-card-img-wrap"><img src="${imgUrl}" class="cat-card-img" alt="${it.nome}"></div>`
-                : `<div class="cat-card-img-placeholder">📦</div>`;
 
             const qPedida = it.q > 0 ? it.q : '';
-            // qty badge: white circle, black border, top-right of image
             const qtyBadge = qPedida !== ''
                 ? `<div style="position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#FFFFFF;border:1.5px solid #1A1A1A;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#1A1A1A;z-index:2;line-height:1;">${qPedida}</div>`
                 : '';
