@@ -1489,6 +1489,8 @@ function iniciarBarraProgresso(texto) {
 function nav(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    // Remove WhatsApp button when leaving m4
+    if(id !== 'm4') { const wa = document.getElementById('btn-wa-encomenda'); if(wa) wa.remove(); }
     const header = document.getElementById('main-header');
     
     // Header: esconder no M1 e no carrinho (m3), mostrar em tudo o resto
@@ -2514,7 +2516,8 @@ function fecharBuscaGlobal() { document.getElementById('modal-global-cli').style
 
 function filtrarGlobalCli(val) {
     let v = val.toUpperCase();
-    let matches = CLIENTES_DB.filter(c => c.nome.includes(v) || c.num.toString().includes(v)).sort((a, b) => a.nome.localeCompare(b.nome));
+    let matches = CLIENTES_DB.filter(c => c.nome.includes(v) || c.num.toString().includes(v))
+        .sort((a, b) => a.num - b.num);
     const box = document.getElementById('global-cli-results');
     box.innerHTML = '';
     if(!matches.length) {
@@ -2523,23 +2526,15 @@ function filtrarGlobalCli(val) {
     }
     matches.forEach(cl => {
         const d = document.createElement('div');
-        d.style.cssText = 'display:flex;align-items:center;gap:12px;padding:11px 14px;background:#FFFFFF;border-bottom:1px solid #F0F0F0;cursor:pointer;-webkit-tap-highlight-color:transparent;';
+        d.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 12px;background:#FFFFFF;border-bottom:1px solid #F0F0F0;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:36px;';
         d.innerHTML = `
-            <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:#E60000;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;flex-shrink:0;">${cl.nome.charAt(0).toUpperCase()}</div>
-            <div style="flex:1;min-width:0;">
-                <div style="font-weight:700;color:#333333;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Montserrat',sans-serif;">${cl.nome}</div>
-                <div style="color:#B0B0B0;font-size:10px;margin-top:2px;">Nº ${cl.num||'—'}</div>
-            </div>
-            <div style="color:#E0E0E0;font-size:18px;">›</div>`;
-        d.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            selecionarGlobal(cl.num);
-        });
-        d.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            selecionarGlobal(cl.num);
-        });
+            <div style="width:24px;min-width:24px;font-size:10px;font-weight:700;color:#B0B0B0;text-align:right;flex-shrink:0;">${cl.num}</div>
+            <div style="width:1px;height:18px;background:#E0E0E0;flex-shrink:0;"></div>
+            <div style="width:24px;height:24px;min-width:24px;border-radius:50%;background:#E60000;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;flex-shrink:0;">${cl.nome.charAt(0).toUpperCase()}</div>
+            <div style="flex:1;min-width:0;font-weight:700;color:#333;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cl.nome}</div>
+            <div style="color:#D0D0D0;font-size:14px;flex-shrink:0;">›</div>`;
+        d.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); selecionarGlobal(cl.num); });
+        d.addEventListener('touchend', function(e) { e.preventDefault(); selecionarGlobal(cl.num); });
         box.appendChild(d);
     });
 }
@@ -3869,23 +3864,25 @@ function irParaCatalogo() {
             .cat-page:last-child { page-break-after: avoid; }
             .cat-header { 
                 display: flex; align-items: center; justify-content: space-between;
-                border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 6px;
-                flex-shrink: 0;
+                border-bottom: 2px solid #E60000; padding-bottom: 6px; margin-bottom: 6px;
+                flex-shrink: 0; gap: 8px;
             }
             .cat-logo { height: 26px; width: auto; object-fit: contain; max-width: 80px; }
-            .cat-titulo-bloco { text-align: center; flex: 1; padding: 0 8px; }
+            /* CENTRO: cliente + localidade */
+            .cat-cliente-bloco { text-align: center; flex: 1; padding: 0 8px; }
+            .cat-cliente-label { font-size: 7px; color: #B0B0B0; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+            .cat-cliente-nome { font-size: 11px; font-weight: 900; color: #1A1A1A; line-height: 1.2; word-break: break-word; }
+            .cat-cliente-data { font-size: 8px; color: #666666; font-weight: 600; }
+            /* DIREITA: ENCOMENDA */
+            .cat-titulo-bloco { text-align: right; min-width: 90px; }
             .cat-titulo { 
-                font-size: 13px; font-weight: 900; letter-spacing: 1px; 
-                color: #1A1A1A; text-transform: uppercase; margin: 0; line-height: 1.1;
+                font-size: 13px; font-weight: 900; letter-spacing: 0.5px; 
+                color: #E60000; text-transform: uppercase; margin: 0; line-height: 1.1;
             }
             .cat-subtitulo { 
-                font-size: 7.5px; color: #666666; font-weight: 700; 
-                letter-spacing: 0.5px; margin: 1px 0 0; text-transform: uppercase;
+                font-size: 7px; color: #666666; font-weight: 700; 
+                letter-spacing: 0.3px; margin: 1px 0 0; text-transform: uppercase;
             }
-            .cat-cliente-bloco { text-align: right; min-width: 110px; }
-            .cat-cliente-label { font-size: 7px; color: #B0B0B0; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-            .cat-cliente-nome { font-size: 9px; font-weight: 900; color: #1A1A1A; line-height: 1.1; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-            .cat-cliente-data { font-size: 8px; color: #666666; font-weight: 600; }
             .cat-pagnum { font-size: 7px; color: #aaa; font-weight: 600; white-space: nowrap; }
             /* Layout principal: grelha + aviso IVA vertical à direita */
             .cat-body { display: flex; flex: 1; gap: 5px; min-height: 0; }
@@ -3978,15 +3975,15 @@ function irParaCatalogo() {
         <div class="cat-page">
             <div class="cat-header">
                 ${logoTag}
-                <div class="cat-titulo-bloco">
-                    <div class="cat-titulo">ENCOMENDA</div>
-                    <div class="cat-subtitulo">Lista de produtos pedidos</div>
-                </div>
                 <div class="cat-cliente-bloco">
                     <div class="cat-cliente-label">Preparado para</div>
                     <div class="cat-cliente-nome">${clienteNome}</div>
-                    ${clienteMorada ? `<div class="cat-cliente-data" style="font-size:8px;color:#555;">${clienteMorada}</div>` : ''}
+                    ${clienteMorada ? `<div class="cat-cliente-data">${clienteMorada}</div>` : ''}
                     <div class="cat-cliente-data">${hoje}</div>
+                </div>
+                <div class="cat-titulo-bloco">
+                    <div class="cat-titulo">ENCOMENDA</div>
+                    <div class="cat-subtitulo">Lista de produtos</div>
                     ${totalPags > 1 ? `<div class="cat-pagnum">Pág. ${pi+1}/${totalPags}</div>` : ''}
                 </div>
             </div>
@@ -4036,7 +4033,56 @@ function irParaCatalogo() {
     html += `</div>`; // fecha cat-wrap
 
     document.getElementById('ticket-area').innerHTML = html;
+
+    // ── BOTÃO WHATSAPP — adicionar à barra inferior do ecrã m4
+    setTimeout(() => {
+        const existing = document.getElementById('btn-wa-encomenda');
+        if(existing) existing.remove();
+        const waBtn = document.createElement('button');
+        waBtn.id = 'btn-wa-encomenda';
+        waBtn.style.cssText = `
+            position:fixed; bottom:64px; left:50%; transform:translateX(-50%);
+            background:#25D366; color:white; border:none; border-radius:24px;
+            padding:11px 22px; font-size:13px; font-weight:700; cursor:pointer;
+            display:flex; align-items:center; gap:8px; z-index:3000;
+            box-shadow:0 4px 16px rgba(37,211,102,0.4); white-space:nowrap;
+            font-family:'Montserrat',sans-serif;`;
+        waBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Enviar Encomenda WhatsApp`;
+        waBtn.onclick = () => enviarEncomendaWhatsApp();
+        document.body.appendChild(waBtn);
+    }, 100);
+
     nav('m4');
+}
+
+function enviarEncomendaWhatsApp() {
+    const numero = '+351967925745';
+    const cliente = CLI_ATUAL ? CLI_ATUAL.nome : 'Cliente';
+    const hoje = new Date().toLocaleDateString('pt-PT');
+    const itens = Object.values(CART).filter(i => i.q > 0).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
+    if(!itens.length) { alert('Carrinho vazio'); return; }
+
+    let total = 0;
+    let lastCat = '';
+    let linhas = [`🛒 *ENCOMENDA — ${cliente}*`, `📅 ${hoje}`, ''];
+
+    itens.forEach(it => {
+        if(it.cat !== lastCat) {
+            lastCat = it.cat;
+            linhas.push(`📦 *${it.cat}*`);
+        }
+        const sub = it.q * (it.precoCustom ?? it.preco);
+        total += sub;
+        linhas.push(`  ${it.q}x ${it.nomeCustom || it.nome} — ${sub.toFixed(2)}€`);
+    });
+
+    linhas.push('');
+    linhas.push(`💰 *TOTAL: ${total.toFixed(2)} €*`);
+
+    const msg = encodeURIComponent(linhas.join('\n'));
+    const url = `https://wa.me/${numero.replace('+','')}?text=${msg}`;
+    window.open(url, '_blank');
 }
 
 // PROTEÇÃO ANTI-SAÍDA ACIDENTAL ==========
