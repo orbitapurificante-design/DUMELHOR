@@ -4047,8 +4047,8 @@ function irParaCatalogo() {
             display:flex; align-items:center; gap:8px; z-index:3000;
             box-shadow:0 4px 16px rgba(230,0,0,0.35); white-space:nowrap;
             font-family:'Montserrat',sans-serif;`;
-        waBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-            Gerar PDF &amp; Enviar WhatsApp`;
+        waBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Gerar PDF &amp; WhatsApp`;
         waBtn.onclick = () => gerarPdfEncomenda();
         document.body.appendChild(waBtn);
     }, 100);
@@ -4058,119 +4058,128 @@ function irParaCatalogo() {
 
 function gerarPdfEncomenda() {
     const cliente = CLI_ATUAL ? CLI_ATUAL.nome : 'Cliente';
-    const morada = CLI_ATUAL ? [(CLI_ATUAL.morada||''), (CLI_ATUAL.localidade||'')].filter(Boolean).join(', ') : '';
+    const morada = CLI_ATUAL ? [(CLI_ATUAL.morada||''),(CLI_ATUAL.localidade||'')].filter(Boolean).join(', ') : '';
     const hoje = new Date().toLocaleDateString('pt-PT');
     const itens = Object.values(CART).filter(i => i.q > 0)
         .sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
     if(!itens.length) { alert('Carrinho vazio'); return; }
 
-    // ── Gerar HTML do PDF numa janela nova e chamar print()
-    let total = 0;
-    let lastCat = '';
-    let linhasHtml = '';
+    // Carregar jsPDF dinamicamente
+    const btn = document.getElementById('btn-wa-encomenda');
+    if(btn) { btn.textContent = '⏳ A gerar PDF...'; btn.disabled = true; }
 
-    itens.forEach(it => {
-        if(it.cat !== lastCat) {
-            lastCat = it.cat;
-            linhasHtml += `
-                <tr class="cat-row">
-                    <td colspan="4" style="background:#E60000;color:white;font-size:9px;font-weight:700;padding:4px 8px;letter-spacing:1px;text-transform:uppercase;">${it.cat}</td>
-                </tr>`;
-        }
-        const preco = it.precoCustom ?? it.preco;
-        const sub = it.q * preco;
-        total += sub;
-        linhasHtml += `
-            <tr>
-                <td style="padding:5px 8px;font-size:10px;color:#333;border-bottom:1px solid #f0f0f0;">${it.nomeCustom||it.nome}</td>
-                <td style="padding:5px 8px;font-size:10px;text-align:center;border-bottom:1px solid #f0f0f0;">${it.q}</td>
-                <td style="padding:5px 8px;font-size:10px;text-align:right;border-bottom:1px solid #f0f0f0;">${preco.toFixed(2)}€</td>
-                <td style="padding:5px 8px;font-size:10px;text-align:right;font-weight:700;color:#E60000;border-bottom:1px solid #f0f0f0;">${sub.toFixed(2)}€</td>
-            </tr>`;
+    function carregarScript(url, cb) {
+        if(document.querySelector(`script[src="${url}"]`)) { cb(); return; }
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = cb;
+        s.onerror = () => { alert('Erro ao carregar biblioteca PDF. Verifique a ligação à internet.'); if(btn){btn.textContent='Gerar PDF & WhatsApp';btn.disabled=false;} };
+        document.head.appendChild(s);
+    }
+
+    carregarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', () => {
+        carregarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js', () => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+
+                // ── Cabeçalho
+                doc.setFillColor(230, 0, 0);
+                doc.rect(0, 0, 210, 22, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18); doc.setFont('helvetica','bold');
+                doc.text('ENCOMENDA', 12, 14);
+                doc.setFontSize(7); doc.setFont('helvetica','normal');
+                doc.text('Dumelhor Pro', 12, 19);
+
+                // Cliente (direita)
+                doc.setFontSize(9); doc.setFont('helvetica','bold');
+                doc.text(cliente, 198, 10, {align:'right'});
+                doc.setFontSize(7); doc.setFont('helvetica','normal');
+                if(morada) doc.text(morada, 198, 15, {align:'right'});
+                doc.text(hoje, 198, 20, {align:'right'});
+
+                // ── Tabela de produtos
+                let total = 0;
+                const body = [];
+                let lastCat = '';
+
+                itens.forEach(it => {
+                    if(it.cat !== lastCat) {
+                        lastCat = it.cat;
+                        body.push([{content: it.cat.toUpperCase(), colSpan:4,
+                            styles:{fillColor:[26,26,26], textColor:[255,255,255],
+                            fontStyle:'bold', fontSize:7, cellPadding:2}}]);
+                    }
+                    const preco = it.precoCustom ?? it.preco;
+                    const sub = it.q * preco;
+                    total += sub;
+                    body.push([
+                        it.nomeCustom || it.nome,
+                        String(it.q),
+                        preco.toFixed(2) + '€',
+                        sub.toFixed(2) + '€'
+                    ]);
+                });
+
+                // Linha total
+                body.push([{
+                    content: `TOTAL — ${itens.length} artigos`,
+                    colSpan: 2,
+                    styles:{fillColor:[230,0,0], textColor:[255,255,255], fontStyle:'bold', fontSize:10}
+                },{
+                    content: total.toFixed(2) + ' €',
+                    colSpan: 2,
+                    styles:{fillColor:[230,0,0], textColor:[255,255,255], fontStyle:'bold', fontSize:10, halign:'right'}
+                }]);
+
+                doc.autoTable({
+                    startY: 26,
+                    head: [[
+                        {content:'Produto', styles:{halign:'left'}},
+                        {content:'Qtd', styles:{halign:'center'}},
+                        {content:'Preço Unit.', styles:{halign:'right'}},
+                        {content:'Total', styles:{halign:'right'}}
+                    ]],
+                    body: body,
+                    columnStyles: {
+                        0: {cellWidth:'auto'},
+                        1: {cellWidth:14, halign:'center'},
+                        2: {cellWidth:28, halign:'right'},
+                        3: {cellWidth:28, halign:'right'}
+                    },
+                    headStyles: {fillColor:[26,26,26], textColor:[255,255,255], fontStyle:'bold', fontSize:8},
+                    bodyStyles: {fontSize:8, cellPadding:2.5},
+                    alternateRowStyles: {fillColor:[250,250,250]},
+                    margin: {left:8, right:8},
+                    didDrawPage: (data) => {
+                        // Rodapé
+                        doc.setFontSize(6); doc.setTextColor(170,170,170);
+                        doc.text(`Encomenda gerada a ${hoje} · Dumelhor Pro`,
+                            105, 290, {align:'center'});
+                    }
+                });
+
+                // ── Guardar PDF e abrir WhatsApp
+                const nomeFicheiro = `Encomenda_${cliente.replace(/\s+/g,'_')}_${hoje.replace(/\//g,'-')}.pdf`;
+                doc.save(nomeFicheiro);
+
+                // WhatsApp com mensagem após breve delay (para o download iniciar)
+                setTimeout(() => {
+                    const msg = encodeURIComponent(
+                        `Olá! Envio a encomenda de *${cliente}* — ${hoje}.\n*Total: ${total.toFixed(2)} €*\n_(PDF em anexo — Dumelhor Pro)_`
+                    );
+                    window.open(`https://wa.me/351967925745?text=${msg}`, '_blank');
+                }, 800);
+
+            } catch(err) {
+                console.error(err);
+                alert('Erro ao gerar PDF: ' + err.message);
+            } finally {
+                if(btn) { btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Gerar PDF &amp; WhatsApp`; btn.disabled = false; }
+            }
+        });
     });
-
-    const nomeArquivo = `Encomenda_${cliente.replace(/\s+/g,'_')}_${hoje.replace(/\//g,'-')}.pdf`;
-
-    const htmlPdf = `<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<title>Encomenda — ${cliente}</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Montserrat',Arial,sans-serif; background:#fff; color:#333; font-size:11px; }
-  .page { width:210mm; min-height:297mm; padding:14mm 12mm; }
-  .header { display:flex; align-items:flex-start; justify-content:space-between; border-bottom:3px solid #E60000; padding-bottom:10px; margin-bottom:14px; }
-  .header-left h1 { font-size:22px; font-weight:900; color:#E60000; letter-spacing:1px; }
-  .header-left p { font-size:9px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-top:2px; }
-  .header-right { text-align:right; }
-  .header-right .label { font-size:8px; color:#aaa; text-transform:uppercase; letter-spacing:1px; font-weight:700; }
-  .header-right .cliente { font-size:14px; font-weight:900; color:#1A1A1A; margin-top:2px; }
-  .header-right .sub { font-size:10px; color:#666; margin-top:1px; }
-  table { width:100%; border-collapse:collapse; margin-top:4px; }
-  thead tr { background:#1A1A1A; }
-  thead td { color:white; font-size:9px; font-weight:700; padding:6px 8px; text-transform:uppercase; letter-spacing:0.5px; }
-  .total-row td { background:#E60000; color:white; font-size:12px; font-weight:900; padding:8px; text-align:right; }
-  .total-row td:first-child { text-align:left; }
-  .footer { margin-top:20px; border-top:1px solid #eee; padding-top:8px; font-size:8px; color:#aaa; text-align:center; }
-  @media print {
-    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .page { padding:10mm; }
-  }
-</style>
-</head>
-<body>
-<div class="page">
-  <div class="header">
-    <div class="header-left">
-      <h1>ENCOMENDA</h1>
-      <p>Dumelhor Pro — Lista de produtos</p>
-    </div>
-    <div class="header-right">
-      <div class="label">Preparado para</div>
-      <div class="cliente">${cliente}</div>
-      ${morada ? `<div class="sub">${morada}</div>` : ''}
-      <div class="sub">${hoje}</div>
-    </div>
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <td style="width:52%;">Produto</td>
-        <td style="width:10%;text-align:center;">Qtd</td>
-        <td style="width:18%;text-align:right;">Preço Unit.</td>
-        <td style="width:20%;text-align:right;">Total</td>
-      </tr>
-    </thead>
-    <tbody>
-      ${linhasHtml}
-      <tr class="total-row">
-        <td colspan="2">TOTAL — ${itens.length} artigos</td>
-        <td colspan="2">${total.toFixed(2)} €</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="footer">Encomenda gerada a ${hoje} · Dumelhor Pro</div>
-</div>
-<script>window.onload=function(){window.print();}<\/script>
-</body>
-</html>`;
-
-    // Abrir janela de impressão/PDF
-    const win = window.open('', '_blank', 'width=800,height=900');
-    if(!win) { alert('Active os popups no browser para gerar o PDF.'); return; }
-    win.document.write(htmlPdf);
-    win.document.close();
-
-    // Depois de 2s abrir WhatsApp com mensagem
-    setTimeout(() => {
-        const numero = '351967925745';
-        const msg = encodeURIComponent(
-            `Olá! Segue em anexo a encomenda de *${cliente}* — ${hoje}.\nTotal: ${total.toFixed(2)} €\n_(PDF gerado pela app Dumelhor)_`
-        );
-        window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
-    }, 2000);
 }
 
 // PROTEÇÃO ANTI-SAÍDA ACIDENTAL ==========
