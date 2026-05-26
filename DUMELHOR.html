@@ -1522,6 +1522,9 @@ function nav(id) {
         if(!LOJA_RENDERIZADA) {
             renderLoja();
             LOJA_RENDERIZADA = true;
+        } else {
+            // Loja já renderizada: sincronizar badges com CART atual
+            sincronizarBadgesCart();
         }
 
     } else {
@@ -2435,13 +2438,10 @@ function novoPedido() {
     document.getElementById('painel-sem-resultado').style.display = 'none';
     document.getElementById('in-cli-search').value = "";
     document.getElementById('obs-pedido-final').value = "";
-    document.getElementById('cart-badge').textContent = '0';
-    document.getElementById('cart-badge').style.display = 'none';
     const busca = document.getElementById('in-busca');
     if(busca) busca.value = '';
-    document.querySelectorAll('.b-qty').forEach(el => { el.innerText = '0'; el.style.display = 'none'; });
-    LOJA_RENDERIZADA = false;
-    renderLoja();
+    limparCartUI();
+    nav('m2');
     atualizarBotaoDumelhor();
 }
 
@@ -3247,18 +3247,24 @@ function abrirModalCli() { novoClienteLimpar(); document.getElementById('modal-c
 function fecharModalCli() { document.getElementById('modal-cli').style.display='none'; }
 function novoClienteLimpar() { let proximo = 1; if(CLIENTES_DB.length > 0) proximo = Math.max(...CLIENTES_DB.map(c => parseInt(c.num) || 0)) + 1; document.getElementById('cli-num').value = proximo; ['cli-nome','cli-morada','cli-localidade','cli-contato','cli-pessoa','cli-obs'].forEach(id => document.getElementById(id).value = ''); document.getElementById('cli-dia-visita').value = ''; document.getElementById('cli-frequencia').value = 'semanal'; updateFrequenciaCliButtons(); }
 function apagarCliente() { let num = document.getElementById('cli-num').value; if(confirm("Apagar?")) { CLIENTES_DB = CLIENTES_DB.filter(c => c.num != num); localStorage.setItem('DM_CLIENTES_V11', JSON.stringify(CLIENTES_DB)); novoClienteLimpar(); } }
+// ── Limpa toda a UI do carrinho (badges m2 + catálogo + badge topo) ──
+function limparCartUI() {
+    document.querySelectorAll('.b-qty, [id^="qty-cat-"]').forEach(el => { el.textContent = '0'; el.style.display = 'none'; });
+    const badge = document.getElementById('cart-badge');
+    if(badge) { badge.textContent = '0'; badge.style.display = 'none'; }
+    // Forçar re-render completo da loja para garantir que não sobram bolinhas
+    LOJA_RENDERIZADA = false;
+}
+
 function limparTudoPosGravacao() { 
     CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null;
     LINHAS_MANUAIS = [];
     MARCA_ATIVA = null;
     document.getElementById('in-cli-search').value=""; 
     document.getElementById('obs-pedido-final').value=""; 
-    document.getElementById('cart-badge').textContent = '0';
-    document.getElementById('cart-badge').style.display = 'none'; 
-    // Limpar badges dos produtos na loja sem re-render
-    document.querySelectorAll('.b-qty').forEach(el => { el.innerText = '0'; el.style.display = 'none'; });
     document.getElementById('painel-sem-resultado').style.display = 'none';
-    nav('m2'); // Volta para produtos (pronto para novo pedido)
+    limparCartUI();
+    nav('m2'); // Volta para produtos — renderLoja() corre aqui com CART vazio
 }
 function limparTudo() { 
     if(confirm("Limpar pedido?")) { 
@@ -3267,10 +3273,8 @@ function limparTudo() {
         MARCA_ATIVA = null;
         document.getElementById('in-cli-search').value = ""; 
         document.getElementById('obs-pedido-final').value=""; 
-        document.getElementById('cart-badge').textContent = '0';
-        document.getElementById('cart-badge').style.display = 'none'; 
-        document.querySelectorAll('.b-qty').forEach(el => { el.innerText = '0'; el.style.display = 'none'; });
         document.getElementById('painel-sem-resultado').style.display = 'none';
+        limparCartUI();
         nav('m2'); 
     } 
 }
@@ -3547,7 +3551,39 @@ function eliminarPedido(id) {
     alert("Pedido eliminado!" + (manterCardex ? " Produtos mantidos no cardex." : ""));
     abrirGestao(); 
 }
-function editarPedido(id) { let p = PEDIDOS_DB.find(x => x.id === id); PEDIDO_EDIT_ID = id; CLI_ATUAL = p.cliente; CART = JSON.parse(JSON.stringify(p.itens)); document.getElementById('obs-pedido-final').value = p.obs || ""; document.getElementById('in-cli-search').value = CLI_ATUAL.nome; nav('m3'); }
+function editarPedido(id) {
+    let p = PEDIDOS_DB.find(x => x.id === id);
+    if(!p) return;
+    // Primeiro limpa toda a UI (caso haja outro pedido a meio)
+    limparCartUI();
+    PEDIDO_EDIT_ID = id;
+    CLI_ATUAL = p.cliente;
+    CART = JSON.parse(JSON.stringify(p.itens));
+    document.getElementById('obs-pedido-final').value = p.obs || "";
+    document.getElementById('in-cli-search').value = CLI_ATUAL.nome;
+    // Sincronizar badges b-qty e qty-cat- com as qtds do pedido
+    sincronizarBadgesCart();
+    nav('m3');
+}
+
+// Sincroniza os badges visuais do M2/catálogo com o CART atual
+function sincronizarBadgesCart() {
+    // Primeiro zera tudo
+    document.querySelectorAll('.b-qty, [id^="qty-cat-"]').forEach(el => { el.textContent = '0'; el.style.display = 'none'; });
+    // Depois aplica as qtds do CART
+    Object.entries(CART).forEach(([id, item]) => {
+        const q = item.q || 0;
+        if(q <= 0) return;
+        const b1 = document.getElementById('qty-' + id);
+        if(b1) { b1.textContent = q; b1.style.display = 'flex'; }
+        const b2 = document.getElementById('qty-cat-' + id);
+        if(b2) { b2.textContent = q; b2.style.display = 'flex'; }
+    });
+    // Badge topo
+    const total = Object.values(CART).reduce((a, i) => a + (i.q||0), 0);
+    const badge = document.getElementById('cart-badge');
+    if(badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
+}
 function reimprimir(id) { let p = PEDIDOS_DB.find(x => x.id === id); CLI_ATUAL = p.cliente; CART = p.itens; document.getElementById('obs-pedido-final').value = p.obs || ""; PRINT_SOURCE = 'm5'; irParaPrintCompacto(); }
 function reimprimirCompacto(id) { let p = PEDIDOS_DB.find(x => x.id === id); CLI_ATUAL = p.cliente; CART = p.itens; document.getElementById('obs-pedido-final').value = p.obs || ""; PRINT_SOURCE = 'm5'; irParaPrintCompacto(); }
 
