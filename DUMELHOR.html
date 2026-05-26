@@ -10,8 +10,6 @@
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DUMELHOR PRO V32 ENHANCED</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -43,11 +41,7 @@
             --accent-ok: #00A651;  /* green for save/confirm */
         }
 
-        /* ── ESQUEMA LARES: laranja / cinza / branco ── */
-        /* Famílias neon cinza sobre fundo branco */
-        /* Cards brancos com sombra suave */
-
-        /* ── ESQUEMA RESTAURAÇÃO: branco / cinza / preto ── */
+        
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         html { scroll-padding-top: 70px; }
@@ -419,10 +413,6 @@
             margin-right: 2px;
         }
         .fam-arrow-cardex { color: #999; float: right; font-size: 10px; }
-            background: #E60000;
-            border-color: #E60000;
-            color: white;
-        }
         
         /* Resumo total no carrinho */
         #cart-list-content .resumo-table {
@@ -716,7 +706,6 @@
     <!-- INPUTS DE ARQUIVO movidos para o final do body -->
 </div>
 
-<div id="m1" class="screen" style="display:none!important;"></div>
 
 <!-- ECRÃ DE SPLASH -->
 <div id="splash" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:linear-gradient(160deg,#1A1A1A 0%,#1A1A1A 60%,#1A1A1A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;">
@@ -1501,10 +1490,6 @@ function nav(id) {
         header.style.display = '';
     }
     
-    // Esconder botão scroll quando no M1
-    const btnScroll = document.getElementById('btn-scroll-toggle');
-    if(btnScroll) btnScroll.style.display = (id === 'm2') ? 'flex' : 'none';
-    
     // Gerir botão leitor código de barras
     const btnBarcode = document.getElementById('btn-barcode');
     if(btnBarcode) btnBarcode.style.display = (id === 'm2') ? 'flex' : 'none';
@@ -1538,9 +1523,8 @@ function nav(id) {
             renderLoja();
             LOJA_RENDERIZADA = true;
         }
-        if(window.resetScrollTimer) window.resetScrollTimer();
+
     } else {
-        if(window.stopAutoScroll) window.stopAutoScroll();
         if(id === 'm_pag') { 
             document.getElementById('pag-data').valueAsDate = new Date();
             atualizarLabelDataPag();
@@ -1626,9 +1610,6 @@ function debounceRender() {
             const busca = document.getElementById('in-busca').value.trim();
             if(busca) {
                 window.scrollTo({ top: 0, behavior: 'instant' });
-                if(window.resetScrollTimer) window.resetScrollTimer(10000);
-            } else {
-                if(window.resetScrollTimer) window.resetScrollTimer(2000);
             }
         }
     }, 100); 
@@ -2454,6 +2435,7 @@ function novoPedido() {
     document.getElementById('painel-sem-resultado').style.display = 'none';
     document.getElementById('in-cli-search').value = "";
     document.getElementById('obs-pedido-final').value = "";
+    document.getElementById('cart-badge').textContent = '0';
     document.getElementById('cart-badge').style.display = 'none';
     const busca = document.getElementById('in-busca');
     if(busca) busca.value = '';
@@ -3267,21 +3249,28 @@ function novoClienteLimpar() { let proximo = 1; if(CLIENTES_DB.length > 0) proxi
 function apagarCliente() { let num = document.getElementById('cli-num').value; if(confirm("Apagar?")) { CLIENTES_DB = CLIENTES_DB.filter(c => c.num != num); localStorage.setItem('DM_CLIENTES_V11', JSON.stringify(CLIENTES_DB)); novoClienteLimpar(); } }
 function limparTudoPosGravacao() { 
     CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null;
+    LINHAS_MANUAIS = [];
+    MARCA_ATIVA = null;
     document.getElementById('in-cli-search').value=""; 
     document.getElementById('obs-pedido-final').value=""; 
+    document.getElementById('cart-badge').textContent = '0';
     document.getElementById('cart-badge').style.display = 'none'; 
     // Limpar badges dos produtos na loja sem re-render
     document.querySelectorAll('.b-qty').forEach(el => { el.innerText = '0'; el.style.display = 'none'; });
+    document.getElementById('painel-sem-resultado').style.display = 'none';
     nav('m2'); // Volta para produtos (pronto para novo pedido)
 }
 function limparTudo() { 
     if(confirm("Limpar pedido?")) { 
         CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; 
+        LINHAS_MANUAIS = [];
+        MARCA_ATIVA = null;
         document.getElementById('in-cli-search').value = ""; 
         document.getElementById('obs-pedido-final').value=""; 
+        document.getElementById('cart-badge').textContent = '0';
         document.getElementById('cart-badge').style.display = 'none'; 
-        // Limpar badges dos produtos na loja sem re-render
         document.querySelectorAll('.b-qty').forEach(el => { el.innerText = '0'; el.style.display = 'none'; });
+        document.getElementById('painel-sem-resultado').style.display = 'none';
         nav('m2'); 
     } 
 }
@@ -4223,15 +4212,7 @@ window.addEventListener('load', function() {
 
 renderLoja();
 
-// ── Stubs do scroll automático (removido) ──
-window.startAutoScroll = function() {};
-window.stopAutoScroll = function() {};
-window.resetScrollTimer = function() {};
-function toggleScrollAutomatico() {}
-function handleScrollSwipe() {}
-function stopScrollSwipe() {}
-function mudarVelocidadeScroll() {}
-function atualizarSetasVisuais() {}
+// scroll automático removido
 
 
 
