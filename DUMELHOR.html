@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="DUMELHOR">
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DUMELHOR PRO V32 ENHANCED</title>
+    <title>DUMELHOR PRO V33 IDB</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -1227,28 +1227,12 @@
 <input type="file" id="f-backup" accept=".json" style="display:none">
 
 <script>
-// ── DADOS PERSISTENTES: Excel, clientes, fotos e pedidos ficam guardados no localStorage do browser.
-// Atualizar o HTML no GitHub NÃO apaga estes dados — ficam sempre no browser do dispositivo.
-let DADOS = JSON.parse(localStorage.getItem('DM_PRODUTOS_AUTO')) || [];
-let IMGS = new Map(), CART = {}, CLI_ATUAL = null, FAM_ESTADOS = {}, FAM_CARDEX = {};
-let PEDIDOS_DB = JSON.parse(localStorage.getItem('DM_PEDIDOS_V11') || "[]");
-let CLIENTES_DB = JSON.parse(localStorage.getItem('DM_CLIENTES_V11') || "[]");
-CLIENTES_DB = CLIENTES_DB.map(c => ({ ...c, frequencia: (c.frequencia || 'semanal').toLowerCase() }));
-let PAGAMENTOS_DB = JSON.parse(localStorage.getItem('DM_PAGAMENTOS_V2') || "[]");
-let CARDEX_CLIENTES = JSON.parse(localStorage.getItem('DM_CARDEX_CLIENTES') || "{}");
-let CARDEX_EXCLUIDOS = JSON.parse(localStorage.getItem('DM_CARDEX_EX') || "{}"); // produtos excluídos do cardex por cliente
-let ULTIMOS_PEDIDOS = JSON.parse(localStorage.getItem('DM_ULTIMO_PEDIDO') || '{}');
-// Reconstruir a partir de pedidos existentes (migração de dados antigos)
-(function() {
-    if(Object.keys(ULTIMOS_PEDIDOS).length === 0 && PEDIDOS_DB.length > 0) {
-        PEDIDOS_DB.forEach(p => {
-            const n = String(p.cliente.num);
-            if(!ULTIMOS_PEDIDOS[n]) ULTIMOS_PEDIDOS[n] = p.data;
-        });
-        localStorage.setItem('DM_ULTIMO_PEDIDO', JSON.stringify(ULTIMOS_PEDIDOS));
-    }
-})();
-let MARCAS_CONFIG = JSON.parse(localStorage.getItem('DM_MARCAS_CONFIG') || '["TREVI","MILKA","DULCESOL","EDUBOM","MILANEZA","HIPERD","COMPAL","JUVER","WIKINGER","DIATOSTA","KNORR","NESTLE","BOCK CERVEJA","COCA COLA","VIDAL","CIRIO","FUN","PLOK","AMALFI","VILEDA","SCOTCH-BRITE","NIVEA","EVAX","CASA BELLA","JOKER","DENIM","AXE","SAYMA","MISTOLIN","AJAX","GILLETTE","VINHO","WHISKY","ARROZ","OLEO","AZEITE","FARINHA","ROLL-ON","SACOS LIXO","ROUPA"]');
+// ── DADOS PERSISTENTES v33: tudo guardado em IndexedDB (sobrevive a limpeza do Chrome)
+let DADOS = [], IMGS = new Map(), CART = {}, CLI_ATUAL = null, FAM_ESTADOS = {}, FAM_CARDEX = {};
+let PEDIDOS_DB = [], CLIENTES_DB = [], PAGAMENTOS_DB = [];
+let CARDEX_CLIENTES = {}, CARDEX_EXCLUIDOS = {}, ULTIMOS_PEDIDOS = {};
+let MARCAS_CONFIG = ["TREVI","MILKA","DULCESOL","EDUBOM","MILANEZA","HIPERD","COMPAL","JUVER","WIKINGER","DIATOSTA","KNORR","NESTLE","BOCK CERVEJA","COCA COLA","VIDAL","CIRIO","FUN","PLOK","AMALFI","VILEDA","SCOTCH-BRITE","NIVEA","EVAX","CASA BELLA","JOKER","DENIM","AXE","SAYMA","MISTOLIN","AJAX","GILLETTE","VINHO","WHISKY","ARROZ","OLEO","AZEITE","FARINHA","ROLL-ON","SACOS LIXO","ROUPA"];
+let IDB_VISITAS_SEMANA = {};
 let MARCA_ATIVA = null;
 let PAGINA_CARRINHO = 0;
 let MARCAS_MENU_ABERTO = false;
@@ -1256,23 +1240,102 @@ let renderTimeout, db, BUSCA_DESTINO = 'VENDA';
 let ULTIMO_PRODUTO_ID = null;
 let PRINT_SOURCE = 'm3';
 let FOTOS_ORDEM = 'nome'; // 'nome' ou 'tamanho'
-let PEDIDO_EDIT_ID = null; // ID do pedido em edição
-let FILTRO_SEGMENTO = null; // null = todos, 'restauracao' = só restauração
-let M2_COLUNAS = parseInt(localStorage.getItem('DM_M2_COLUNAS') || '2');
+let PEDIDO_EDIT_ID = null;
+let FILTRO_SEGMENTO = null;
+let M2_COLUNAS = 2;
 
-const request = indexedDB.open("DM_FOTOS_DB", 2);
+const request = indexedDB.open("DM_FOTOS_DB", 3);
 request.onupgradeneeded = e => {
-    const db = e.target.result;
-    if(!db.objectStoreNames.contains("fotos")) {
-        db.createObjectStore("fotos");
-    }
+    const idb = e.target.result;
+    if(!idb.objectStoreNames.contains("fotos")) idb.createObjectStore("fotos");
+    if(!idb.objectStoreNames.contains("dados")) idb.createObjectStore("dados");
 };
 request.onsuccess = e => {
     db = e.target.result;
     setSplash('A carregar dados...', 20);
-    carregarFotosDaMemoria();
-
+    iniciarDados();
 };
+
+// ── IndexedDB helpers para dados persistentes ──
+function dbSave(key, value) {
+    if(!db) return;
+    const tx = db.transaction("dados", "readwrite");
+    tx.objectStore("dados").put(value, key);
+}
+function dbGet(key) {
+    return new Promise((resolve) => {
+        if(!db) { resolve(null); return; }
+        const tx = db.transaction("dados", "readonly");
+        const req = tx.objectStore("dados").get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => resolve(null);
+    });
+}
+function dbGetAll(keys) {
+    return Promise.all(keys.map(k => dbGet(k)));
+}
+
+// ── Migrar dados do localStorage para IndexedDB (uma única vez) ──
+async function migrarLocalStorage() {
+    const migKeys = [
+        'DM_PRODUTOS_AUTO','DM_PEDIDOS_V11','DM_CLIENTES_V11','DM_PAGAMENTOS_V2',
+        'DM_CARDEX_CLIENTES','DM_CARDEX_EX','DM_ULTIMO_PEDIDO','DM_MARCAS_CONFIG',
+        'DM_M2_COLUNAS','DM_VISITAS_SEMANA','DM_VENDEDOR','DM_EMPRESA',
+        'DM_MORADA','DM_NIF','DM_SEGMENTO'
+    ];
+    let migrou = false;
+    for(const key of migKeys) {
+        const val = localStorage.getItem(key);
+        if(val !== null) {
+            // Verificar se já existe no IDB
+            const existe = await dbGet(key);
+            if(existe === null) {
+                try { dbSave(key, JSON.parse(val)); } catch(e) { dbSave(key, val); }
+                migrou = true;
+            }
+            localStorage.removeItem(key); // limpar localStorage
+        }
+    }
+    if(migrou) console.log('✅ Dados migrados de localStorage para IndexedDB');
+}
+
+async function iniciarDados() {
+    setSplash('A migrar dados...', 15);
+    await migrarLocalStorage();
+    setSplash('A carregar dados...', 20);
+
+    // Carregar todos os dados do IndexedDB
+    const [
+        produtos, pedidos, clientes, pagamentos, cardex, cardexEx,
+        ultimosPedidos, marcasConfig, m2colunas, visitasSemana
+    ] = await dbGetAll([
+        'DM_PRODUTOS_AUTO','DM_PEDIDOS_V11','DM_CLIENTES_V11','DM_PAGAMENTOS_V2',
+        'DM_CARDEX_CLIENTES','DM_CARDEX_EX','DM_ULTIMO_PEDIDO','DM_MARCAS_CONFIG',
+        'DM_M2_COLUNAS','DM_VISITAS_SEMANA'
+    ]);
+
+    DADOS = produtos || [];
+    PEDIDOS_DB = pedidos || [];
+    CLIENTES_DB = (clientes || []).map(c => ({ ...c, frequencia: (c.frequencia || 'semanal').toLowerCase() }));
+    PAGAMENTOS_DB = pagamentos || [];
+    CARDEX_CLIENTES = cardex || {};
+    CARDEX_EXCLUIDOS = cardexEx || {};
+    ULTIMOS_PEDIDOS = ultimosPedidos || {};
+    if(marcasConfig) MARCAS_CONFIG = marcasConfig;
+    if(m2colunas) M2_COLUNAS = parseInt(m2colunas) || 2;
+    IDB_VISITAS_SEMANA = visitasSemana || {};
+
+    // Reconstruir ULTIMOS_PEDIDOS se vazio
+    if(Object.keys(ULTIMOS_PEDIDOS).length === 0 && PEDIDOS_DB.length > 0) {
+        PEDIDOS_DB.forEach(p => {
+            const n = String(p.cliente.num);
+            if(!ULTIMOS_PEDIDOS[n]) ULTIMOS_PEDIDOS[n] = p.data;
+        });
+        dbSave('DM_ULTIMO_PEDIDO', ULTIMOS_PEDIDOS);
+    }
+
+    carregarFotosDaMemoria();
+}
 
 function carregarFotosDaMemoria() {
     // Pré-mapear botões de menu (evita querySelectorAll em cada foto)
@@ -2419,7 +2482,7 @@ document.getElementById('f-excel').onchange = e => {
             colN: String(r[13]||"").trim().toLowerCase(),
             unidades: parseInt(r[7]) || 1 
         })).filter(p => p.nome).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome)); 
-        localStorage.setItem('DM_PRODUTOS_AUTO', JSON.stringify(DADOS)); 
+        dbSave('DM_PRODUTOS_AUTO', DADOS); 
         LOJA_RENDERIZADA = false;
         renderLoja();
         alert("Excel carregado! " + DADOS.length + " produtos.");
@@ -2459,11 +2522,11 @@ function salvarPedido() {
     const dataISO = agora.toISOString().split('T')[0]; // YYYY-MM-DD para ordenação
     const dataStr = agora.toLocaleString('pt-PT');
     PEDIDOS_DB.unshift({ id: Date.now(), cliente: {...CLI_ATUAL}, itens: {...CART}, obs: obs, data: dataStr, dataISO: dataISO }); 
-    localStorage.setItem('DM_PEDIDOS_V11', JSON.stringify(PEDIDOS_DB)); 
+    dbSave('DM_PEDIDOS_V11', PEDIDOS_DB); 
 
     // Guardar data do último pedido por cliente
     ULTIMOS_PEDIDOS[String(CLI_ATUAL.num)] = dataStr;
-    localStorage.setItem('DM_ULTIMO_PEDIDO', JSON.stringify(ULTIMOS_PEDIDOS));
+    dbSave('DM_ULTIMO_PEDIDO', ULTIMOS_PEDIDOS);
 
     contarPedidosDoDia();
     const guardarCardex = confirm("Pedido gravado!\n\nGuardar produtos deste pedido no CARDEX do cliente?\n\nOK = Sim\nCANCELAR = Não");
@@ -2474,7 +2537,7 @@ function salvarPedido() {
             const id = parseInt(idProduto);
             if(!CARDEX_CLIENTES[numCliente].includes(id)) CARDEX_CLIENTES[numCliente].push(id);
         });
-        localStorage.setItem('DM_CARDEX_CLIENTES', JSON.stringify(CARDEX_CLIENTES));
+        dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
     }
     limparTudoPosGravacao(); 
 }
@@ -2650,7 +2713,7 @@ function gravarPagamentoMulti() {
         anulado: false
     });
     
-    localStorage.setItem('DM_PAGAMENTOS_V2', JSON.stringify(PAGAMENTOS_DB));
+    dbSave('DM_PAGAMENTOS_V2', PAGAMENTOS_DB);
     alert("Pagamento Registado!\nSubtotal: " + subtotal.toFixed(2) + "€");
     
     // Limpar formulário
@@ -2676,7 +2739,7 @@ function gravarPagamento() {
         nota: document.getElementById('pag-nota').value || "",
         anulado: false
     });
-    localStorage.setItem('DM_PAGAMENTOS_V2', JSON.stringify(PAGAMENTOS_DB));
+    dbSave('DM_PAGAMENTOS_V2', PAGAMENTOS_DB);
     alert("Pagamento Registado!");
     document.getElementById('pag-cliente').value = "";
     document.getElementById('pag-valor').value = "";
@@ -2814,7 +2877,7 @@ function salvarEdicaoPagamento() {
     let idx = PAGAMENTOS_DB.findIndex(p => p.id === id);
     if(idx > -1) {
         PAGAMENTOS_DB[idx].nota = nota;
-        localStorage.setItem('DM_PAGAMENTOS_V2', JSON.stringify(PAGAMENTOS_DB));
+        dbSave('DM_PAGAMENTOS_V2', PAGAMENTOS_DB);
         alert("Pagamento atualizado!");
         fecharModalEditPag();
         aplicarFiltros();
@@ -2828,7 +2891,7 @@ function anularPagamento(id) {
     let idx = PAGAMENTOS_DB.findIndex(p => p.id === id);
     if(idx > -1) {
         PAGAMENTOS_DB.splice(idx, 1); // Remove completamente
-        localStorage.setItem('DM_PAGAMENTOS_V2', JSON.stringify(PAGAMENTOS_DB));
+        dbSave('DM_PAGAMENTOS_V2', PAGAMENTOS_DB);
         alert("Pagamento eliminado!");
         aplicarFiltros();
     }
@@ -2905,7 +2968,7 @@ function gravarCli() {
     let idx = CLIENTES_DB.findIndex(c => c.num == num); 
     if(idx > -1) CLIENTES_DB[idx] = cli; else CLIENTES_DB.push(cli); 
     CLIENTES_DB = CLIENTES_DB.map(c => ({ ...c, frequencia: (c.frequencia || 'semanal').toLowerCase() }));
-    localStorage.setItem('DM_CLIENTES_V11', JSON.stringify(CLIENTES_DB)); 
+    dbSave('DM_CLIENTES_V11', CLIENTES_DB); 
     alert("Cliente Gravado!"); 
 }
 
@@ -3150,7 +3213,7 @@ function eliminarProdutosSelecionados() {
     if(chaveReal !== null) {
         const idsRemover = Array.from(cardexSelectedProducts).map(Number);
         CARDEX_CLIENTES[chaveReal] = (CARDEX_CLIENTES[chaveReal] || []).filter(id => !idsRemover.includes(Number(id)));
-        localStorage.setItem('DM_CARDEX_CLIENTES', JSON.stringify(CARDEX_CLIENTES));
+        dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
     }
     
     // Sair modo edição
@@ -3178,12 +3241,12 @@ function apagarDoCardex(produtoId) {
             CARDEX_CLIENTES[k] = CARDEX_CLIENTES[k].filter(id => Number(id) !== pid);
         }
     });
-    localStorage.setItem('DM_CARDEX_CLIENTES', JSON.stringify(CARDEX_CLIENTES));
+    dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
 
     // 2) Adicionar à lista de excluídos para bloquear produtos que vêm de pedidos históricos
     if(!CARDEX_EXCLUIDOS[cliKey]) CARDEX_EXCLUIDOS[cliKey] = [];
     if(!CARDEX_EXCLUIDOS[cliKey].includes(pid)) CARDEX_EXCLUIDOS[cliKey].push(pid);
-    localStorage.setItem('DM_CARDEX_EX', JSON.stringify(CARDEX_EXCLUIDOS));
+    dbSave('DM_CARDEX_EX', CARDEX_EXCLUIDOS);
 
     // 3) Remover do carrinho se lá estiver
     if(CART[pid]) { delete CART[pid]; atualizarBadge(); }
@@ -3246,7 +3309,7 @@ function toggleTodasFamiliasCardex() {
 function abrirModalCli() { novoClienteLimpar(); document.getElementById('modal-cli').style.display='flex'; }
 function fecharModalCli() { document.getElementById('modal-cli').style.display='none'; }
 function novoClienteLimpar() { let proximo = 1; if(CLIENTES_DB.length > 0) proximo = Math.max(...CLIENTES_DB.map(c => parseInt(c.num) || 0)) + 1; document.getElementById('cli-num').value = proximo; ['cli-nome','cli-morada','cli-localidade','cli-contato','cli-pessoa','cli-obs'].forEach(id => document.getElementById(id).value = ''); document.getElementById('cli-dia-visita').value = ''; document.getElementById('cli-frequencia').value = 'semanal'; updateFrequenciaCliButtons(); }
-function apagarCliente() { let num = document.getElementById('cli-num').value; if(confirm("Apagar?")) { CLIENTES_DB = CLIENTES_DB.filter(c => c.num != num); localStorage.setItem('DM_CLIENTES_V11', JSON.stringify(CLIENTES_DB)); novoClienteLimpar(); } }
+function apagarCliente() { let num = document.getElementById('cli-num').value; if(confirm("Apagar?")) { CLIENTES_DB = CLIENTES_DB.filter(c => c.num != num); dbSave('DM_CLIENTES_V11', CLIENTES_DB); novoClienteLimpar(); } }
 // ── Limpa toda a UI do carrinho (badges m2 + catálogo + badge topo) ──
 function limparCartUI() {
     document.querySelectorAll('.b-qty, [id^="qty-cat-"]').forEach(el => { el.textContent = '0'; el.style.display = 'none'; });
@@ -3540,12 +3603,12 @@ function eliminarPedido(id) {
         });
         
         // Guardar cardex atualizado
-        localStorage.setItem('DM_CARDEX_CLIENTES', JSON.stringify(CARDEX_CLIENTES));
+        dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
     }
     
     // Remover o pedido
     PEDIDOS_DB = PEDIDOS_DB.filter(x => x.id !== id);
-    localStorage.setItem('DM_PEDIDOS_V11', JSON.stringify(PEDIDOS_DB)); 
+    dbSave('DM_PEDIDOS_V11', PEDIDOS_DB); 
     contarPedidosDoDia();
     
     alert("Pedido eliminado!" + (manterCardex ? " Produtos mantidos no cardex." : ""));
@@ -4488,7 +4551,7 @@ function getDistance(touch1, touch2) {
 
 function aplicarColunasM2(n) {
     M2_COLUNAS = Math.max(1, Math.min(4, n));
-    localStorage.setItem('DM_M2_COLUNAS', M2_COLUNAS);
+    dbSave('DM_M2_COLUNAS', M2_COLUNAS);
     document.querySelectorAll('#loja-dinamica .fam-content').forEach(el => {
         el.style.gridTemplateColumns = `repeat(${M2_COLUNAS}, 1fr)`;
     });
@@ -4575,7 +4638,7 @@ function getDiaAtualSemana() {
 
 function abrirPlanoSemanal() {
     // Carregar marcações da semana
-    const dadosGuardados = JSON.parse(localStorage.getItem('DM_VISITAS_SEMANA') || '{}');
+    const dadosGuardados = IDB_VISITAS_SEMANA || {};
     const semanaGuardada = dadosGuardados.semana || 0;
     const semanaAtual = getSemanaAtual();
     
@@ -4827,7 +4890,7 @@ function marcarVisita(dia, numCliente) {
         semana: getSemanaAtual(),
         marcacoes: VISITAS_MARCADAS
     };
-    localStorage.setItem('DM_VISITAS_SEMANA', JSON.stringify(dadosGuardar));
+    dbSave('DM_VISITAS_SEMANA', dadosGuardar); IDB_VISITAS_SEMANA = dadosGuardar;
     
     renderPlanoSemanal();
 }
@@ -4971,20 +5034,25 @@ if('serviceWorker' in navigator) {
 // ═══════════════════════════════════════════════════════════
 async function exportarBackup() {
     try {
+        const [vendedor, empresa, morada, nif, segmento] = await dbGetAll(
+            ['DM_VENDEDOR','DM_EMPRESA','DM_MORADA','DM_NIF','DM_SEGMENTO']);
         const backup = {
-            versao: 1,
+            versao: 2,
             data: new Date().toISOString(),
-            // Dados do localStorage
-            pedidos: JSON.parse(localStorage.getItem('DM_PEDIDOS_V11') || '[]'),
-            pagamentos: JSON.parse(localStorage.getItem('DM_PAGAMENTOS') || '[]'),
-            clientes: JSON.parse(localStorage.getItem('DM_CLIENTES_V3') || '[]'),
-            produtos: JSON.parse(localStorage.getItem('DM_PRODUTOS_AUTO') || '[]'),
+            pedidos: PEDIDOS_DB,
+            pagamentos: PAGAMENTOS_DB,
+            clientes: CLIENTES_DB,
+            produtos: DADOS,
+            cardex: CARDEX_CLIENTES,
+            cardexEx: CARDEX_EXCLUIDOS,
+            ultimosPedidos: ULTIMOS_PEDIDOS,
+            marcasConfig: MARCAS_CONFIG,
             config: {
-                vendedor: localStorage.getItem('DM_VENDEDOR') || '',
-                empresa: localStorage.getItem('DM_EMPRESA') || '',
-                morada: localStorage.getItem('DM_MORADA') || '',
-                nif: localStorage.getItem('DM_NIF') || '',
-                segmento: localStorage.getItem('DM_SEGMENTO') || '',
+                vendedor: vendedor || '',
+                empresa: empresa || '',
+                morada: morada || '',
+                nif: nif || '',
+                segmento: segmento || '',
             }
         };
 
@@ -4999,7 +5067,6 @@ async function exportarBackup() {
         URL.revokeObjectURL(url);
 
         // Confirmar
-        const total = backup.pedidos.length + backup.pagamentos.length;
         alert('✅ Backup exportado!\n\n' +
               '📦 Pedidos: ' + backup.pedidos.length + '\n' +
               '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
@@ -5018,7 +5085,7 @@ function importarBackup(file) {
             const backup = JSON.parse(e.target.result);
             if(!backup.versao) throw new Error('Ficheiro inválido');
 
-            const pedidosExist = JSON.parse(localStorage.getItem('DM_PEDIDOS_V11') || '[]').length;
+            const pedidosExist = PEDIDOS_DB.length;
             const msg = 'Importar backup de ' + new Date(backup.data).toLocaleDateString('pt-PT') + '?\n\n' +
                 '📦 Pedidos: ' + backup.pedidos.length + '\n' +
                 '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
@@ -5028,17 +5095,21 @@ function importarBackup(file) {
 
             if(!confirm(msg)) return;
 
-            // Restaurar localStorage
-            if(backup.pedidos) localStorage.setItem('DM_PEDIDOS_V11', JSON.stringify(backup.pedidos));
-            if(backup.pagamentos) localStorage.setItem('DM_PAGAMENTOS', JSON.stringify(backup.pagamentos));
-            if(backup.clientes) localStorage.setItem('DM_CLIENTES_V3', JSON.stringify(backup.clientes));
-            if(backup.produtos) localStorage.setItem('DM_PRODUTOS_AUTO', JSON.stringify(backup.produtos));
+            // Restaurar para IndexedDB
+            if(backup.pedidos) dbSave('DM_PEDIDOS_V11', backup.pedidos);
+            if(backup.pagamentos) dbSave('DM_PAGAMENTOS_V2', backup.pagamentos);
+            if(backup.clientes) dbSave('DM_CLIENTES_V11', backup.clientes);
+            if(backup.produtos) dbSave('DM_PRODUTOS_AUTO', backup.produtos);
+            if(backup.cardex) dbSave('DM_CARDEX_CLIENTES', backup.cardex);
+            if(backup.cardexEx) dbSave('DM_CARDEX_EX', backup.cardexEx);
+            if(backup.ultimosPedidos) dbSave('DM_ULTIMO_PEDIDO', backup.ultimosPedidos);
+            if(backup.marcasConfig) dbSave('DM_MARCAS_CONFIG', backup.marcasConfig);
             if(backup.config) {
-                if(backup.config.vendedor) localStorage.setItem('DM_VENDEDOR', backup.config.vendedor);
-                if(backup.config.empresa) localStorage.setItem('DM_EMPRESA', backup.config.empresa);
-                if(backup.config.morada) localStorage.setItem('DM_MORADA', backup.config.morada);
-                if(backup.config.nif) localStorage.setItem('DM_NIF', backup.config.nif);
-                if(backup.config.segmento) localStorage.setItem('DM_SEGMENTO', backup.config.segmento);
+                if(backup.config.vendedor) dbSave('DM_VENDEDOR', backup.config.vendedor);
+                if(backup.config.empresa) dbSave('DM_EMPRESA', backup.config.empresa);
+                if(backup.config.morada) dbSave('DM_MORADA', backup.config.morada);
+                if(backup.config.nif) dbSave('DM_NIF', backup.config.nif);
+                if(backup.config.segmento) dbSave('DM_SEGMENTO', backup.config.segmento);
             }
 
             alert('✅ Backup importado com sucesso!\nA app vai recarregar.');
