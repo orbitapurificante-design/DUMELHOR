@@ -61,8 +61,8 @@
         }
         header.hidden { transform: translateY(-100%); }
         header button[onclick="toggleMenu()"] { 
-            font-size: 44px !important; background: transparent !important; border: none !important; cursor: pointer; 
-            color: white; border-radius: 0; width: 44px; height: 44px; min-width:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1; padding:0;
+            font-size: 26px !important; background: transparent !important; border: none !important; cursor: pointer; 
+            color: white; border-radius: 0; width: 36px; height: 36px; min-width:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1; padding:0;
         }
         .in-cli-search { 
             flex: 1; min-width: 0; width: 0; padding: 6px 10px; border-radius: 20px; font-size: 12px; 
@@ -592,7 +592,7 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:44px; line-height:1; background:transparent; border:none; border-radius:0; cursor:pointer; color:white; width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:0;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:26px; line-height:1; background:transparent; border:none; border-radius:0; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
@@ -2517,9 +2517,14 @@ function novoPedido() {
     document.getElementById('obs-pedido-final').value = "";
     const busca = document.getElementById('in-busca');
     if(busca) busca.value = '';
+    // Fechar menu lateral
+    const menuEl = document.getElementById('side-menu');
+    const overlayEl = document.getElementById('overlay');
+    if(menuEl) menuEl.classList.remove('open');
+    if(overlayEl) overlayEl.classList.remove('active');
+    document.body.style.overflow = '';
     limparCartUI();
-    nav('m2');
-    atualizarBotaoDumelhor();
+    setTimeout(() => { nav('m2'); atualizarBotaoDumelhor(); }, 50);
 }
 
 function salvarPedido() { 
@@ -3648,13 +3653,17 @@ function editarPedido(id) {
     LINHAS_MANUAIS = [];
     document.getElementById('obs-pedido-final').value = p.obs || "";
     document.getElementById('in-cli-search').value = CLI_ATUAL.nome;
-    // Fechar menu se estiver aberto
+    // Fechar menu lateral e overlay se estiverem abertos
     const menuEl = document.getElementById('side-menu');
-    if(menuEl && menuEl.classList.contains('open')) toggleMenu();
-    // Navegar para o carrinho — renderCardexTotal() corre dentro do nav('m3')
-    nav('m3');
-    // Sincronizar badges depois do render (para b-qty no M2 ficarem corretos ao voltar)
-    sincronizarBadgesCart();
+    const overlayEl = document.getElementById('overlay');
+    if(menuEl) menuEl.classList.remove('open');
+    if(overlayEl) overlayEl.classList.remove('active');
+    document.body.style.overflow = '';
+    // Pequeno delay para garantir que o menu fecha antes de navegar
+    setTimeout(() => {
+        nav('m3');
+        sincronizarBadgesCart();
+    }, 50);
 }
 
 // Sincroniza os badges visuais do M2/catálogo com o CART atual
