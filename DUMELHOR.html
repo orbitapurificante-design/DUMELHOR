@@ -644,6 +644,11 @@
         <div style="font-family:'Montserrat',sans-serif; font-size:14px; font-weight:800; color:#FFFFFF; letter-spacing:0.5px;">DUMELHOR PRO</div>
     </div>
     
+    <!-- AVISO BACKUP -->
+    <div style="background:rgba(255,165,0,0.15); border:1px solid rgba(255,165,0,0.4); border-radius:8px; padding:8px 10px; margin-bottom:10px; font-size:10px; color:rgba(255,200,100,0.95); font-weight:600; line-height:1.5; text-align:center;">
+        ⚠️ <b>IMPORTANTE:</b> Antes de limpar dados do Chrome, faz sempre <b>EXPORTAR</b> para guardar tudo (dados + fotos).
+    </div>
+
     <!-- BOTÕES PRINCIPAIS EM GRID -->
     <div class="menu-grid">
         <button class="menu-btn-icon" id="btn-clientes" onclick="nav('m2'); abrirModalCli(); toggleMenu()">
@@ -694,7 +699,7 @@
         <button class="menu-btn-icon" onclick="exportarBackup(); toggleMenu()">
             <img class="btn-img" data-nome="backup.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">💾</div>
-            <div class="icon-text" style="background:#00A651; color:white;">EXPORTAR</div>
+            <div class="icon-text" style="background:#FF8C00; color:white; font-size:7px;">BACKUP<br>COMPLETO</div>
         </button>
         <button class="menu-btn-icon" onclick="document.getElementById('f-backup').click(); toggleMenu()">
             <img class="btn-img" data-nome="importar.jpg" src="" onerror="this.style.display='none'">
@@ -1412,6 +1417,12 @@ function carregarFotosDaMemoria() {
             renderLoja();
             contarPedidosDoDia();
             setSplash('Pronto! ' + fotosCarregadas + ' fotos', 100);
+            // Aviso se há produtos mas sem fotos (dados do Chrome foram limpos)
+            if(fotosCarregadas === 0 && DADOS.length > 0) {
+                setTimeout(() => {
+                    alert('⚠️ ATENÇÃO: Os dados (pedidos, clientes, produtos) foram carregados,\nmas as FOTOS e o EXCEL precisam de ser recarregados.\n\nSe limpaste os dados do Chrome:\n1. Abre o menu (☰)\n2. Carrega IMPORTAR para restaurar o backup completo\n   (se tiveres feito um backup com fotos)\nOU\n3. Carrega FOTOS e EXCEL novamente.');
+                }, 900);
+            }
             setTimeout(() => { esconderSplash(); setTimeout(() => entrarApp('geral'), 100); }, 700);
         }
     };
@@ -5093,8 +5104,33 @@ async function exportarBackup() {
     try {
         const [vendedor, empresa, morada, nif, segmento] = await dbGetAll(
             ['DM_VENDEDOR','DM_EMPRESA','DM_MORADA','DM_NIF','DM_SEGMENTO']);
+
+        // ── Carregar fotos do IndexedDB como base64 ──
+        const fotos = {};
+        await new Promise((resolve) => {
+            if(!db) { resolve(); return; }
+            const store = db.transaction("fotos","readonly").objectStore("fotos");
+            store.openCursor().onsuccess = e => {
+                const cursor = e.target.result;
+                if(cursor) {
+                    const key = cursor.key;
+                    const blob = cursor.value;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        fotos[key] = ev.target.result; // data:image/...;base64,...
+                        cursor.continue();
+                    };
+                    reader.readAsDataURL(blob);
+                } else {
+                    resolve();
+                }
+            };
+        });
+
+        const numFotos = Object.keys(fotos).length;
+
         const backup = {
-            versao: 2,
+            versao: 3,
             data: new Date().toISOString(),
             pedidos: PEDIDOS_DB,
             pagamentos: PAGAMENTOS_DB,
@@ -5104,6 +5140,7 @@ async function exportarBackup() {
             cardexEx: CARDEX_EXCLUIDOS,
             ultimosPedidos: ULTIMOS_PEDIDOS,
             marcasConfig: MARCAS_CONFIG,
+            fotos: fotos,
             config: {
                 vendedor: vendedor || '',
                 empresa: empresa || '',
@@ -5113,46 +5150,50 @@ async function exportarBackup() {
             }
         };
 
-        const json = JSON.stringify(backup, null, 2);
+        const json = JSON.stringify(backup);
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
         a.href = url;
-        a.download = 'dumelhor-backup-' + dataStr + '.json';
+        a.download = 'dumelhor-backup-COMPLETO-' + dataStr + '.json';
         a.click();
         URL.revokeObjectURL(url);
 
-        // Confirmar
-        alert('✅ Backup exportado!\n\n' +
+        alert('✅ Backup COMPLETO exportado!\n\n' +
               '📦 Pedidos: ' + backup.pedidos.length + '\n' +
               '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
               '👥 Clientes: ' + backup.clientes.length + '\n' +
-              '🛒 Produtos: ' + backup.produtos.length);
+              '🛒 Produtos: ' + backup.produtos.length + '\n' +
+              '📸 Fotos: ' + numFotos + '\n\n' +
+              '⚠️ GUARDA ESTE FICHEIRO EM LOCAL SEGURO!\n' +
+              'Contém tudo — dados + fotos + produtos.');
     } catch(e) {
         alert('Erro ao exportar: ' + e.message);
     }
 }
 
-function importarBackup(file) {
+async function importarBackup(file) {
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = async e => {
         try {
             const backup = JSON.parse(e.target.result);
             if(!backup.versao) throw new Error('Ficheiro inválido');
 
             const pedidosExist = PEDIDOS_DB.length;
+            const numFotos = backup.fotos ? Object.keys(backup.fotos).length : 0;
             const msg = 'Importar backup de ' + new Date(backup.data).toLocaleDateString('pt-PT') + '?\n\n' +
-                '📦 Pedidos: ' + backup.pedidos.length + '\n' +
-                '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
-                '👥 Clientes: ' + backup.clientes.length + '\n' +
-                '🛒 Produtos: ' + backup.produtos.length +
+                '📦 Pedidos: ' + (backup.pedidos||[]).length + '\n' +
+                '💰 Pagamentos: ' + (backup.pagamentos||[]).length + '\n' +
+                '👥 Clientes: ' + (backup.clientes||[]).length + '\n' +
+                '🛒 Produtos: ' + (backup.produtos||[]).length + '\n' +
+                '📸 Fotos: ' + numFotos +
                 (pedidosExist ? '\n\n⚠️ Já existem ' + pedidosExist + ' pedidos aqui — serão substituídos.' : '');
 
             if(!confirm(msg)) return;
 
-            // Restaurar para IndexedDB
+            // Restaurar dados para IndexedDB
             if(backup.pedidos) dbSave('DM_PEDIDOS_V11', backup.pedidos);
             if(backup.pagamentos) dbSave('DM_PAGAMENTOS_V2', backup.pagamentos);
             if(backup.clientes) dbSave('DM_CLIENTES_V11', backup.clientes);
@@ -5169,7 +5210,30 @@ function importarBackup(file) {
                 if(backup.config.segmento) dbSave('DM_SEGMENTO', backup.config.segmento);
             }
 
-            alert('✅ Backup importado com sucesso!\nA app vai recarregar.');
+            // ── Restaurar fotos (base64 → Blob → IndexedDB) ──
+            if(backup.fotos && numFotos > 0 && db) {
+                const tx = db.transaction("fotos", "readwrite");
+                const store = tx.objectStore("fotos");
+                let fotosRestauradas = 0;
+                for(const [nome, dataUrl] of Object.entries(backup.fotos)) {
+                    try {
+                        // Converter base64 para Blob
+                        const res = await fetch(dataUrl);
+                        const blob = await res.blob();
+                        store.put(blob, nome);
+                        fotosRestauradas++;
+                    } catch(err) {
+                        console.warn('Erro ao restaurar foto ' + nome, err);
+                    }
+                }
+                await new Promise((resolve) => {
+                    tx.oncomplete = resolve;
+                    tx.onerror = resolve;
+                });
+                alert('✅ Backup importado com sucesso!\n\n📸 ' + fotosRestauradas + ' foto(s) restaurada(s)\n\nA app vai recarregar.');
+            } else {
+                alert('✅ Backup importado com sucesso!\nA app vai recarregar.');
+            }
             location.reload();
         } catch(err) {
             alert('❌ Erro ao importar: ' + err.message);
