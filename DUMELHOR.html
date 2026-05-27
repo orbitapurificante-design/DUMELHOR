@@ -61,8 +61,8 @@
         }
         header.hidden { transform: translateY(-100%); }
         header button[onclick="toggleMenu()"] { 
-            font-size: 26px; background: transparent; border: none; cursor: pointer; 
-            color: white; border-radius: 6px; width: 36px; height: 36px; min-width:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1;
+            font-size: 44px !important; background: transparent !important; border: none !important; cursor: pointer; 
+            color: white; border-radius: 0; width: 44px; height: 44px; min-width:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1; padding:0;
         }
         .in-cli-search { 
             flex: 1; min-width: 0; width: 0; padding: 6px 10px; border-radius: 20px; font-size: 12px; 
@@ -592,7 +592,7 @@
 </head>
 <body>
 <header id="main-header" style="display:none;">
-    <button style="font-size:26px; line-height:1; background:rgba(255,255,255,0.15); border:none; border-radius:7px; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0;" onclick="toggleMenu()">☰</button>
+    <button style="font-size:44px; line-height:1; background:transparent; border:none; border-radius:0; cursor:pointer; color:white; width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
         <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
@@ -3354,8 +3354,10 @@ function limparTudo() {
         document.getElementById('in-cli-search').value = ""; 
         document.getElementById('obs-pedido-final').value=""; 
         document.getElementById('painel-sem-resultado').style.display = 'none';
+        const inBusca = document.getElementById('in-busca');
+        if(inBusca) inBusca.value = '';
         limparCartUI();
-        nav('m2'); 
+        nav('m2');
     } 
 }
 function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
@@ -3646,6 +3648,9 @@ function editarPedido(id) {
     LINHAS_MANUAIS = [];
     document.getElementById('obs-pedido-final').value = p.obs || "";
     document.getElementById('in-cli-search').value = CLI_ATUAL.nome;
+    // Fechar menu se estiver aberto
+    const menuEl = document.getElementById('side-menu');
+    if(menuEl && menuEl.classList.contains('open')) toggleMenu();
     // Navegar para o carrinho — renderCardexTotal() corre dentro do nav('m3')
     nav('m3');
     // Sincronizar badges depois do render (para b-qty no M2 ficarem corretos ao voltar)
