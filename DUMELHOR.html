@@ -61,8 +61,8 @@
         }
         header.hidden { transform: translateY(-100%); }
         header button[onclick="toggleMenu()"] { 
-            font-size: 20px; background: transparent; border: none; cursor: pointer; 
-            color: white; border-radius: 6px; width: 32px; height: 32px; min-width:32px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            font-size: 26px; background: transparent; border: none; cursor: pointer; 
+            color: white; border-radius: 6px; width: 36px; height: 36px; min-width:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1;
         }
         .in-cli-search { 
             flex: 1; min-width: 0; width: 0; padding: 6px 10px; border-radius: 20px; font-size: 12px; 
@@ -2348,7 +2348,20 @@ function renderCardexTotal() {
         });
     }
 
-    let prods = DADOS.filter(p => idsHab.has(p.id)).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
+    // Produtos do DADOS que estão no idsHab
+    let prodsDados = DADOS.filter(p => idsHab.has(p.id));
+    const idsNosDados = new Set(prodsDados.map(p => p.id));
+
+    // Itens do CART que não estão em DADOS (ex: quando DADOS está vazio ou produto foi removido do Excel)
+    // Os itens guardados no CART já têm nome, preco, cat — usar directamente
+    Object.entries(CART).forEach(([k, item]) => {
+        const pid = parseInt(k);
+        if(!idsNosDados.has(pid) && item.nome) {
+            prodsDados.push({ id: pid, nome: item.nome, preco: item.preco, cat: item.cat || 'GERAL', f: item.f || '', ean: item.ean || '', unidades: item.unidades || 1 });
+        }
+    });
+
+    let prods = prodsDados.sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||''));
 
     // Usar fragment para construir DOM real — evita perda de event listeners
     const container = document.getElementById('cardex-content');
@@ -2514,6 +2527,7 @@ function salvarPedido() {
     let obs = document.getElementById('obs-pedido-final').value;
 
     // Se estiver a editar um pedido existente, remover o original primeiro
+    const _eraEdicao = (PEDIDO_EDIT_ID !== null);
     if(PEDIDO_EDIT_ID !== null) {
         PEDIDOS_DB = PEDIDOS_DB.filter(x => parseInt(x.id) !== parseInt(PEDIDO_EDIT_ID));
         PEDIDO_EDIT_ID = null;
@@ -2530,6 +2544,7 @@ function salvarPedido() {
     dbSave('DM_ULTIMO_PEDIDO', ULTIMOS_PEDIDOS);
 
     contarPedidosDoDia();
+    const foiEdicao = (PEDIDO_EDIT_ID === null && PEDIDOS_DB[0]); // já foi resetado acima — verificar por outro meio
     const guardarCardex = confirm("Pedido gravado!\n\nGuardar produtos deste pedido no CARDEX do cliente?\n\nOK = Sim\nCANCELAR = Não");
     if(guardarCardex) {
         const numCliente = CLI_ATUAL.num;
@@ -2540,7 +2555,8 @@ function salvarPedido() {
         });
         dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
     }
-    limparTudoPosGravacao(); 
+    limparTudoPosGravacao(_eraEdicao ? 'm5' : 'm2');
+    if(_eraEdicao) abrirGestao();
 }
 
 function abrirBuscaGlobal() { 
@@ -3320,7 +3336,7 @@ function limparCartUI() {
     LOJA_RENDERIZADA = false;
 }
 
-function limparTudoPosGravacao() { 
+function limparTudoPosGravacao(destino) { 
     CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null;
     LINHAS_MANUAIS = [];
     MARCA_ATIVA = null;
@@ -3328,7 +3344,7 @@ function limparTudoPosGravacao() {
     document.getElementById('obs-pedido-final').value=""; 
     document.getElementById('painel-sem-resultado').style.display = 'none';
     limparCartUI();
-    nav('m2'); // Volta para produtos — renderLoja() corre aqui com CART vazio
+    nav(destino || 'm2');
 }
 function limparTudo() { 
     if(confirm("Limpar pedido?")) { 
