@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="theme-color" content="#E60000">
+    <link rel="manifest" href="./manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -5072,57 +5073,19 @@ function exportarProdutosExcel() {
 </script>
 
 <script>
-// ══ SERVICE WORKER + MANIFEST INLINE ══
-// Embutidos como blobs para funcionar sem servidor (ficheiro local)
-(function() {
-    // ── Manifest inline ──
-    const manifest = {
-        name: "DUMELHOR PRO",
-        short_name: "DUMELHOR",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#E60000",
-        theme_color: "#E60000",
-        description: "Gestão de pedidos DUMELHOR",
-        icons: [
-            { src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23E60000'/><text y='140' x='20' font-size='120' fill='white'>D</text></svg>", sizes: "192x192", type: "image/svg+xml" },
-            { src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23E60000'/><text y='380' x='50' font-size='320' fill='white'>D</text></svg>", sizes: "512x512", type: "image/svg+xml" }
-        ]
-    };
-    const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
-    const manifestUrl = URL.createObjectURL(manifestBlob);
-    const manifestLink = document.createElement('link');
-    manifestLink.rel = 'manifest';
-    manifestLink.href = manifestUrl;
-    document.head.appendChild(manifestLink);
-
-    // ── Service Worker inline ──
-    if('serviceWorker' in navigator) {
-        const swCode = `
-const CACHE = 'dumelhor-v1';
-self.addEventListener('install', e => {
-    self.skipWaiting();
-});
-self.addEventListener('activate', e => {
-    e.waitUntil(clients.claim());
-});
-// Não interceptar fetch - apenas registar para tornar a app numa PWA
-// e garantir que o IndexedDB é tratado como persistente
-self.addEventListener('fetch', e => {});
-`;
-        const swBlob = new Blob([swCode], {type: 'application/javascript'});
-        const swUrl = URL.createObjectURL(swBlob);
-        navigator.serviceWorker.register(swUrl, {type: 'classic'})
+// ══ SERVICE WORKER ══
+if('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
             .then(reg => {
-                console.log('✅ SW registado (inline blob)');
-                // Pedir storage persistente após SW registado
+                console.log('✅ SW registado:', reg.scope);
                 if(navigator.storage && navigator.storage.persist) {
                     navigator.storage.persist().then(ok => console.log(ok ? '✅ Storage persistente' : '⚠️ Storage não persistente'));
                 }
             })
             .catch(err => console.log('❌ SW erro:', err));
-    }
-})();
+    });
+}
 // ═══════════════════════════════════════════════════════════
 // EXPORTAR / IMPORTAR BACKUP COMPLETO
 // ═══════════════════════════════════════════════════════════
