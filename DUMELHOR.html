@@ -1252,6 +1252,12 @@ request.onupgradeneeded = e => {
 };
 request.onsuccess = e => {
     db = e.target.result;
+    // Pedir ao browser para NÃO apagar estes dados ao limpar histórico
+    if(navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then(granted => {
+            console.log(granted ? '✅ Storage persistente garantido' : '⚠️ Storage não persistente');
+        });
+    }
     setSplash('A carregar dados...', 20);
     iniciarDados();
 };
@@ -2517,14 +2523,16 @@ function novoPedido() {
     document.getElementById('obs-pedido-final').value = "";
     const busca = document.getElementById('in-busca');
     if(busca) busca.value = '';
-    // Fechar menu lateral
-    const menuEl = document.getElementById('side-menu');
-    const overlayEl = document.getElementById('overlay');
-    if(menuEl) menuEl.classList.remove('open');
-    if(overlayEl) overlayEl.classList.remove('active');
-    document.body.style.overflow = '';
+    // Fechar drawer (menu lateral) se estiver aberto
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    if(drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        if(overlay) overlay.style.display = 'none';
+    }
     limparCartUI();
-    setTimeout(() => { nav('m2'); atualizarBotaoDumelhor(); }, 50);
+    nav('m2');
+    atualizarBotaoDumelhor();
 }
 
 function salvarPedido() { 
@@ -3601,7 +3609,14 @@ async function apagarFotoEspecifica(nomeFoto) {
     }
 }
 
-function abrirGestao() { let h = ""; PEDIDOS_DB.forEach((p) => { let tot = Object.values(p.itens).reduce((acc, i) => acc + (i.q * i.preco), 0); h += `<div style="background:rgba(255,255,255,0.97); padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid #E60000; box-shadow:0 1px 6px rgba(0,0,0,0.07);"><div style="display:flex; justify-content:space-between;"><b>${p.cliente.nome}</b> <b style="color:red;">${tot.toFixed(2)}€</b></div><div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; flex-wrap:wrap;"><button style="background:orange; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="editarPedido(${p.id})">EDITAR</button><button style="background:#1a6b8a; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="reimprimirCompacto(${p.id})">COMPACTO</button><button style="background:var(--dm-vermelho); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="eliminarPedido(${p.id})">APAGAR</button></div></div>`; }); document.getElementById('gestao-lista').innerHTML = h || "Sem pedidos."; nav('m5'); }
+function abrirGestao() {
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    if(drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        if(overlay) overlay.style.display = 'none';
+    }
+    let h = ""; PEDIDOS_DB.forEach((p) => { let tot = Object.values(p.itens).reduce((acc, i) => acc + (i.q * i.preco), 0); h += `<div style="background:rgba(255,255,255,0.97); padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid #E60000; box-shadow:0 1px 6px rgba(0,0,0,0.07);"><div style="display:flex; justify-content:space-between;"><b>${p.cliente.nome}</b> <b style="color:red;">${tot.toFixed(2)}€</b></div><div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; flex-wrap:wrap;"><button style="background:orange; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="editarPedido(${p.id})">EDITAR</button><button style="background:#1a6b8a; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="reimprimirCompacto(${p.id})">COMPACTO</button><button style="background:var(--dm-vermelho); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="eliminarPedido(${p.id})">APAGAR</button></div></div>`; }); document.getElementById('gestao-lista').innerHTML = h || "Sem pedidos."; nav('m5'); }
 function eliminarPedido(id) { 
     id = parseInt(id);
     if(!confirm("Eliminar este pedido?")) return;
@@ -3653,17 +3668,16 @@ function editarPedido(id) {
     LINHAS_MANUAIS = [];
     document.getElementById('obs-pedido-final').value = p.obs || "";
     document.getElementById('in-cli-search').value = CLI_ATUAL.nome;
-    // Fechar menu lateral e overlay se estiverem abertos
-    const menuEl = document.getElementById('side-menu');
-    const overlayEl = document.getElementById('overlay');
-    if(menuEl) menuEl.classList.remove('open');
-    if(overlayEl) overlayEl.classList.remove('active');
-    document.body.style.overflow = '';
-    // Pequeno delay para garantir que o menu fecha antes de navegar
-    setTimeout(() => {
-        nav('m3');
-        sincronizarBadgesCart();
-    }, 50);
+    // Fechar drawer (menu lateral) se estiver aberto
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    if(drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        if(overlay) overlay.style.display = 'none';
+    }
+    // Navegar para o carrinho
+    nav('m3');
+    sincronizarBadgesCart();
 }
 
 // Sincroniza os badges visuais do M2/catálogo com o CART atual
