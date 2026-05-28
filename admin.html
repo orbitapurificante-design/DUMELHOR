@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUMELHOR — Admin Catálogo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #E60000;
+            --red-d: #B30000;
+            --dark: #1A1A1A;
+            --grey: #333;
+            --mid: #666;
+            --light: #F5F5F5;
+            --border: #E0E0E0;
+            --green: #00A651;
+            --white: #fff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #111;
+            color: var(--grey);
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--red);
+            padding: 0 24px;
+            height: 56px;
+            display: flex; align-items: center; gap: 14px;
+            box-shadow: 0 2px 12px rgba(230,0,0,0.4);
+        }
+        .logo-mark {
+            width: 36px; height: 36px; border-radius: 8px;
+            background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 900; color: white; text-align: center; line-height: 1.1;
+        }
+        header h1 { color: white; font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
+        .header-sub { color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 500; }
+
+        /* LAYOUT */
+        .container {
+            max-width: 800px; margin: 0 auto;
+            padding: 32px 16px 60px;
+        }
+
+        /* CARD */
+        .card {
+            background: white; border-radius: 16px;
+            padding: 24px; margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .card-title {
+            font-size: 11px; font-weight: 800; color: #B0B0B0;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .step-num {
+            width: 22px; height: 22px; border-radius: 50%;
+            background: var(--red); color: white;
+            font-size: 11px; font-weight: 900;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* DROP ZONE */
+        .drop-zone {
+            border: 2px dashed var(--border); border-radius: 12px;
+            padding: 40px 20px; text-align: center; cursor: pointer;
+            transition: all 0.2s; position: relative; background: var(--light);
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--red); background: #fff5f5;
+        }
+        .drop-zone input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .drop-icon { font-size: 40px; margin-bottom: 10px; }
+        .drop-title { font-size: 15px; font-weight: 700; color: var(--grey); margin-bottom: 4px; }
+        .drop-sub { font-size: 12px; color: #B0B0B0; }
+        .drop-zone.has-file { border-style: solid; border-color: var(--green); background: #f0faf5; }
+        .drop-zone.has-file .drop-icon { filter: none; }
+
+        /* MAPEAMENTO COLUNAS */
+        #mapa-colunas { display: none; }
+        .mapa-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 500px) { .mapa-grid { grid-template-columns: 1fr; } }
+        .mapa-row { display: flex; flex-direction: column; gap: 4px; }
+        .mapa-label {
+            font-size: 10px; font-weight: 700; color: #B0B0B0;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .mapa-obrig { color: var(--red); }
+        select.mapa-sel {
+            width: 100%; padding: 10px 12px;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 13px; font-family: 'Montserrat', sans-serif;
+            background: var(--light); color: var(--grey); outline: none;
+            -webkit-appearance: none; cursor: pointer;
+        }
+        select.mapa-sel:focus { border-color: var(--red); background: white; }
+        select.mapa-sel.mapped { border-color: var(--green); background: #f0faf5; }
+
+        /* PREVIEW TABELA */
+        #preview-wrap { display: none; }
+        .preview-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+        .preview-table {
+            width: 100%; border-collapse: collapse; font-size: 12px;
+            background: white; min-width: 500px;
+        }
+        .preview-table th {
+            background: var(--dark); color: white; padding: 8px 10px;
+            text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .preview-table td {
+            padding: 7px 10px; border-bottom: 1px solid #f0f0f0;
+            max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .preview-table tr:last-child td { border-bottom: none; }
+        .preview-table tr:nth-child(even) td { background: #fafafa; }
+        .preview-table td.preco { color: var(--red); font-weight: 700; }
+        .preview-table td.empty { color: #C0C0C0; font-style: italic; }
+
+        /* STATS */
+        .stats-row {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
+        }
+        .stat-chip {
+            background: var(--light); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 14px;
+            font-size: 11px; font-weight: 600; color: var(--mid);
+        }
+        .stat-chip b { color: var(--red); font-size: 16px; font-weight: 900; display: block; line-height: 1; margin-bottom: 2px; }
+
+        /* BOTÕES */
+        .btn-primary {
+            width: 100%; padding: 16px; border-radius: 12px;
+            border: none; background: var(--green);
+            color: white; font-size: 15px; font-weight: 900; cursor: pointer;
+            font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: background 0.15s;
+        }
+        .btn-primary:hover { background: #008a44; }
+        .btn-primary:disabled { background: #B0B0B0; cursor: not-allowed; }
+        .btn-secondary {
+            width: 100%; padding: 13px; border-radius: 12px;
+            border: 1.5px solid var(--border); background: white;
+            color: var(--grey); font-size: 14px; font-weight: 700; cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.15s; margin-top: 8px;
+        }
+        .btn-secondary:hover { border-color: var(--red); color: var(--red); }
+
+        /* INSTRUÇÕES UPLOAD */
+        .upload-steps {
+            background: var(--dark); border-radius: 12px; padding: 18px 20px;
+            margin-top: 16px;
+        }
+        .upload-steps h3 { color: white; font-size: 12px; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 12px; }
+        .upload-step {
+            display: flex; gap: 10px; align-items: flex-start;
+            margin-bottom: 10px; font-size: 13px;
+        }
+        .upload-step:last-child { margin-bottom: 0; }
+        .step-dot {
+            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+            background: var(--red); color: white; font-size: 10px; font-weight: 900;
+            display: flex; align-items: center; justify-content: center; margin-top: 1px;
+        }
+        .upload-step p { color: rgba(255,255,255,0.75); line-height: 1.5; }
+        .upload-step code {
+            background: rgba(255,255,255,0.1); color: #FF8080;
+            padding: 1px 6px; border-radius: 4px; font-size: 12px;
+        }
+
+        /* ALERT */
+        .alert {
+            border-radius: 10px; padding: 12px 14px; font-size: 13px;
+            font-weight: 600; margin-bottom: 12px; display: none;
+        }
+        .alert.show { display: flex; align-items: flex-start; gap: 8px; }
+        .alert-warn { background: #fff8e1; border: 1px solid #ffe082; color: #7a5500; }
+        .alert-ok { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e20; }
+        .alert-err { background: #ffebee; border: 1px solid #ef9a9a; color: #b71c1c; }
+
+        /* PROGRESS */
+        .progress-wrap { display: none; margin-bottom: 12px; }
+        .progress-wrap.show { display: block; }
+        .progress-bar-bg {
+            height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+        }
+        .progress-bar { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
+        .progress-txt { font-size: 11px; color: var(--mid); margin-top: 5px; font-weight: 600; }
+
+        /* SUCCESS FINAL */
+        #success-final { display: none; }
+        .success-box {
+            text-align: center; padding: 30px 20px;
+            background: #f0faf5; border: 2px solid var(--green);
+            border-radius: 14px;
+        }
+        .success-box .s-icon { font-size: 48px; margin-bottom: 12px; }
+        .success-box h3 { font-size: 18px; font-weight: 900; color: var(--grey); margin-bottom: 6px; }
+        .success-box p { font-size: 13px; color: var(--mid); line-height: 1.6; }
+        .success-box .filename {
+            display: inline-block; margin-top: 10px;
+            background: var(--dark); color: #7dff7d; padding: 6px 14px;
+            border-radius: 6px; font-size: 13px; font-weight: 700; font-family: monospace;
+        }
+
+        /* SEPARADOR */
+        .sep { height: 1px; background: var(--border); margin: 20px 0; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 16px 10px 60px; }
+            .card { padding: 18px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-mark">DM</div>
+    <div>
+        <div style="display:flex; align-items:baseline; gap:8px;">
+            <h1>DUMELHOR</h1>
+            <span class="header-sub">Admin Catálogo</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- PASSO 1 — CARREGAR EXCEL -->
+    <div class="card">
+        <div class="card-title"><div class="step-num">1</div> Carregar ficheiro Excel</div>
+
+        <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-excel" accept=".xlsx,.xls" onchange="carregarExcel(this.files[0])">
+            <div class="drop-icon">📊</div>
+            <div class="drop-title">Arraste o Excel aqui ou clique para escolher</div>
+            <div class="drop-sub">Ficheiros .xlsx ou .xls · O ficheiro fica só no seu computador</div>
+        </div>
+
+        <div class="alert alert-err" id="alert-err">
+            <span>❌</span><span id="alert-err-txt"></span>
+        </div>
+    </div>
+
+    <!-- PASSO 2 — MAPEAR COLUNAS -->
+    <div class="card" id="mapa-colunas">
+        <div class="card-title"><div class="step-num">2</div> Confirmar colunas</div>
+
+        <div class="alert alert-warn show" id="alert-mapa-info">
+            <span>ℹ️</span>
+            <span>Verifique se cada campo ficou mapeado na coluna certa do seu Excel. Os campos com <span style="color:var(--red)">*</span> são obrigatórios.</span>
+        </div>
+
+        <div class="mapa-grid">
+            <div class="mapa-row">
+                <div class="mapa-label">Código <span class="mapa-obrig">*</span></div>
+                <select class="mapa-sel" id="map-id" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Nome do produto <span class="mapa-obrig">*</span></div>
+                <select class="mapa-sel" id="map-nome" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Preço</div>
+                <select class="mapa-sel" id="map-preco" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Unidade (UN, CX, KG...)</div>
+                <select class="mapa-sel" id="map-un" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Família / Categoria</div>
+                <select class="mapa-sel" id="map-familia" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Marca</div>
+                <select class="mapa-sel" id="map-marca" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">EAN / Código de barras</div>
+                <select class="mapa-sel" id="map-ean" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+            <div class="mapa-row">
+                <div class="mapa-label">Segmento extra</div>
+                <select class="mapa-sel" id="map-seg" onchange="atualizarPreview()">
+                    <option value="">— não usar —</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSO 3 — PREVIEW -->
+    <div class="card" id="preview-wrap">
+        <div class="card-title"><div class="step-num">3</div> Pré-visualização dos dados</div>
+
+        <div class="stats-row" id="stats-row"></div>
+
+        <div class="alert alert-warn" id="alert-preview-warn"></div>
+
+        <div class="preview-table-wrap">
+            <table class="preview-table" id="preview-table">
+                <thead id="preview-thead"></thead>
+                <tbody id="preview-tbody"></tbody>
+            </table>
+        </div>
+        <div style="font-size:11px; color:#B0B0B0; margin-top:8px; text-align:right;" id="preview-count"></div>
+    </div>
+
+    <!-- PASSO 4 — GERAR JSON -->
+    <div class="card" id="gerar-wrap" style="display:none;">
+        <div class="card-title"><div class="step-num">4</div> Gerar e descarregar</div>
+
+        <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+            <div class="progress-txt" id="progress-txt">A processar...</div>
+        </div>
+
+        <div id="success-final">
+            <div class="success-box">
+                <div class="s-icon">✅</div>
+                <h3>produtos.json criado!</h3>
+                <p>O ficheiro foi descarregado para o seu computador.<br>Agora faça upload para o GitHub.</p>
+                <div class="filename">produtos.json</div>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="btn-gerar" onclick="gerarJSON()">
+            ⬇️ GERAR E DESCARREGAR produtos.json
+        </button>
+        <button class="btn-secondary" onclick="resetar()">↩ Carregar outro Excel</button>
+
+        <div class="sep"></div>
+
+        <div class="upload-steps">
+            <h3>📤 PRÓXIMO PASSO — UPLOAD PARA GITHUB</h3>
+            <div class="upload-step">
+                <div class="step-dot">1</div>
+                <p>Vá ao seu repositório no GitHub e clique em <code>Add file → Upload files</code></p>
+            </div>
+            <div class="upload-step">
+                <div class="step-dot">2</div>
+                <p>Arraste o ficheiro <code>produtos.json</code> que acabou de descarregar</p>
+            </div>
+            <div class="upload-step">
+                <div class="step-dot">3</div>
+                <p>Clique <code>Commit changes</code> — a loja atualiza em segundos</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════
+let COLUNAS = [];     // nomes das colunas do Excel
+let LINHAS = [];      // dados raw do Excel (array de arrays)
+let FICHEIRO_NOME = '';
+
+// Mapeamento automático: palavras-chave → campo
+const AUTO_MAP = {
+    'id':       ['codigo','code','ref','referencia','cod'],
+    'nome':     ['nome','name','descricao','descr','produto','artigo','designation'],
+    'preco':    ['preco','price','pvp','valor','preco venda','p.v.p'],
+    'un':       ['unidade','un','unit','uni','embalagem'],
+    'familia':  ['familia','family','categoria','category','cat','grupo','family'],
+    'marca':    ['marca','brand','fabricante','fornecedor'],
+    'ean':      ['ean','barcode','codigo barras','codigo de barras','ean13'],
+    'seg':      ['segmento','segment','colL','col l','colM','col m'],
+};
+
+function normalizar(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+
+// ══════════════════════════════════════════════
+// DRAG & DROP
+// ══════════════════════════════════════════════
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f) carregarExcel(f);
+});
+
+// ══════════════════════════════════════════════
+// CARREGAR EXCEL
+// ══════════════════════════════════════════════
+function carregarExcel(file) {
+    if (!file) return;
+    esconderErro();
+    FICHEIRO_NOME = file.name;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+            if (!raw || raw.length < 2) throw new Error('O ficheiro parece estar vazio ou sem dados.');
+
+            // Primeira linha = cabeçalhos
+            COLUNAS = raw[0].map(c => String(c || '').trim());
+            LINHAS = raw.slice(1).filter(row => row.some(c => c !== '' && c !== null && c !== undefined));
+
+            if (COLUNAS.length === 0) throw new Error('Não foram encontradas colunas no Excel.');
+
+            // Atualizar drop zone
+            dz.classList.add('has-file');
+            dz.querySelector('.drop-icon').textContent = '✅';
+            dz.querySelector('.drop-title').textContent = file.name;
+            dz.querySelector('.drop-sub').textContent = LINHAS.length + ' linhas de dados encontradas';
+
+            // Popular selects
+            popularSelects();
+            autoMapear();
+            atualizarPreview();
+
+            document.getElementById('mapa-colunas').style.display = 'block';
+            document.getElementById('gerar-wrap').style.display = 'block';
+
+        } catch(err) {
+            mostrarErro(err.message);
+        }
+    };
+    reader.onerror = () => mostrarErro('Erro ao ler o ficheiro.');
+    reader.readAsArrayBuffer(file);
+}
+
+function popularSelects() {
+    const opcoes = '<option value="">— não usar —</option>' +
+        COLUNAS.map((c, i) => `<option value="${i}">${c || '(coluna ' + (i+1) + ')'}</option>`).join('');
+
+    ['map-id','map-nome','map-preco','map-un','map-familia','map-marca','map-ean','map-seg']
+        .forEach(id => {
+            const sel = document.getElementById(id);
+            sel.innerHTML = opcoes;
+            sel.classList.remove('mapped');
+        });
+}
+
+function autoMapear() {
+    // Para cada campo, tentar encontrar a melhor coluna
+    Object.entries(AUTO_MAP).forEach(([campo, palavras]) => {
+        const selId = 'map-' + campo;
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+
+        for (let i = 0; i < COLUNAS.length; i++) {
+            const norm = normalizar(COLUNAS[i]);
+            if (palavras.some(p => norm.includes(p) || p.includes(norm) && norm.length > 2)) {
+                sel.value = String(i);
+                sel.classList.add('mapped');
+                break;
+            }
+        }
+    });
+}
+
+// ══════════════════════════════════════════════
+// PREVIEW
+// ══════════════════════════════════════════════
+function getMapa() {
+    return {
+        id:     document.getElementById('map-id').value,
+        nome:   document.getElementById('map-nome').value,
+        preco:  document.getElementById('map-preco').value,
+        un:     document.getElementById('map-un').value,
+        familia:document.getElementById('map-familia').value,
+        marca:  document.getElementById('map-marca').value,
+        ean:    document.getElementById('map-ean').value,
+        seg:    document.getElementById('map-seg').value,
+    };
+}
+
+function atualizarPreview() {
+    const mapa = getMapa();
+    const campos = Object.entries(mapa).filter(([,v]) => v !== '');
+
+    // Atualizar classes dos selects
+    Object.entries(mapa).forEach(([k, v]) => {
+        const sel = document.getElementById('map-' + k);
+        if (sel) sel.classList.toggle('mapped', v !== '');
+    });
+
+    if (campos.length === 0) {
+        document.getElementById('preview-wrap').style.display = 'none';
+        return;
+    }
+
+    // Processar linhas para preview
+    const produtos = processarLinhas(mapa);
+
+    // Stats
+    const marcas = new Set(produtos.map(p => p.marca).filter(Boolean));
+    const familias = new Set(produtos.map(p => p.familia).filter(Boolean));
+    const semPreco = produtos.filter(p => !p.preco).length;
+
+    document.getElementById('stats-row').innerHTML = `
+        <div class="stat-chip"><b>${produtos.length}</b> produtos</div>
+        ${marcas.size ? `<div class="stat-chip"><b>${marcas.size}</b> marcas</div>` : ''}
+        ${familias.size ? `<div class="stat-chip"><b>${familias.size}</b> famílias</div>` : ''}
+        ${semPreco ? `<div class="stat-chip" style="border-color:#ffcc80; color:#e65100;"><b>${semPreco}</b> sem preço</div>` : ''}
+    `;
+
+    // Warnings
+    const warnEl = document.getElementById('alert-preview-warn');
+    if (!mapa.nome) {
+        warnEl.innerHTML = '⚠️ A coluna <b>Nome</b> não está mapeada — é obrigatória.';
+        warnEl.classList.add('show');
+    } else {
+        warnEl.classList.remove('show');
+    }
+
+    // Tabela preview (máx 8 linhas)
+    const cabFields = campos.map(([k]) => k);
+    const LABELS = { id: 'Código', nome: 'Nome', preco: 'Preço', un: 'Un', familia: 'Família', marca: 'Marca', ean: 'EAN', seg: 'Segmento' };
+
+    document.getElementById('preview-thead').innerHTML =
+        '<tr>' + cabFields.map(k => `<th>${LABELS[k] || k}</th>`).join('') + '</tr>';
+
+    const preview = produtos.slice(0, 8);
+    document.getElementById('preview-tbody').innerHTML = preview.map(p =>
+        '<tr>' + cabFields.map(k => {
+            const v = p[k];
+            if (!v && v !== 0) return '<td class="empty">—</td>';
+            if (k === 'preco') return `<td class="preco">${parseFloat(v).toFixed(2)} €</td>`;
+            return `<td title="${v}">${String(v).substring(0, 30)}${String(v).length > 30 ? '…' : ''}</td>`;
+        }).join('') + '</tr>'
+    ).join('');
+
+    document.getElementById('preview-count').textContent =
+        `A mostrar ${preview.length} de ${produtos.length} produtos`;
+
+    document.getElementById('preview-wrap').style.display = 'block';
+}
+
+function processarLinhas(mapa) {
+    const produtos = [];
+    LINHAS.forEach(row => {
+        const p = {};
+        if (mapa.id !== '')      p.id      = String(row[mapa.id] || '').trim();
+        if (mapa.nome !== '')    p.nome    = String(row[mapa.nome] || '').trim();
+        if (mapa.preco !== '') {
+            const v = String(row[mapa.preco] || '').replace(',', '.');
+            p.preco = parseFloat(v) || 0;
+        }
+        if (mapa.un !== '')      p.un      = String(row[mapa.un] || '').trim();
+        if (mapa.familia !== '') p.familia = String(row[mapa.familia] || '').trim();
+        if (mapa.marca !== '')   p.marca   = String(row[mapa.marca] || '').trim().toUpperCase();
+        if (mapa.ean !== '')     p.ean     = String(row[mapa.ean] || '').trim();
+        if (mapa.seg !== '')     p.seg     = String(row[mapa.seg] || '').trim();
+
+        // Ignorar linhas sem nome
+        if (!p.nome) return;
+
+        produtos.push(p);
+    });
+    return produtos;
+}
+
+// ══════════════════════════════════════════════
+// GERAR JSON
+// ══════════════════════════════════════════════
+function gerarJSON() {
+    const mapa = getMapa();
+    if (!mapa.nome) {
+        alert('⚠️ Precisa de mapear pelo menos a coluna "Nome do produto".');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gerar');
+    btn.disabled = true;
+
+    const progress = document.getElementById('progress-wrap');
+    progress.classList.add('show');
+    document.getElementById('progress-bar').style.width = '30%';
+    document.getElementById('progress-txt').textContent = 'A processar linhas...';
+
+    setTimeout(() => {
+        const produtos = processarLinhas(mapa);
+
+        document.getElementById('progress-bar').style.width = '70%';
+        document.getElementById('progress-txt').textContent = 'A gerar JSON...';
+
+        setTimeout(() => {
+            const json = JSON.stringify(produtos, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'produtos.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('progress-txt').textContent = `✅ ${produtos.length} produtos exportados!`;
+
+            setTimeout(() => {
+                progress.classList.remove('show');
+                document.getElementById('success-final').style.display = 'block';
+                btn.style.display = 'none';
+            }, 600);
+
+        }, 300);
+    }, 200);
+}
+
+// ══════════════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════════════
+function mostrarErro(msg) {
+    const el = document.getElementById('alert-err');
+    document.getElementById('alert-err-txt').textContent = msg;
+    el.classList.add('show');
+}
+function esconderErro() {
+    document.getElementById('alert-err').classList.remove('show');
+}
+
+function resetar() {
+    COLUNAS = []; LINHAS = []; FICHEIRO_NOME = '';
+    dz.classList.remove('has-file', 'dragover');
+    dz.querySelector('.drop-icon').textContent = '📊';
+    dz.querySelector('.drop-title').textContent = 'Arraste o Excel aqui ou clique para escolher';
+    dz.querySelector('.drop-sub').textContent = 'Ficheiros .xlsx ou .xls · O ficheiro fica só no seu computador';
+    document.getElementById('file-excel').value = '';
+    document.getElementById('mapa-colunas').style.display = 'none';
+    document.getElementById('preview-wrap').style.display = 'none';
+    document.getElementById('gerar-wrap').style.display = 'none';
+    document.getElementById('success-final').style.display = 'none';
+    document.getElementById('btn-gerar').style.display = 'flex';
+    document.getElementById('btn-gerar').disabled = false;
+    document.getElementById('progress-wrap').classList.remove('show');
+    esconderErro();
+}
+</script>
+</body>
+</html>
