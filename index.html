@@ -243,10 +243,12 @@
             color: var(--grey);
         }
         .card-pro-preco {
-            color: var(--red); font-weight: 900; font-size: 14px;
+            color: var(--red); font-weight: 400; font-size: 13px;
+            text-align: center; margin-top: 4px;
         }
         .card-pro-un {
-            font-size: 9px; color: var(--mid); font-weight: 600;
+            font-size: 9px; color: var(--mid); font-weight: 500;
+            text-align: center;
         }
         .b-qty {
             position: absolute; top: 5px; right: 5px;
@@ -789,9 +791,9 @@ function renderLoja() {
 }
 
 function getImgSrc(p) {
-    // Tenta pelo código, depois pelo nome normalizado
-    const ext = ['jpg', 'jpeg', 'png', 'webp'];
-    // Retorna o src preferencial; o onerror no HTML trata fallbacks
+    // 1. Campo "img" vem do Excel (nome do ficheiro tal como está)
+    if (p.img) return `${CONFIG.imagesDir}${p.img}`;
+    // 2. Fallback: pelo código do produto
     if (p.id) return `${CONFIG.imagesDir}${p.id}.jpg`;
     return '';
 }
@@ -870,8 +872,8 @@ function abrirModal(id) {
     document.getElementById('qty-input').value = qtyAtual;
 
     const imgEl = document.getElementById('modal-img');
-    imgEl.src = `${CONFIG.imagesDir}${p.id}.jpg`;
-    imgEl.style.display = 'block';
+    imgEl.src = getImgSrc(p);
+    imgEl.style.display = imgEl.src ? 'block' : 'none';
     imgEl.onerror = function() { this.style.display = 'none'; };
 
     document.getElementById('btn-remove-item').style.display = noCarrinho ? 'block' : 'none';
@@ -893,7 +895,7 @@ function confirmarQty() {
     if (!PROD_MODAL) return;
     const qty = Math.max(1, parseInt(document.getElementById('qty-input').value) || 1);
     const p = PROD_MODAL;
-    CART[p.id] = { nome: p.nome, preco: p.preco, un: p.un, img: `${CONFIG.imagesDir}${p.id}.jpg`, qty };
+    CART[p.id] = { nome: p.nome, preco: p.preco, un: p.un, img: getImgSrc(p), qty };
     fecharModal();
     atualizarUI();
     showToast(qty + 'x ' + p.nome + ' adicionado');
