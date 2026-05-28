@@ -1,0 +1,3106 @@
+[
+  {
+    "id": "5601950001151",
+    "nome": "A SALOINHA BATATA PALHA 200G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (49).JPG"
+  },
+  {
+    "id": "5605839000594",
+    "nome": "A SALOINHA PIPOCAS BRANCAS 150G",
+    "preco": 0.84,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (47).JPG"
+  },
+  {
+    "id": "5605839000600",
+    "nome": "A SALOINHA PIPOCAS COLORIDAS 150G",
+    "preco": 0.84,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (48).JPG"
+  },
+  {
+    "id": "8480024754776",
+    "nome": "ALTEZA ARGOLINHAS CHOC.BR.128G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM2.JPG"
+  },
+  {
+    "id": "8413760006434",
+    "nome": "ARRUABARRENA LAZO 180G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM1.JPG"
+  },
+  {
+    "id": "8413760006410",
+    "nome": "ARRUABARRENA MANINA 180G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM3.JPG"
+  },
+  {
+    "id": "8413760006427",
+    "nome": "ARRUABARRENA PALMERA 180G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM4.JPG"
+  },
+  {
+    "id": "8436048962079",
+    "nome": "ARTIACH BOL PRINCESA CX 90G",
+    "preco": 1.02,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM5.JPG"
+  },
+  {
+    "id": "8436048963441",
+    "nome": "ARTIACH BOL.DINOSAUROS HUEVOS CX 105G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM6.JPG"
+  },
+  {
+    "id": "8436048453409",
+    "nome": "ARTIACH CHIQUILIN BOLACHAS 175G",
+    "preco": 0.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM12.JPG"
+  },
+  {
+    "id": "8436048963854",
+    "nome": "ARTIACH CHIQUILIN CHIQUI CHOCS  105G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM7.JPG"
+  },
+  {
+    "id": "8436048963564",
+    "nome": "ARTIACH CHIQUILIN ENERGY 80G",
+    "preco": 0.98,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM14.JPG"
+  },
+  {
+    "id": "8436048477719",
+    "nome": "ARTIACH CHIQUILIN ENERGY SACO 125G",
+    "preco": 0.81,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM13.JPG"
+  },
+  {
+    "id": "8436048963922",
+    "nome": "ARTIACH CHIQUILIN OSITOS CACAO CX 120G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM10.JPG"
+  },
+  {
+    "id": "8436048452594",
+    "nome": "ARTIACH CHIQUILIN OSITOS MEL CX 120G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM11.JPG"
+  },
+  {
+    "id": "8436048452587",
+    "nome": "ARTIACH DINOSAUROS MINI CACAO CX 120G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM9.JPG"
+  },
+  {
+    "id": "8436048452570",
+    "nome": "ARTIACH DINOSAUROS MINI CX 120G",
+    "preco": 0.97,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM8.JPG"
+  },
+  {
+    "id": "8436048967166",
+    "nome": "ARTIACH MARBU DORADA MINI 3U 105G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM16.JPG"
+  },
+  {
+    "id": "8411192852247",
+    "nome": "ASINEZ  BOER CHOCOLATE 300G",
+    "preco": 0.81,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM25.JPG"
+  },
+  {
+    "id": "8411192080121",
+    "nome": "ASINEZ  GIORKINI 180G",
+    "preco": 0.75,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM21.JPG"
+  },
+  {
+    "id": "8411192080138",
+    "nome": "ASINEZ ABANICOS 200G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM22.JPG"
+  },
+  {
+    "id": "8411192840169",
+    "nome": "ASINEZ BIG COOKIES BANHO CHOC 140G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM24.JPG"
+  },
+  {
+    "id": "8411192040262",
+    "nome": "ASINEZ BIG COOKIES MIRT CH BRANCO 150G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM28.JPG"
+  },
+  {
+    "id": "8411192852131",
+    "nome": "ASINEZ BOER CHOCONATA 210G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM17.JPG"
+  },
+  {
+    "id": "8411192052050",
+    "nome": "ASINEZ BOER COCO 210G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM26.JPG"
+  },
+  {
+    "id": "8411192052258",
+    "nome": "ASINEZ BOER MORANGO NATA 300G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM18.JPG"
+  },
+  {
+    "id": "8411192052203",
+    "nome": "ASINEZ BOER NATA 300G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM19.JPG"
+  },
+  {
+    "id": "8411192841203",
+    "nome": "ASINEZ CLASSIC COOKIES 120G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM23.JPG"
+  },
+  {
+    "id": "8411192080183",
+    "nome": "ASINEZ GIORKINI BOLACHA 240G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM20.JPG"
+  },
+  {
+    "id": "5600744051174",
+    "nome": "AURORA MADALENAS CHOC. SACO 420G",
+    "preco": 1.39,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM29.JPG"
+  },
+  {
+    "id": "5600744051167",
+    "nome": "AURORA MADALENAS LARANJA SACO 420G",
+    "preco": 1.39,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM30.JPG"
+  },
+  {
+    "id": "5604993545224",
+    "nome": "AVO ELVIRA BOL.AMENDOIM 270G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM36.JPG"
+  },
+  {
+    "id": "5604993543930",
+    "nome": "AVO ELVIRA WAFER BAUNILHA 140G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM31.JPG"
+  },
+  {
+    "id": "5604993546399",
+    "nome": "AVO ELVIRA WAFER BAUNILHA 250G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM33.JPG"
+  },
+  {
+    "id": "5604993543992",
+    "nome": "AVO ELVIRA WAFER CHOCOLATE 140G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM32.JPG"
+  },
+  {
+    "id": "5604993546559",
+    "nome": "AVO ELVIRA WAFER CHOCOLATE 250G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM34.JPG"
+  },
+  {
+    "id": "5602794000577",
+    "nome": "AVO ELVIRA WAFER LIMAO 250G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM326.JPG"
+  },
+  {
+    "id": "8001585008032",
+    "nome": "BALCONI MINI ROLLS CHOC.C/6 180G",
+    "preco": 1.09,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM38.JPG"
+  },
+  {
+    "id": "8001585001040",
+    "nome": "BALCONI MIX MAX 10 SNACK",
+    "preco": 1.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM44.JPG"
+  },
+  {
+    "id": "8001585001354",
+    "nome": "BALCONI MIX MAX COCO 10U.",
+    "preco": 1.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM49.JPG"
+  },
+  {
+    "id": "8001585001071",
+    "nome": "BALCONI MIX MILK 10 350G",
+    "preco": 1.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM41.JPG"
+  },
+  {
+    "id": "8001585001309",
+    "nome": "BALCONI ROLLINO AVELA  6U.",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM37.JPG"
+  },
+  {
+    "id": "8001585001330",
+    "nome": "BALCONI ROLLINO CHOCOLATE 6U",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM40.JPG"
+  },
+  {
+    "id": "8001585001323",
+    "nome": "BALCONI ROLLINO LEITE 6U",
+    "preco": 1.09,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM49.JPG"
+  },
+  {
+    "id": "8001585010103",
+    "nome": "BALCONI ROLLINO PISTACCHIO 6U",
+    "preco": 1.09,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM45.JPG"
+  },
+  {
+    "id": "8001585001224",
+    "nome": "BALCONI TRANCETTO CHOCOLATE 10U",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM43.JPG"
+  },
+  {
+    "id": "8001585001026",
+    "nome": "BALCONI TRANCETTO MORANGO 280G",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM42.JPG"
+  },
+  {
+    "id": "8001585008094",
+    "nome": "BALCONI WAFERS AVELA 5X45G",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM48.JPG"
+  },
+  {
+    "id": "8001585008087",
+    "nome": "BALCONI WAFERS BAUN 5X45G",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM47.JPG"
+  },
+  {
+    "id": "8001585008117",
+    "nome": "BALCONI WAFERS CACAO 5X45G",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM46.JPG"
+  },
+  {
+    "id": "8436545890264",
+    "nome": "BERDE PETALAS NAT CHOCOLATE 105G",
+    "preco": 1.13,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM56.JPG"
+  },
+  {
+    "id": "8436545890288",
+    "nome": "BERDE PETALAS NAT FRAMBROESA 105G",
+    "preco": 1.13,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM55.JPG"
+  },
+  {
+    "id": "8436545890271",
+    "nome": "BERDE PETALAS NAT LARANJA 105G",
+    "preco": 1.13,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM57.JPG"
+  },
+  {
+    "id": "5902768863970",
+    "nome": "BOGUTTI BOL.AMER.COOKIES AVELA 135G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM51.JPG"
+  },
+  {
+    "id": "5902768863956",
+    "nome": "BOGUTTI BOL.AMER.COOKIES CHOC.135G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM50.JPG"
+  },
+  {
+    "id": "5902768863994",
+    "nome": "BOGUTTI BOL.AMER.COOKIES RAISINS 135G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM52.JPG"
+  },
+  {
+    "id": "8002720003103",
+    "nome": "BONOMI SAVOIARDI 200G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM54.JPG"
+  },
+  {
+    "id": "8002720001253",
+    "nome": "BONOMI SFOGLITINE 135G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM53.JPG"
+  },
+  {
+    "id": "",
+    "nome": "C.GONCALVES LAGARTOS COVETE 220G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM716.JPG"
+  },
+  {
+    "id": "5602519142247",
+    "nome": "C.GONCALVES LINGUAS GATO 250G",
+    "preco": 0.81,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM192.JPG"
+  },
+  {
+    "id": "",
+    "nome": "C.GONCALVES SUPREMAS COVETE 200G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM715.JPG"
+  },
+  {
+    "id": "5601255700025",
+    "nome": "CACAROLA CRACKIES ARROZ INT.130G",
+    "preco": 0.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM58.JPG"
+  },
+  {
+    "id": "5601255700032",
+    "nome": "CACAROLA CRACKIES ARROZ INT.C/SAL 130G",
+    "preco": 0.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM59.JPG"
+  },
+  {
+    "id": "5601255700117",
+    "nome": "CACAROLA CRACKIES MILHO 130G",
+    "preco": 0.89,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM60.JPG"
+  },
+  {
+    "id": "5601255700124",
+    "nome": "CACAROLA CRACKIES MILHO INT.130G",
+    "preco": 0.9,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM61.JPG"
+  },
+  {
+    "id": "5907471432017",
+    "nome": "CASADO ALUSIE BOL CHOC COCO 215G",
+    "preco": 1.19,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM62.JPG"
+  },
+  {
+    "id": "5907471430006",
+    "nome": "CASADO BARCAROLA TROPICAL 160G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM63.JPG"
+  },
+  {
+    "id": "8410956603842",
+    "nome": "CASADO BARRITAS C/CHOC.BR CJ 4X21G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM64.JPG"
+  },
+  {
+    "id": "5600270553012",
+    "nome": "CEBOLA FRITA 500G",
+    "preco": 2.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM694.JPG"
+  },
+  {
+    "id": "4061458070034",
+    "nome": "CEBOLA FRITA COPO 150G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (50).JPG"
+  },
+  {
+    "id": "5604321027057",
+    "nome": "CEM PORCENTO MARINHEIRAS S/SAL 200G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM65.JPG"
+  },
+  {
+    "id": "5604321028757",
+    "nome": "CEM PORCENTO MARINHEIRAS BOL CHIA 200G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM67.JPG"
+  },
+  {
+    "id": "5604321035960",
+    "nome": "CEM PORCENTO MARINHEIRAS BOL CHIA 50G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM71.JPG"
+  },
+  {
+    "id": "5604321027507",
+    "nome": "CEM PORCENTO MARINHEIRAS INT 200G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM66.JPG"
+  },
+  {
+    "id": "5604321032242",
+    "nome": "CEM PORCENTO MARINHEIRAS LINHAÇA 200G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM68.JPG"
+  },
+  {
+    "id": "5604321027040",
+    "nome": "CEM PORCENTO MARINHEIRAS NAT 200G",
+    "preco": 1.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM69.JPG"
+  },
+  {
+    "id": "5604321035977",
+    "nome": "CEM PORCENTO MARINHEIRAS NAT 50G",
+    "preco": 0.79,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM70.JPG"
+  },
+  {
+    "id": "8683923556582",
+    "nome": "CHICO MIKO MINI BISCOITOS CACAO 70G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM191.JPG"
+  },
+  {
+    "id": "8683923556599",
+    "nome": "CHICO MIKO MINI BISCOITOS MOR 70G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM190.JPG"
+  },
+  {
+    "id": "8410000802771",
+    "nome": "CHIPS AHOY MINI BOLACHA 4X40G",
+    "preco": 1.299,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM199.JPG"
+  },
+  {
+    "id": "8410000002904",
+    "nome": "CHIPS AHOY!BOL.128G",
+    "preco": 1.13,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM200.JPG"
+  },
+  {
+    "id": "8410712001530",
+    "nome": "CORAL WAFER zero AZUCARES CHOC 150G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM20CORAL.JPG"
+  },
+  {
+    "id": "8410712001509",
+    "nome": "CORAL WAFER zero AZUCARES COCO 150G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM18CORAL.JPG"
+  },
+  {
+    "id": "8410712001523",
+    "nome": "CORAL WAFER zero AZUCARES LIMAO 150G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM16CORAL.JPG"
+  },
+  {
+    "id": "8410712001516",
+    "nome": "CORAL WAFER zero AZUCARES NATA 150G",
+    "preco": 0.68,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM17CORAL.JPG"
+  },
+  {
+    "id": "5907536115985",
+    "nome": "CORNETTI CROC.CONES AMENDOIM 112G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM128.JPG"
+  },
+  {
+    "id": "5907536118122",
+    "nome": "CORNETTI CROC.CONES AMENDOIM 112G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM129.JPG"
+  },
+  {
+    "id": "5907536115992",
+    "nome": "CORNETTI CROC.CONES CARAMELO 112G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM131.JPG"
+  },
+  {
+    "id": "5907536115978",
+    "nome": "CORNETTI CROC.CONES COCO 112G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM132.JPG"
+  },
+  {
+    "id": "5907536118023",
+    "nome": "CORNETTI CROC.CONES NATAL AVELA 100G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM126.JPG"
+  },
+  {
+    "id": "5907536118047",
+    "nome": "CORNETTI CROC.CONES NATAL COCO 100G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM127.JPG"
+  },
+  {
+    "id": "5907536118061",
+    "nome": "CORNETTI CROC.CONES OREO 100G",
+    "preco": 0.99,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM130.JPG"
+  },
+  {
+    "id": "",
+    "nome": "CRICH CRACKER C/SAL 200G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM695.JPG"
+  },
+  {
+    "id": "8008620009276",
+    "nome": "CRICH CRACKER C/SAL 500G",
+    "preco": 2.18,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM196.JPG"
+  },
+  {
+    "id": "",
+    "nome": "CRICH CRACKER INTEGRAL 200G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM696.JPG"
+  },
+  {
+    "id": "8008620009290",
+    "nome": "CRICH CRACKER INTEGRAL 500G",
+    "preco": 2.18,
+    "un": "12",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM198.JPG"
+  },
+  {
+    "id": "8008620009610",
+    "nome": "CRICH CRACKER S/SAL 200G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM194.JPG"
+  },
+  {
+    "id": "8008620050766",
+    "nome": "CRICH CRACKER S/SAL 500G",
+    "preco": 2.18,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM197.JPG"
+  },
+  {
+    "id": "5941194002270",
+    "nome": "CROCO BISCOITO MANTEIGA 100G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA7.JPG"
+  },
+  {
+    "id": "5941194002287",
+    "nome": "CROCO BISCOITO MEL 100G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA8.JPG"
+  },
+  {
+    "id": "5941194000047",
+    "nome": "CROCO BISCOITO PETIT 100G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA2.JPG"
+  },
+  {
+    "id": "5941194002423",
+    "nome": "CROCO CRACKER MIX 250G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM202.JPG"
+  },
+  {
+    "id": "5941194002737",
+    "nome": "CROCO STICKS PALITOS SALGADOS 100G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM201.JPG"
+  },
+  {
+    "id": "8410956600216",
+    "nome": "CRUJI-BOM BOL CR AVELA 5+1GRT",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM203.JPG"
+  },
+  {
+    "id": "8434165471184",
+    "nome": "CUETARA BOCADITOS CHOCO 150G",
+    "preco": 0.97,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM240.JPG"
+  },
+  {
+    "id": "8434165599994",
+    "nome": "CUETARA BOCADITOS LIMAO 150G",
+    "preco": 0.97,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM239.JPG"
+  },
+  {
+    "id": "8434165439559",
+    "nome": "CUETARA BOL HOJALDRADA 600G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM227.JPG"
+  },
+  {
+    "id": "8434165599673",
+    "nome": "CUETARA BOL NAPOLITANAS 213G",
+    "preco": 0.95,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM204.JPG"
+  },
+  {
+    "id": "8434165446984",
+    "nome": "CUETARA BOLACHA MARIA 200G",
+    "preco": 0.59,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM226.JPG"
+  },
+  {
+    "id": "5601039000105",
+    "nome": "CUETARA BOLACHA MARIA 800G",
+    "preco": 1.69,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM225.JPG"
+  },
+  {
+    "id": "8434165446519",
+    "nome": "CUETARA BOLACHA MARIA ORO 800G",
+    "preco": 1.69,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM228.JPG"
+  },
+  {
+    "id": "8434165446953",
+    "nome": "CUETARA BOLACHA TORRADA 200G",
+    "preco": 0.64,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM216.JPG"
+  },
+  {
+    "id": "8434165678347",
+    "nome": "CUETARA CAMPURRIANAS MANTEIGA 100G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM233.JPG"
+  },
+  {
+    "id": "8434165615465",
+    "nome": "CUETARA CAMPURRIANAS S/ACUC.132G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM235.JPG"
+  },
+  {
+    "id": "8434165588912",
+    "nome": "CUETARA CHOCO FLAKES DUO 120G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM210.JPG"
+  },
+  {
+    "id": "8434165660724",
+    "nome": "CUETARA CHOCO FLAKES 120G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM210.JPG"
+  },
+  {
+    "id": "8434165660731",
+    "nome": "CUETARA CHOCO FLAKES DUO 120G",
+    "preco": 1.14,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM211.JPG"
+  },
+  {
+    "id": "8434165446434",
+    "nome": "CUETARA CREAM CRACKER 200G",
+    "preco": 1.05,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM205.JPG"
+  },
+  {
+    "id": "8434165461154",
+    "nome": "CUETARA MARIA 400G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM208.JPG"
+  },
+  {
+    "id": "8434165452145",
+    "nome": "CUETARA MARIA ORO 400G",
+    "preco": 0.976,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM207.JPG"
+  },
+  {
+    "id": "8434165608023",
+    "nome": "CUETARA MARINH.CHIA Q.LINHACA 150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM223.JPG"
+  },
+  {
+    "id": "8434165608030",
+    "nome": "CUETARA MARINH.CLASSICAS 150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM224.JPG"
+  },
+  {
+    "id": "8434165629721",
+    "nome": "CUETARA MARINHEIRAS FAR ARROZ LIN.150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM242.JPG"
+  },
+  {
+    "id": "8434165629714",
+    "nome": "CUETARA MARINHEIRAS FAR MILHO ABOB 150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM241.JPG"
+  },
+  {
+    "id": "8434165612549",
+    "nome": "CUETARA MINI CAMPURRIANAS 260G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM217.JPG"
+  },
+  {
+    "id": "8434165655478",
+    "nome": "CUETARA MINI CAMPURRIANAS CHOC 122G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM234.JPG"
+  },
+  {
+    "id": "8434165488663",
+    "nome": "CUETARA SORTIDO 210G",
+    "preco": 2.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM230.JPG"
+  },
+  {
+    "id": "8434165488656",
+    "nome": "CUETARA SURTIDO 420G",
+    "preco": 3.85,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM229.JPG"
+  },
+  {
+    "id": "8434165446977",
+    "nome": "CUETARA TORRADA 800G",
+    "preco": 1.94,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM215.JPG"
+  },
+  {
+    "id": "8434165599659",
+    "nome": "CUETARA TOSTA R OCEANIX MINI 120G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM236.JPG"
+  },
+  {
+    "id": "8434165599819",
+    "nome": "CUETARA TOSTA RICA 190G",
+    "preco": 1.11,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM227.JPG"
+  },
+  {
+    "id": "8436048963502",
+    "nome": "CUETARA TOSTADA 400G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM206.JPG"
+  },
+  {
+    "id": "8410120501172",
+    "nome": "CUETARA TOSTADA 800G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM214.JPG"
+  },
+  {
+    "id": "5601069201121",
+    "nome": "DAN CAKE MEIA LUA MARMORE 350G",
+    "preco": 2.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM246.JPG"
+  },
+  {
+    "id": "5601069006672",
+    "nome": "DAN CAKE TORTA AVELA 300G",
+    "preco": 1.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM245.JPG"
+  },
+  {
+    "id": "5601069100103",
+    "nome": "DAN CAKE TORTA CHOCOLATE LEITE 300GR",
+    "preco": 1.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM243.JPG"
+  },
+  {
+    "id": "5601069102046",
+    "nome": "DAN CAKE TORTA MORANGO 300G",
+    "preco": 1.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM244.JPG"
+  },
+  {
+    "id": "5601560111134",
+    "nome": "DIATOSTA TOSTA INTEGRAL 225G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM253.JPG"
+  },
+  {
+    "id": "5601560111295",
+    "nome": "DIATOSTA TOSTA INTEGRAL 750G",
+    "preco": 2.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM251.JPG"
+  },
+  {
+    "id": "5601560112650",
+    "nome": "DIATOSTA TOSTA MINIGRILL 180G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM247.JPG"
+  },
+  {
+    "id": "5601560111196",
+    "nome": "DIATOSTA TOSTA MINIGRILL 350G",
+    "preco": 1.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM248.JPG"
+  },
+  {
+    "id": "5601560111844",
+    "nome": "DIATOSTA TOSTA MINIGRILL INTEGRAIS 180G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM249.JPG"
+  },
+  {
+    "id": "5601560111110",
+    "nome": "DIATOSTA TOSTA NORMAL 225G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM252.JPG"
+  },
+  {
+    "id": "5601560111288",
+    "nome": "DIATOSTA TOSTA NORMAL 750G",
+    "preco": 2.59,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM180.JPG"
+  },
+  {
+    "id": "5601489302200",
+    "nome": "DU BOIS DE LA ROCHE LINGUAS DE GATO 180G",
+    "preco": 1.22,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM256.JPG"
+  },
+  {
+    "id": "5601489300152",
+    "nome": "DU BOIS DE LA ROCHE PALMIERES 150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM254.JPG"
+  },
+  {
+    "id": "",
+    "nome": "DU BOIS DE LA ROCHE PALMIERES CANELA 150G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM255.JPG"
+  },
+  {
+    "id": "8413675000190",
+    "nome": "DULCA PAO DE LEITE 8UN 240G",
+    "preco": 0.894,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM257.JPG"
+  },
+  {
+    "id": "8413675000176",
+    "nome": "DULCA PAO LEITE C/PEPITAS CHOC 195G",
+    "preco": 0.894,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM258.JPG"
+  },
+  {
+    "id": "8410087543543",
+    "nome": "DULCESOL BOLLISOL 120G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM267.JPG"
+  },
+  {
+    "id": "8410087540641",
+    "nome": "DULCESOL BOLLISOL 4U 240G",
+    "preco": 1.45,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM488.JPG"
+  },
+  {
+    "id": "8410087529424",
+    "nome": "DULCESOL BRACITOS 4U 200G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM270.JPG"
+  },
+  {
+    "id": "8410087529844",
+    "nome": "DULCESOL BRACITOS TRUFA 140G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM271.JPG"
+  },
+  {
+    "id": "8410087280356",
+    "nome": "DULCESOL BRIOCHOCOS C/4",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM275.JPG"
+  },
+  {
+    "id": "8410087243993",
+    "nome": "DULCESOL CANAS CACAO C/3 141G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM489.JPG"
+  },
+  {
+    "id": "8410087243627",
+    "nome": "DULCESOL CANAS EXTRA CACAO C/3 189G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM301.JPG"
+  },
+  {
+    "id": "8410087243979",
+    "nome": "DULCESOL CANAS MASSA FOLH/4 153G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM298.JPG"
+  },
+  {
+    "id": "8410087243986",
+    "nome": "DULCESOL CANAS ZEBRA CREME 153G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM300.JPG"
+  },
+  {
+    "id": "8410087142180",
+    "nome": "DULCESOL CHAPELA CACAO 200G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM285.JPG"
+  },
+  {
+    "id": "8410087527994",
+    "nome": "DULCESOL CHAPELA CACAO LEITE 135G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM302.JPG"
+  },
+  {
+    "id": "8410087571249",
+    "nome": "DULCESOL CHAPELA EXTRACAO 200G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM288.JPG"
+  },
+  {
+    "id": "8410087147444",
+    "nome": "DULCESOL CHAPELA ROSA 135G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM287.JPG"
+  },
+  {
+    "id": "8410087147215",
+    "nome": "DULCESOL CHAPELA ZEBRA 200G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM286.JPG"
+  },
+  {
+    "id": "8410087122618",
+    "nome": "DULCESOL CROISSANTS RECH C/3 135G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM263.JPG"
+  },
+  {
+    "id": "8410087151083",
+    "nome": "DULCESOL ENSAIMADAS 220G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM303.JPG"
+  },
+  {
+    "id": "8410087421704",
+    "nome": "DULCESOL LUNAS CACAO C/6 90G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM304.JPG"
+  },
+  {
+    "id": "8410087035307",
+    "nome": "DULCESOL MILHOJAS CHOC 300G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM219.JPG"
+  },
+  {
+    "id": "8410087271095",
+    "nome": "DULCESOL NAPOLITANAS CJ6",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM274.JPG"
+  },
+  {
+    "id": "8410087271378",
+    "nome": "DULCESOL NAPOLITANAS CREME C/6 240G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM305.JPG"
+  },
+  {
+    "id": "8410087041230",
+    "nome": "DULCESOL PALMERITAS 113G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM278.JPG"
+  },
+  {
+    "id": "8410087082226",
+    "nome": "DULCESOL PANDORINOS C/3 135G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM273.JPG"
+  },
+  {
+    "id": "8410087023304",
+    "nome": "DULCESOL PAO C/ALHO 160G",
+    "preco": 1.196,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM697.JPG"
+  },
+  {
+    "id": "8410087412832",
+    "nome": "DULCESOL PAO S/CODEA 400G",
+    "preco": 1.45,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM698.JPG"
+  },
+  {
+    "id": "8410087821375",
+    "nome": "DULCESOL PAO SOTTILE CEREAIS 155G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM294.JPG"
+  },
+  {
+    "id": "",
+    "nome": "DULCESOL PAO SOTTILE INTEGRA 155G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM295.JPG"
+  },
+  {
+    "id": "8410087145839",
+    "nome": "DULCESOL QUADRADITOS CACAO C/6 260G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM277.JPG"
+  },
+  {
+    "id": "8410087529769",
+    "nome": "DULCESOL QUADRADITOS MOKA C/4 136G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM276.JPG"
+  },
+  {
+    "id": "8410087142197",
+    "nome": "DULCESOL QUADRADOS MOKA 222G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM487.JPG"
+  },
+  {
+    "id": "8410087010090",
+    "nome": "DULCESOL ROSEGONES 150G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM265.JPG"
+  },
+  {
+    "id": "8410087101583",
+    "nome": "DULCESOL ROSEGONES 90G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM266.JPG"
+  },
+  {
+    "id": "8410087166506",
+    "nome": "DULCESOL SABERA CACAO 105G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM269.JPG"
+  },
+  {
+    "id": "8410087341415",
+    "nome": "DULCESOL TARTE MACA 195G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM284.JPG"
+  },
+  {
+    "id": "8410087830162",
+    "nome": "DULCESOL TORTILLAS 6U 216G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM260.JPG"
+  },
+  {
+    "id": "8410087023144",
+    "nome": "DULCESOL TOSTA INTEGRAL 400G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM261.JPG"
+  },
+  {
+    "id": "8410251004177",
+    "nome": "EDUBOM BOLACHA AMENDOIM 180G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM311.JPG"
+  },
+  {
+    "id": "5601306097715",
+    "nome": "EDUBOM BOLACHA BAUNILHA 160G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM318.JPG"
+  },
+  {
+    "id": "5608480000463",
+    "nome": "EDUBOM BROA AMENDOIM 3U",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM315.JPG"
+  },
+  {
+    "id": "5601306097753",
+    "nome": "EDUBOM CANUDINHOS RECH140G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM317.JPG"
+  },
+  {
+    "id": "5600216776000",
+    "nome": "EDUBOM CROISSANT BRIOCHE 4U",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM310.JPG"
+  },
+  {
+    "id": "5604160004141",
+    "nome": "EDUBOM MADALENAS CHOCOLATE 350G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM650.JPG"
+  },
+  {
+    "id": "5604160004158",
+    "nome": "EDUBOM MADALENAS LARANJA 350G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM651.JPG"
+  },
+  {
+    "id": "8410251024151",
+    "nome": "EDUBOM RIZADA INT 180G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM312.JPG"
+  },
+  {
+    "id": "8410251005037",
+    "nome": "EDUBOM ROSEGONES 130G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM316.JPG"
+  },
+  {
+    "id": "5602794000669",
+    "nome": "EDUBOM WAFER BAUNILHA 140G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM314.JPG"
+  },
+  {
+    "id": "5602794000676",
+    "nome": "EDUBOM WAFER CHOCOLATE 140G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM313.JPG"
+  },
+  {
+    "id": "8004800003065",
+    "nome": "LAGO POKER AVELA 5X45G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM410.JPG"
+  },
+  {
+    "id": "8004800003072",
+    "nome": "LAGO POKER BAUNILHA 5X45G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM409.JPG"
+  },
+  {
+    "id": "8004800003058",
+    "nome": "LAGO POKER CACAO 5X45G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM411.JPG"
+  },
+  {
+    "id": "8004800003089",
+    "nome": "LAGO POKER LIMAO 5X45G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM408.JPG"
+  },
+  {
+    "id": "8004800001467",
+    "nome": "LAGO WAFER AVELA 45Gx4U",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM412.JPG"
+  },
+  {
+    "id": "8004800001450",
+    "nome": "LAGO WAFER CACAO 45GX4U",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM413.JPG"
+  },
+  {
+    "id": "8437027509605",
+    "nome": "EUROCHOC CUBANITO TRAD 80G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM486.JPG"
+  },
+  {
+    "id": "8437022182643",
+    "nome": "FAM.BISCUITS BOL.MARIA GENGIBRE 220G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM404.JPG"
+  },
+  {
+    "id": "8437022182858",
+    "nome": "FAMILY TOSTAKIDS PAWPATROL 200G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM406.JPG"
+  },
+  {
+    "id": "8437022182889",
+    "nome": "FAMILY TOSTAKIDS PAWPATROL CACAU 200G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM405.JPG"
+  },
+  {
+    "id": "8436048963335",
+    "nome": "FILIPINOS CHOCOLATE BRANCO 128G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM402.JPG"
+  },
+  {
+    "id": "8436048963359",
+    "nome": "FILIPINOS CHOCOLATE LEITE 128G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM401.JPG"
+  },
+  {
+    "id": "8436048963342",
+    "nome": "FILIPINOS CHOCOLATE NEGRO 128G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM403.JPG"
+  },
+  {
+    "id": "8411414014972",
+    "nome": "FLORBU BOL AVEIA zero AÇUCARES 150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM336.JPG"
+  },
+  {
+    "id": "8411414014644",
+    "nome": "FLORBU BOL CASTELLANAS zero AÇUCARES 150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM392.JPG"
+  },
+  {
+    "id": "8411414014385",
+    "nome": "FLORBU BOL CHOCOLATE CHIPS zero AÇUCARES 135G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM337.JPG"
+  },
+  {
+    "id": "8411414010783",
+    "nome": "FLORBU BOL.COOKIES CHOC S/ACUC 185G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM395.JPG"
+  },
+  {
+    "id": "8411414012763",
+    "nome": "FLORBU BOL.DESAYUNO INT,160G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM333.JPG"
+  },
+  {
+    "id": "8411414010677",
+    "nome": "FLORBU BOL.INT PASSAS 185G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM332.JPG"
+  },
+  {
+    "id": "8411414012077",
+    "nome": "FLORBU BOL.INTEGRAL C/FIBRA 195G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM334.JPG"
+  },
+  {
+    "id": "8411414014729",
+    "nome": "FLORBU BOL.LIMAO zero AÇUCARES 150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM394.JPG"
+  },
+  {
+    "id": "8411414014057",
+    "nome": "FLORBU CASTELHANAS MEL SACO 240G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM397.JPG"
+  },
+  {
+    "id": "8411414014064",
+    "nome": "FLORBU CASTELLANA CHOCOLATE 240G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM396.JPG"
+  },
+  {
+    "id": "8411414014736",
+    "nome": "FLORBU COOKIES CANELA zero ACUC.140G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM393.JPG"
+  },
+  {
+    "id": "8411414012220",
+    "nome": "FLORBU COOKIES CHOC.120G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM400.JPG"
+  },
+  {
+    "id": "8411414014620",
+    "nome": "FLORBU COOKIES LIMAO 120G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM398.JPG"
+  },
+  {
+    "id": "8411414012510",
+    "nome": "FLORBU COOKILATE 185G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM330.JPG"
+  },
+  {
+    "id": "8411414013982",
+    "nome": "FLORBU WAFER CAFE GOURMET 185G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM326.JPG"
+  },
+  {
+    "id": "8411414015252",
+    "nome": "FLORBU WAFER GOURMET CREMA CAT.150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM328.JPG"
+  },
+  {
+    "id": "8411414012275",
+    "nome": "FLORBU WAFERS CACAO zero AÇUCAR 160G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM341.JPG"
+  },
+  {
+    "id": "8411414011940",
+    "nome": "FLORBU WAFERS COCO O% AÇUCAR 160G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM338.JPG"
+  },
+  {
+    "id": "8411414013722",
+    "nome": "FLORBU WAFERS GOURMET AVELA 175G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM327.JPG"
+  },
+  {
+    "id": "8411414013739",
+    "nome": "FLORBU WAFERS GOURMET CHOC.INT 175G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM485.JPG"
+  },
+  {
+    "id": "8411414013197",
+    "nome": "FLORBU WAFERS GOURMET STRACCIATELLA 185G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM484.JPG"
+  },
+  {
+    "id": "8411414014712",
+    "nome": "FLORBU WAFERS LIMAO O% AÇUCAR 150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM339.JPG"
+  },
+  {
+    "id": "8411414015139",
+    "nome": "FLORBU WAFERS NATA O% AÇUCAR 150G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM340.JPG"
+  },
+  {
+    "id": "8436546051428",
+    "nome": "FRITOPER BATATA FRITA CAMPESINAS 140G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (33).JPG"
+  },
+  {
+    "id": "8436546051381",
+    "nome": "FRITOPER BATATA FRITA GOURMET 140G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (30).JPG"
+  },
+  {
+    "id": "8436546051367",
+    "nome": "FRITOPER BATATA FRITA LISA140G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (35).JPG"
+  },
+  {
+    "id": "8436546051374",
+    "nome": "FRITOPER BATATA FRITA ONDULADA 160G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (34).JPG"
+  },
+  {
+    "id": "8437008505657",
+    "nome": "FRITOPER BATATA FRITA PRESUNTO 140G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (32).JPG"
+  },
+  {
+    "id": "8410956601732",
+    "nome": "FUNBAR BARRITAS C/CHOC.CJ 5X21G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM458.JPG"
+  },
+  {
+    "id": "5600270553005",
+    "nome": "GENIAL BATATA PALHA 500G",
+    "preco": 2.65,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM690.JPG"
+  },
+  {
+    "id": "8013355999662",
+    "nome": "GRAN PAVESI CRACKER C/SAL 560G",
+    "preco": 2.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM297.JPG"
+  },
+  {
+    "id": "8013355999679",
+    "nome": "GRAN PAVESI CRACKER S/SAL 560G",
+    "preco": 2.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM296.JPG"
+  },
+  {
+    "id": "8410376006544",
+    "nome": "GULLON BOLACHA CHOCO CHIPS 125G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM367.JPG"
+  },
+  {
+    "id": "8410376038132",
+    "nome": "GULLON BOLACHA DORADA 600G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM370.JPG"
+  },
+  {
+    "id": "8410376008371",
+    "nome": "GULLON BOLACHA DORADA 800G",
+    "preco": 1.399,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM371.JPG"
+  },
+  {
+    "id": "8410376060409",
+    "nome": "GULLON BOLACHA DUO CHOC.2X145G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM452.JPG"
+  },
+  {
+    "id": "8410376006070",
+    "nome": "GULLON BOLACHA MARIA 800G",
+    "preco": 1.399,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM368.JPG"
+  },
+  {
+    "id": "8410376017113",
+    "nome": "GULLON BOLACHA MEGA DUO 500G",
+    "preco": 1.39,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM372.JPG"
+  },
+  {
+    "id": "8410376047288",
+    "nome": "GULLON BOLACHA MINI CREME 250G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM456.JPG"
+  },
+  {
+    "id": "8410376048216",
+    "nome": "GULLON BOLACHA MINI DIGESTIVE 200G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM366.JPG"
+  },
+  {
+    "id": "8410376048346",
+    "nome": "GULLON BOLACHA MINI DIGESTIVE CHOCO 160G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM457.JPG"
+  },
+  {
+    "id": "8410376065596",
+    "nome": "GULLON BOLACHA MINI TWINS 150G",
+    "preco": 0.97,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM361.JPG"
+  },
+  {
+    "id": "8410376000146",
+    "nome": "GULLON BOLACHA TOSTADA 800G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM369.JPG"
+  },
+  {
+    "id": "8410376046939",
+    "nome": "GULLON BOLACHA TWIN GO 290G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM453.JPG"
+  },
+  {
+    "id": "8410376047202",
+    "nome": "GULLON BOLACHA TWINS 308G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM360.JPG"
+  },
+  {
+    "id": "8410376031898",
+    "nome": "GULLON BOLACHA TWINS BOL 4X44G",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM454.JPG"
+  },
+  {
+    "id": "8410376075946",
+    "nome": "GULLON MINI BITES QUINOA CHIA 140G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM455.JPG"
+  },
+  {
+    "id": "8410376013658",
+    "nome": "GULLON PICK MINI CRACKER 250G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM356.JPG"
+  },
+  {
+    "id": "8410376013672",
+    "nome": "GULLON PICK MINI CRACKER COCKTAIL 250G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM354.JPG"
+  },
+  {
+    "id": "8410376013665",
+    "nome": "GULLON PICK MINI CRACKER PEIXES 250G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM355.JPG"
+  },
+  {
+    "id": "8410376041002",
+    "nome": "GULLON VITALDAY CROC AVEIA 265G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM359.JPG"
+  },
+  {
+    "id": "8410376058796",
+    "nome": "GULLON VITALDAY CROC CHOC AVEIA 300G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM357.JPG"
+  },
+  {
+    "id": "8410376046908",
+    "nome": "GULLON VITALDAY CROC FRUTAS 300G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM358.JPG"
+  },
+  {
+    "id": "5908234813814",
+    "nome": "HIPERD.HAPPY FIT PRO WAFER PROT.S/AÇ.AMEND.95G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA34.JPG"
+  },
+  {
+    "id": "5908234813791",
+    "nome": "HIPERD.HAPPY FIT PRO WAFER PROT.S/AÇ.BAUNILHA 95G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA36.JPG"
+  },
+  {
+    "id": "5908234813777",
+    "nome": "HIPERD.HAPPY FIT PRO WAFER PROT.S/AÇ.CACAO 95G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA35.JPG"
+  },
+  {
+    "id": "5908234813852",
+    "nome": "HIPERD.HAPPY SWING ROLLS AMENDOIM 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA19.JPG"
+  },
+  {
+    "id": "5908234805666",
+    "nome": "HIPERD.HAPPY SWING ROLLS AVELA 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA5.JPG"
+  },
+  {
+    "id": "5908234805642",
+    "nome": "HIPERD.HAPPY SWING ROLLS BAUNILHA 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA4.JPG"
+  },
+  {
+    "id": "5908234814460",
+    "nome": "HIPERD.HAPPY SWING ROLLS BROWNIE 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA29.JPG"
+  },
+  {
+    "id": "5908234805635",
+    "nome": "HIPERD.HAPPY SWING ROLLS CACAO 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA3.JPG"
+  },
+  {
+    "id": "5908234812312",
+    "nome": "HIPERD.HAPPY SWING ROLLS CARAMELO SALG. 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA21.JPG"
+  },
+  {
+    "id": "5908234805659",
+    "nome": "HIPERD.HAPPY SWING ROLLS COCO 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA20.JPG"
+  },
+  {
+    "id": "5908234815221",
+    "nome": "HIPERD.HAPPY SWING ROLLS LARANJA 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA6.JPG"
+  },
+  {
+    "id": "5908234815047",
+    "nome": "HIPERD.HAPPY SWING ROLLS PISTACHIO 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA22.JPG"
+  },
+  {
+    "id": "5908234807912",
+    "nome": "HIPERD.HAPPY WAFER MAX 4X25G",
+    "preco": 1.3,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA37.JPG"
+  },
+  {
+    "id": "8410391711126",
+    "nome": "HERAS MADALENAS COVETE QUAD.12U",
+    "preco": 1.02,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM450.JPG"
+  },
+  {
+    "id": "8410391351629",
+    "nome": "HERAS MADALENAS SACO 330G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM451.JPG"
+  },
+  {
+    "id": "5606480100954",
+    "nome": "HIPERD.BISCOITO ARGOLAS 200G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA12.JPG"
+  },
+  {
+    "id": "5606480100947",
+    "nome": "HIPERD.BISCOITO LARANJA 200G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA10.JPG"
+  },
+  {
+    "id": "5606480100930",
+    "nome": "HIPERD.BISCOITO LIMAO 200G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA11.JPG"
+  },
+  {
+    "id": "5606480100923",
+    "nome": "HIPERD.BISCOITO LINGUAS DE GATO 200G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA13.JPG"
+  },
+  {
+    "id": "5606480100886",
+    "nome": "HIPERD.CRACKER DUCAT 8U 244G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA14.JPG"
+  },
+  {
+    "id": "5606480100879",
+    "nome": "HIPERD.FOLHADO ARGOLA 6U 250G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA18.JPG"
+  },
+  {
+    "id": "5606480100893",
+    "nome": "HIPERD.FOLHADO JIVE 4U 236G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA32.JPG"
+  },
+  {
+    "id": "5606480100855",
+    "nome": "HIPERD.HOSTIAS 110G 12U",
+    "preco": 1.17,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA33.JPG"
+  },
+  {
+    "id": "5606480100657",
+    "nome": "HIPERD.HOT DOG 4U 250G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA15.JPG"
+  },
+  {
+    "id": "5606480100640",
+    "nome": "HIPERD.MAXI BURGUER 4U 300G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA16.JPG"
+  },
+  {
+    "id": "5606480100435",
+    "nome": "HIPERD.PAO LEITE EMB 6U IND 210G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA17.JPG"
+  },
+  {
+    "id": "5602794000041",
+    "nome": "HIPERD.WAFER BAUNILHA 37G",
+    "preco": 0.35,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA30.JPG"
+  },
+  {
+    "id": "5602794000058",
+    "nome": "HIPERD.WAFER CHOCOLATE 37G",
+    "preco": 0.35,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "HIPBOLACHA30.JPG"
+  },
+  {
+    "id": "8422283073601",
+    "nome": "LA BLANCA PALOMA COCKTAIL 120G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM701.JPG"
+  },
+  {
+    "id": "8422283075346",
+    "nome": "LA BLANCA PALOMA GUSANOS QUEIJO 100G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM700.JPG"
+  },
+  {
+    "id": "8423621000242",
+    "nome": "LAGUIMAR COLINES 300G",
+    "preco": 0.94,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM449.JPG"
+  },
+  {
+    "id": "5410041000900",
+    "nome": "LU TUC ORIGINAL 75G",
+    "preco": 1.04,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM422.JPG"
+  },
+  {
+    "id": "8436547647033",
+    "nome": "MAXIES MINI COOKIES MINECRAFT 100G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM424.JPG"
+  },
+  {
+    "id": "8436547640843",
+    "nome": "MAXIES MINI COOKIES PAW PATROL 120G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM353.JPG"
+  },
+  {
+    "id": "8435319705599",
+    "nome": "MAXIES MINI COOKIES PEPPA PIG 120G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM423.JPG"
+  },
+  {
+    "id": "8436547646746",
+    "nome": "MAXIES MINI COOKIES STICHT 100G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM425.JPG"
+  },
+  {
+    "id": "5310002750946",
+    "nome": "ME&YOU WAFER CACAO 4X38G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM448.JPG"
+  },
+  {
+    "id": "5310002750694",
+    "nome": "ME&YOU WAFER CACAO AVELA 4X38G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM446.JPG"
+  },
+  {
+    "id": "5310002750700",
+    "nome": "ME&YOU WAFER CACAO LARANJA 4X38G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM445.JPG"
+  },
+  {
+    "id": "5310002750878",
+    "nome": "ME&YOU WAFER COCO 4X38G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM444.JPG"
+  },
+  {
+    "id": "5310002750908",
+    "nome": "ME&YOU WAFER LEITE 4X33G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM447.JPG"
+  },
+  {
+    "id": "8436540922090",
+    "nome": "MELS BOLCHA JAFFA CAKES FRAMB.135G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM374.JPG"
+  },
+  {
+    "id": "8436540922106",
+    "nome": "MELS BOLCHA JAFFA CAKES LARANJA 135G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM373.JPG"
+  },
+  {
+    "id": "7622300766610",
+    "nome": "MILKA BOLACHA CHOCO COOKIE 135G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM391.JPG"
+  },
+  {
+    "id": "7622210405302",
+    "nome": "MILKA BOLACHA CHOCO MOO 120G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM390.JPG"
+  },
+  {
+    "id": "7622202296208",
+    "nome": "MILKA CHOCO WAFER 5X30G",
+    "preco": 1.943,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "LOGODM.JPG"
+  },
+  {
+    "id": "7622300344757",
+    "nome": "MILKA CHOCO WAFER CH BR 180G",
+    "preco": 1.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM426.JPG"
+  },
+  {
+    "id": "8436547646753",
+    "nome": "MINECRAFT MINI MUFFINS 125G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM159.JPG"
+  },
+  {
+    "id": "5604993547969",
+    "nome": "MONTE VERDE WAFERS BAUNILHA 160G",
+    "preco": 0.81,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM417.JPG"
+  },
+  {
+    "id": "5604993547983",
+    "nome": "MONTE VERDE WAFERS CHOCOLATE 160G",
+    "preco": 0.81,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM418.JPG"
+  },
+  {
+    "id": "8411037892308",
+    "nome": "MR.BROWNIE BOL BLONDIES SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM433.JPG"
+  },
+  {
+    "id": "8411037884624",
+    "nome": "MR.BROWNIE BOL CHOC BRANCO SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM431.JPG"
+  },
+  {
+    "id": "8411037892490",
+    "nome": "MR.BROWNIE BOL CHOC PINTAROLAS SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM443.JPG"
+  },
+  {
+    "id": "8411037800037",
+    "nome": "MR.BROWNIE BOL CHOCOLATE SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM428.JPG"
+  },
+  {
+    "id": "8411037892315",
+    "nome": "MR.BROWNIE BOL COCO SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM429.JPG"
+  },
+  {
+    "id": "8411037892476",
+    "nome": "MR.BROWNIE BOL LIMAO SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM430.JPG"
+  },
+  {
+    "id": "8411037892452",
+    "nome": "MRS.MUFFIN CHOCOLATE SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM419.JPG"
+  },
+  {
+    "id": "8411037892438",
+    "nome": "MRS.MUFFIN MORANGO SACO 200G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM420.JPG"
+  },
+  {
+    "id": "5601066401005",
+    "nome": "NACIONAL BOL MY COOKIE XL 180G",
+    "preco": 1.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM459.JPG"
+  },
+  {
+    "id": "5601286430670",
+    "nome": "NACIONAL BOLACHA AGUA/SAL 125G",
+    "preco": 0.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM345.JPG"
+  },
+  {
+    "id": "5601286402332",
+    "nome": "NACIONAL BOLACHA ALFA 180G",
+    "preco": 0.64,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM343.JPG"
+  },
+  {
+    "id": "5601066400954",
+    "nome": "NACIONAL BOLACHA DIGESTIVE 180G",
+    "preco": 0.59,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM379.JPG"
+  },
+  {
+    "id": "5601286414762",
+    "nome": "NACIONAL BOLACHA MARIA 200G",
+    "preco": 0.5,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM344.JPG"
+  },
+  {
+    "id": "5601286402301",
+    "nome": "NACIONAL BOLACHA MINI ALFA 120G",
+    "preco": 0.41,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM350.JPG"
+  },
+  {
+    "id": "5601066401029",
+    "nome": "NACIONAL BOLACHA MY COOKIE 150G",
+    "preco": 1.05,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM378.JPG"
+  },
+  {
+    "id": "5601066400978",
+    "nome": "NACIONAL BOLACHA PASSITAS 150G",
+    "preco": 0.59,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM346.JPG"
+  },
+  {
+    "id": "5601066400923",
+    "nome": "NACIONAL BOLACHA SHORTCAKE 180G",
+    "preco": 0.81,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM349.JPG"
+  },
+  {
+    "id": "5601066400947",
+    "nome": "NACIONAL BOLACHA SHORTCAKE CHOCOLATE 180G",
+    "preco": 0.94,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM348.JPG"
+  },
+  {
+    "id": "5601286413765",
+    "nome": "NACIONAL BOLACHA TORRADA 200G",
+    "preco": 0.41,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM347.JPG"
+  },
+  {
+    "id": "7622300281182",
+    "nome": "OREO BOLACHA 154G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM415.JPG"
+  },
+  {
+    "id": "7622300744663",
+    "nome": "OREO BOLACHA 220G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM414.JPG"
+  },
+  {
+    "id": "8410000810004",
+    "nome": "OREO BOLACHA CX 176G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM416.JPG"
+  },
+  {
+    "id": "7622300165628",
+    "nome": "OREO MINI BOLACHA 4X40G",
+    "preco": 1.299,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM377.JPG"
+  },
+  {
+    "id": "5600355580261",
+    "nome": "PANLAR BISCOITOS ARG LIMAO 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM706.JPG"
+  },
+  {
+    "id": "5600355580247",
+    "nome": "PANLAR BISCOITOS AVEIA 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM492.JPG"
+  },
+  {
+    "id": "5600355580230",
+    "nome": "PANLAR BISCOITOS CACAU 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM712.JPG"
+  },
+  {
+    "id": "5600355581428",
+    "nome": "PANLAR BISCOITOS CAFE 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM708.JPG"
+  },
+  {
+    "id": "5600355581220",
+    "nome": "PANLAR BISCOITOS CANELA 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM711.JPG"
+  },
+  {
+    "id": "",
+    "nome": "PANLAR BISCOITOS COCO 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM707.JPG"
+  },
+  {
+    "id": "5600355580216",
+    "nome": "PANLAR BISCOITOS LARANJA 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM709.JPG"
+  },
+  {
+    "id": "5600355580254",
+    "nome": "PANLAR BISCOITOS MANTEIGA 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM714.JPG"
+  },
+  {
+    "id": "5600355581251",
+    "nome": "PANLAR BISCOITOS QUINOA 200G",
+    "preco": 0.86,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM710.JPG"
+  },
+  {
+    "id": "8427656008105",
+    "nome": "PASTA TE SORTIDO 185G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM482.JPG"
+  },
+  {
+    "id": "8436547646654",
+    "nome": "PAW PATROL MINI MUFFINS 125G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM155.JPG"
+  },
+  {
+    "id": "8436547646647",
+    "nome": "PEPPA PIG MINI MUFFINS 125G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM158.JPG"
+  },
+  {
+    "id": "5907536116371",
+    "nome": "PICCOLA CROCCANTE BOL.AMENDOIM 90G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM125.JPG"
+  },
+  {
+    "id": "5907536116388",
+    "nome": "PICCOLA CROCCANTE BOL.COCO 90G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM124.JPG"
+  },
+  {
+    "id": "3045471009111",
+    "nome": "POULT TARTELETE CHOCOLATE 150G",
+    "preco": 0.89,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM704.JPG"
+  },
+  {
+    "id": "3045471008114",
+    "nome": "POULT TARTELETE MORANGO 150G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM705.JPG"
+  },
+  {
+    "id": "5907768229818",
+    "nome": "PRIMART BOLACHA CAFE 180G",
+    "preco": 1.19,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM380.JPG"
+  },
+  {
+    "id": "5053990127726",
+    "nome": "PRINGLES ORIGINAL 165G",
+    "preco": 1.69,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (23).JPG"
+  },
+  {
+    "id": "5410076067657",
+    "nome": "PRINGLES ORIGINAL 40G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (59).JPG"
+  },
+  {
+    "id": "5053990127672",
+    "nome": "PRINGLES PAPRIKA 165G",
+    "preco": 1.69,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (22).JPG"
+  },
+  {
+    "id": "5413149775244",
+    "nome": "PRINGLES PAPRIKA 40G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (60).JPG"
+  },
+  {
+    "id": "5053990127740",
+    "nome": "PRINGLES SOUR CREAM 165G",
+    "preco": 1.69,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (24).JPG"
+  },
+  {
+    "id": "5413149775183",
+    "nome": "PRINGLES SOUR CREAM 40G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (62).JPG"
+  },
+  {
+    "id": "5606439000502",
+    "nome": "RIALTO PICAGRILL NORMAL 75G",
+    "preco": 0.94,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM389.JPG"
+  },
+  {
+    "id": "5600744051013",
+    "nome": "SABOROSA BELGA 220G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM375.JPG"
+  },
+  {
+    "id": "5600744051020",
+    "nome": "SABOROSA BELGA CHOCOLATE 198G",
+    "preco": 1.09,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM376.JPG"
+  },
+  {
+    "id": "8413675000404",
+    "nome": "SCHOKO BROTCHEN BAUNILHA C/6 270G",
+    "preco": 1.194,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM388.JPG"
+  },
+  {
+    "id": "8413675000381",
+    "nome": "SCHOKO BROTCHEN CHOCOLATE C/6 275G",
+    "preco": 1.194,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM387.JPG"
+  },
+  {
+    "id": "8412309707344",
+    "nome": "TEJEDOR GENGIBRE E CANELA 300G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM385.JPG"
+  },
+  {
+    "id": "8412309607019",
+    "nome": "TEJEDOR KOKINOS 300G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM386.JPG"
+  },
+  {
+    "id": "8412309707412",
+    "nome": "TEJEDOR MARIA CHOCOLATE 300G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM479.JPG"
+  },
+  {
+    "id": "8412309400023",
+    "nome": "TEJEDOR MINI MARIA 350G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM483.JPG"
+  },
+  {
+    "id": "8412309402898",
+    "nome": "TEJEDOR MINI TOSTADA 320G",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM478.JPG"
+  },
+  {
+    "id": "5605458202423",
+    "nome": "TREVI PIPOCAS DOCES BRANCAS 150G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (3).JPG"
+  },
+  {
+    "id": "5605458203055",
+    "nome": "TREVI PIPOCAS DOCES CORES 150G",
+    "preco": 0.75,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "APERITIVOS (4).JPG"
+  },
+  {
+    "id": "7622210252074",
+    "nome": "TRIUNFO BOLACHA AVEIA 190G",
+    "preco": 0.93,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM480.JPG"
+  },
+  {
+    "id": "7622202214493",
+    "nome": "TRIUNFO BOLACHA MARIA 177G",
+    "preco": 0.85,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM481.JPG"
+  },
+  {
+    "id": "5601008100058",
+    "nome": "V.CASTRO BOLACHA AGUA SAL 125G",
+    "preco": 0.52,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM466.JPG"
+  },
+  {
+    "id": "5601008100560",
+    "nome": "V.CASTRO BOLACHA AGUA SAL CX 168G",
+    "preco": 1.299,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM467.JPG"
+  },
+  {
+    "id": "5601008101031",
+    "nome": "V.CASTRO BOLACHA AGUA SAL INT 186G",
+    "preco": 1.36,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM477.JPG"
+  },
+  {
+    "id": "5601008200314",
+    "nome": "V.CASTRO BOLACHA CIRCUS CHOC 300G",
+    "preco": 1.29,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM471.JPG"
+  },
+  {
+    "id": "5601008200017",
+    "nome": "V.CASTRO BOLACHA DIG AVEIA DOSES 258G",
+    "preco": 1.18,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM468.JPG"
+  },
+  {
+    "id": "5601008100126",
+    "nome": "V.CASTRO BOLACHA INTEGRALIS 180G",
+    "preco": 0.98,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM469.JPG"
+  },
+  {
+    "id": "5601008100362",
+    "nome": "V.CASTRO BOLACHA MARIA 200G",
+    "preco": 0.37,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM463.JPG"
+  },
+  {
+    "id": "5601008100539",
+    "nome": "V.CASTRO BOLACHA MARIA DOSES CX 300G",
+    "preco": 1.299,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM464.JPG"
+  },
+  {
+    "id": "5601008200864",
+    "nome": "V.CASTRO BOLACHA TARTELETES MOR.4X48G",
+    "preco": 1.49,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM470.JPG"
+  },
+  {
+    "id": "5601008100164",
+    "nome": "V.CASTRO BOLACHA TORRADA 200G",
+    "preco": 0.56,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM462.JPG"
+  },
+  {
+    "id": "5601008100119",
+    "nome": "V.CASTRO CREAM CRACKER 200G",
+    "preco": 0.53,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM461.JPG"
+  },
+  {
+    "id": "5601008101901",
+    "nome": "V.CASTRO CREAM CRACKER 6D 180G",
+    "preco": 0.79,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM460.JPG"
+  },
+  {
+    "id": "5310345009077",
+    "nome": "VINCINNI ALMI WAFER MILK  4X30G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM474.JPG"
+  },
+  {
+    "id": "5310345009084",
+    "nome": "VINCINNI ALMI WAFER PREMIER 4X30G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM475.JPG"
+  },
+  {
+    "id": "5310115007753",
+    "nome": "VINCINNI WAFER WAFRETA CH 5X30G",
+    "preco": 0.68,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM476.JPG"
+  },
+  {
+    "id": "8410087400730",
+    "nome": "WOODYS PAO CACHORRO 4U",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM702.JPG"
+  },
+  {
+    "id": "8410087361444",
+    "nome": "WOODYS PAO MAXI HAMB. 4U",
+    "preco": 0.99,
+    "un": "UNI",
+    "familia": "BOLACHAS / APERITIVOS",
+    "marca": "IMAGEM703.JPG"
+  }
+]
