@@ -3,25 +3,28 @@
     "id": "5601950001151",
     "nome": "A SALOINHA BATATA PALHA 200G",
     "preco": 1.09,
-    "un": "UNI",
+    "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (49).JPG"
+    "marca": "APERITIVOS (49).jpg",
+    "img": "APERITIVOS (49).jpg"
   },
   {
     "id": "5605839000594",
     "nome": "A SALOINHA PIPOCAS BRANCAS 150G",
     "preco": 0.84,
-    "un": "UNI",
+    "un": "20",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (47).JPG"
+    "marca": "APERITIVOS (47).jpg",
+    "img": "APERITIVOS (47).jpg"
   },
   {
     "id": "5605839000600",
     "nome": "A SALOINHA PIPOCAS COLORIDAS 150G",
     "preco": 0.84,
-    "un": "UNI",
+    "un": "20",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (48).JPG"
+    "marca": "APERITIVOS (48).jpg",
+    "img": "APERITIVOS (48).jpg"
   },
   {
     "id": "8480024754776",
@@ -29,7 +32,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM2.JPG"
+    "marca": "Imagem2.jpg",
+    "img": "Imagem2.jpg"
   },
   {
     "id": "8413760006434",
@@ -37,7 +41,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM1.JPG"
+    "marca": "Imagem1.jpg",
+    "img": "Imagem1.jpg"
   },
   {
     "id": "8413760006410",
@@ -45,7 +50,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM3.JPG"
+    "marca": "Imagem3.jpg",
+    "img": "Imagem3.jpg"
   },
   {
     "id": "8413760006427",
@@ -53,7 +59,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM4.JPG"
+    "marca": "Imagem4.jpg",
+    "img": "Imagem4.jpg"
   },
   {
     "id": "8436048962079",
@@ -61,7 +68,8 @@
     "preco": 1.02,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM5.JPG"
+    "marca": "Imagem5.jpg",
+    "img": "Imagem5.jpg"
   },
   {
     "id": "8436048963441",
@@ -69,7 +77,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM6.JPG"
+    "marca": "Imagem6.jpg",
+    "img": "Imagem6.jpg"
   },
   {
     "id": "8436048453409",
@@ -77,7 +86,8 @@
     "preco": 0.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM12.JPG"
+    "marca": "Imagem12.jpg",
+    "img": "Imagem12.jpg"
   },
   {
     "id": "8436048963854",
@@ -85,7 +95,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM7.JPG"
+    "marca": "Imagem7.jpg",
+    "img": "Imagem7.jpg"
   },
   {
     "id": "8436048963564",
@@ -93,7 +104,8 @@
     "preco": 0.98,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM14.JPG"
+    "marca": "Imagem14.jpg",
+    "img": "Imagem14.jpg"
   },
   {
     "id": "8436048477719",
@@ -101,7 +113,8 @@
     "preco": 0.81,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM13.JPG"
+    "marca": "Imagem13.jpg",
+    "img": "Imagem13.jpg"
   },
   {
     "id": "8436048963922",
@@ -109,7 +122,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM10.JPG"
+    "marca": "Imagem10.jpg",
+    "img": "Imagem10.jpg"
   },
   {
     "id": "8436048452594",
@@ -117,7 +131,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM11.JPG"
+    "marca": "Imagem11.jpg",
+    "img": "Imagem11.jpg"
   },
   {
     "id": "8436048452587",
@@ -125,7 +140,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM9.JPG"
+    "marca": "Imagem9.jpg",
+    "img": "Imagem9.jpg"
   },
   {
     "id": "8436048452570",
@@ -133,7 +149,8 @@
     "preco": 0.97,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM8.JPG"
+    "marca": "Imagem8.jpg",
+    "img": "Imagem8.jpg"
   },
   {
     "id": "8436048967166",
@@ -141,7 +158,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM16.JPG"
+    "marca": "Imagem16.jpg",
+    "img": "Imagem16.jpg"
   },
   {
     "id": "8411192852247",
@@ -149,7 +167,8 @@
     "preco": 0.81,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM25.JPG"
+    "marca": "Imagem25.jpg",
+    "img": "Imagem25.jpg"
   },
   {
     "id": "8411192080121",
@@ -157,7 +176,8 @@
     "preco": 0.75,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM21.JPG"
+    "marca": "Imagem21.jpg",
+    "img": "Imagem21.jpg"
   },
   {
     "id": "8411192080138",
@@ -165,7 +185,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM22.JPG"
+    "marca": "Imagem22.jpg",
+    "img": "Imagem22.jpg"
   },
   {
     "id": "8411192840169",
@@ -173,7 +194,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM24.JPG"
+    "marca": "Imagem24.jpg",
+    "img": "Imagem24.jpg"
   },
   {
     "id": "8411192040262",
@@ -181,7 +203,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM28.JPG"
+    "marca": "Imagem28.jpg",
+    "img": "Imagem28.jpg"
   },
   {
     "id": "8411192852131",
@@ -189,7 +212,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM17.JPG"
+    "marca": "Imagem17.jpg",
+    "img": "Imagem17.jpg"
   },
   {
     "id": "8411192052050",
@@ -197,7 +221,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM26.JPG"
+    "marca": "Imagem26.jpg",
+    "img": "Imagem26.jpg"
   },
   {
     "id": "8411192052258",
@@ -205,7 +230,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM18.JPG"
+    "marca": "Imagem18.jpg",
+    "img": "Imagem18.jpg"
   },
   {
     "id": "8411192052203",
@@ -213,7 +239,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM19.JPG"
+    "marca": "Imagem19.jpg",
+    "img": "Imagem19.jpg"
   },
   {
     "id": "8411192841203",
@@ -221,7 +248,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM23.JPG"
+    "marca": "Imagem23.jpg",
+    "img": "Imagem23.jpg"
   },
   {
     "id": "8411192080183",
@@ -229,7 +257,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM20.JPG"
+    "marca": "Imagem20.jpg",
+    "img": "Imagem20.jpg"
   },
   {
     "id": "5600744051174",
@@ -237,7 +266,8 @@
     "preco": 1.39,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM29.JPG"
+    "marca": "Imagem29.jpg",
+    "img": "Imagem29.jpg"
   },
   {
     "id": "5600744051167",
@@ -245,7 +275,8 @@
     "preco": 1.39,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM30.JPG"
+    "marca": "Imagem30.jpg",
+    "img": "Imagem30.jpg"
   },
   {
     "id": "5604993545224",
@@ -253,7 +284,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM36.JPG"
+    "marca": "Imagem36.jpg",
+    "img": "Imagem36.jpg"
   },
   {
     "id": "5604993543930",
@@ -261,7 +293,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM31.JPG"
+    "marca": "Imagem31.jpg",
+    "img": "Imagem31.jpg"
   },
   {
     "id": "5604993546399",
@@ -269,7 +302,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM33.JPG"
+    "marca": "Imagem33.jpg",
+    "img": "Imagem33.jpg"
   },
   {
     "id": "5604993543992",
@@ -277,7 +311,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM32.JPG"
+    "marca": "Imagem32.jpg",
+    "img": "Imagem32.jpg"
   },
   {
     "id": "5604993546559",
@@ -285,7 +320,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM34.JPG"
+    "marca": "Imagem34.jpg",
+    "img": "Imagem34.jpg"
   },
   {
     "id": "5602794000577",
@@ -293,7 +329,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM326.JPG"
+    "marca": "Imagem326.jpg",
+    "img": "Imagem326.jpg"
   },
   {
     "id": "8001585008032",
@@ -301,7 +338,8 @@
     "preco": 1.09,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM38.JPG"
+    "marca": "Imagem38.jpg",
+    "img": "Imagem38.jpg"
   },
   {
     "id": "8001585001040",
@@ -309,7 +347,8 @@
     "preco": 1.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM44.JPG"
+    "marca": "Imagem44.jpg",
+    "img": "Imagem44.jpg"
   },
   {
     "id": "8001585001354",
@@ -317,7 +356,8 @@
     "preco": 1.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM49.JPG"
+    "marca": "Imagem49.jpg",
+    "img": "Imagem49.jpg"
   },
   {
     "id": "8001585001071",
@@ -325,7 +365,8 @@
     "preco": 1.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM41.JPG"
+    "marca": "Imagem41.jpg",
+    "img": "Imagem41.jpg"
   },
   {
     "id": "8001585001309",
@@ -333,7 +374,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM37.JPG"
+    "marca": "Imagem37.jpg",
+    "img": "Imagem37.jpg"
   },
   {
     "id": "8001585001330",
@@ -341,7 +383,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM40.JPG"
+    "marca": "Imagem40.jpg",
+    "img": "Imagem40.jpg"
   },
   {
     "id": "8001585001323",
@@ -349,7 +392,8 @@
     "preco": 1.09,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM49.JPG"
+    "marca": "Imagem49.jpg",
+    "img": "Imagem49.jpg"
   },
   {
     "id": "8001585010103",
@@ -357,7 +401,8 @@
     "preco": 1.09,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM45.JPG"
+    "marca": "Imagem45.jpg",
+    "img": "Imagem45.jpg"
   },
   {
     "id": "8001585001224",
@@ -365,7 +410,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM43.JPG"
+    "marca": "Imagem43.jpg",
+    "img": "Imagem43.jpg"
   },
   {
     "id": "8001585001026",
@@ -373,7 +419,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM42.JPG"
+    "marca": "Imagem42.jpg",
+    "img": "Imagem42.jpg"
   },
   {
     "id": "8001585008094",
@@ -381,7 +428,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM48.JPG"
+    "marca": "Imagem48.jpg",
+    "img": "Imagem48.jpg"
   },
   {
     "id": "8001585008087",
@@ -389,7 +437,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM47.JPG"
+    "marca": "Imagem47.jpg",
+    "img": "Imagem47.jpg"
   },
   {
     "id": "8001585008117",
@@ -397,7 +446,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM46.JPG"
+    "marca": "Imagem46.jpg",
+    "img": "Imagem46.jpg"
   },
   {
     "id": "8436545890264",
@@ -405,7 +455,8 @@
     "preco": 1.13,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM56.JPG"
+    "marca": "Imagem56.jpg",
+    "img": "Imagem56.jpg"
   },
   {
     "id": "8436545890288",
@@ -413,7 +464,8 @@
     "preco": 1.13,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM55.JPG"
+    "marca": "Imagem55.jpg",
+    "img": "Imagem55.jpg"
   },
   {
     "id": "8436545890271",
@@ -421,7 +473,8 @@
     "preco": 1.13,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM57.JPG"
+    "marca": "Imagem57.jpg",
+    "img": "Imagem57.jpg"
   },
   {
     "id": "5902768863970",
@@ -429,7 +482,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM51.JPG"
+    "marca": "Imagem51.jpg",
+    "img": "Imagem51.jpg"
   },
   {
     "id": "5902768863956",
@@ -437,7 +491,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM50.JPG"
+    "marca": "Imagem50.jpg",
+    "img": "Imagem50.jpg"
   },
   {
     "id": "5902768863994",
@@ -445,7 +500,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM52.JPG"
+    "marca": "Imagem52.jpg",
+    "img": "Imagem52.jpg"
   },
   {
     "id": "8002720003103",
@@ -453,7 +509,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM54.JPG"
+    "marca": "Imagem54.jpg",
+    "img": "Imagem54.jpg"
   },
   {
     "id": "8002720001253",
@@ -461,7 +518,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM53.JPG"
+    "marca": "Imagem53.jpg",
+    "img": "Imagem53.jpg"
   },
   {
     "id": "",
@@ -469,7 +527,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM716.JPG"
+    "marca": "Imagem716.jpg",
+    "img": "Imagem716.jpg"
   },
   {
     "id": "5602519142247",
@@ -477,7 +536,8 @@
     "preco": 0.81,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM192.JPG"
+    "marca": "Imagem192.jpg",
+    "img": "Imagem192.jpg"
   },
   {
     "id": "",
@@ -485,7 +545,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM715.JPG"
+    "marca": "Imagem715.jpg",
+    "img": "Imagem715.jpg"
   },
   {
     "id": "5601255700025",
@@ -493,7 +554,8 @@
     "preco": 0.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM58.JPG"
+    "marca": "Imagem58.jpg",
+    "img": "Imagem58.jpg"
   },
   {
     "id": "5601255700032",
@@ -501,7 +563,8 @@
     "preco": 0.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM59.JPG"
+    "marca": "Imagem59.jpg",
+    "img": "Imagem59.jpg"
   },
   {
     "id": "5601255700117",
@@ -509,7 +572,8 @@
     "preco": 0.89,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM60.JPG"
+    "marca": "Imagem60.jpg",
+    "img": "Imagem60.jpg"
   },
   {
     "id": "5601255700124",
@@ -517,7 +581,8 @@
     "preco": 0.9,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM61.JPG"
+    "marca": "Imagem61.jpg",
+    "img": "Imagem61.jpg"
   },
   {
     "id": "5907471432017",
@@ -525,7 +590,8 @@
     "preco": 1.19,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM62.JPG"
+    "marca": "Imagem62.jpg",
+    "img": "Imagem62.jpg"
   },
   {
     "id": "5907471430006",
@@ -533,7 +599,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM63.JPG"
+    "marca": "Imagem63.jpg",
+    "img": "Imagem63.jpg"
   },
   {
     "id": "8410956603842",
@@ -541,7 +608,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM64.JPG"
+    "marca": "Imagem64.jpg",
+    "img": "Imagem64.jpg"
   },
   {
     "id": "5600270553012",
@@ -549,7 +617,8 @@
     "preco": 2.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM694.JPG"
+    "marca": "Imagem694.jpg",
+    "img": "Imagem694.jpg"
   },
   {
     "id": "4061458070034",
@@ -557,7 +626,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (50).JPG"
+    "marca": "APERITIVOS (50).jpg",
+    "img": "APERITIVOS (50).jpg"
   },
   {
     "id": "5604321027057",
@@ -565,7 +635,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM65.JPG"
+    "marca": "Imagem65.jpg",
+    "img": "Imagem65.jpg"
   },
   {
     "id": "5604321028757",
@@ -573,7 +644,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM67.JPG"
+    "marca": "Imagem67.jpg",
+    "img": "Imagem67.jpg"
   },
   {
     "id": "5604321035960",
@@ -581,7 +653,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM71.JPG"
+    "marca": "Imagem71.jpg",
+    "img": "Imagem71.jpg"
   },
   {
     "id": "5604321027507",
@@ -589,7 +662,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM66.JPG"
+    "marca": "Imagem66.jpg",
+    "img": "Imagem66.jpg"
   },
   {
     "id": "5604321032242",
@@ -597,7 +671,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM68.JPG"
+    "marca": "Imagem68.jpg",
+    "img": "Imagem68.jpg"
   },
   {
     "id": "5604321027040",
@@ -605,7 +680,8 @@
     "preco": 1.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM69.JPG"
+    "marca": "Imagem69.jpg",
+    "img": "Imagem69.jpg"
   },
   {
     "id": "5604321035977",
@@ -613,7 +689,8 @@
     "preco": 0.79,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM70.JPG"
+    "marca": "Imagem70.jpg",
+    "img": "Imagem70.jpg"
   },
   {
     "id": "8683923556582",
@@ -621,7 +698,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM191.JPG"
+    "marca": "Imagem191.jpg",
+    "img": "Imagem191.jpg"
   },
   {
     "id": "8683923556599",
@@ -629,7 +707,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM190.JPG"
+    "marca": "Imagem190.jpg",
+    "img": "Imagem190.jpg"
   },
   {
     "id": "8410000802771",
@@ -637,7 +716,8 @@
     "preco": 1.299,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM199.JPG"
+    "marca": "Imagem199.jpg",
+    "img": "Imagem199.jpg"
   },
   {
     "id": "8410000002904",
@@ -645,7 +725,8 @@
     "preco": 1.13,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM200.JPG"
+    "marca": "Imagem200.jpg",
+    "img": "Imagem200.jpg"
   },
   {
     "id": "8410712001530",
@@ -653,7 +734,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM20CORAL.JPG"
+    "marca": "Imagem20coral.jpg",
+    "img": "Imagem20coral.jpg"
   },
   {
     "id": "8410712001509",
@@ -661,7 +743,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM18CORAL.JPG"
+    "marca": "Imagem18coral.jpg",
+    "img": "Imagem18coral.jpg"
   },
   {
     "id": "8410712001523",
@@ -669,7 +752,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM16CORAL.JPG"
+    "marca": "Imagem16coral.jpg",
+    "img": "Imagem16coral.jpg"
   },
   {
     "id": "8410712001516",
@@ -677,7 +761,8 @@
     "preco": 0.68,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM17CORAL.JPG"
+    "marca": "Imagem17coral.jpg",
+    "img": "Imagem17coral.jpg"
   },
   {
     "id": "5907536115985",
@@ -685,7 +770,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM128.JPG"
+    "marca": "imagem128.jpg",
+    "img": "imagem128.jpg"
   },
   {
     "id": "5907536118122",
@@ -693,7 +779,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM129.JPG"
+    "marca": "imagem129.jpg",
+    "img": "imagem129.jpg"
   },
   {
     "id": "5907536115992",
@@ -701,7 +788,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM131.JPG"
+    "marca": "imagem131.jpg",
+    "img": "imagem131.jpg"
   },
   {
     "id": "5907536115978",
@@ -709,7 +797,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM132.JPG"
+    "marca": "imagem132.jpg",
+    "img": "imagem132.jpg"
   },
   {
     "id": "5907536118023",
@@ -717,7 +806,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM126.JPG"
+    "marca": "imagem126.jpg",
+    "img": "imagem126.jpg"
   },
   {
     "id": "5907536118047",
@@ -725,7 +815,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM127.JPG"
+    "marca": "imagem127.jpg",
+    "img": "imagem127.jpg"
   },
   {
     "id": "5907536118061",
@@ -733,7 +824,8 @@
     "preco": 0.99,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM130.JPG"
+    "marca": "imagem130.jpg",
+    "img": "imagem130.jpg"
   },
   {
     "id": "",
@@ -741,7 +833,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM695.JPG"
+    "marca": "Imagem695.jpg",
+    "img": "Imagem695.jpg"
   },
   {
     "id": "8008620009276",
@@ -749,7 +842,8 @@
     "preco": 2.18,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM196.JPG"
+    "marca": "Imagem196.jpg",
+    "img": "Imagem196.jpg"
   },
   {
     "id": "",
@@ -757,7 +851,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM696.JPG"
+    "marca": "Imagem696.jpg",
+    "img": "Imagem696.jpg"
   },
   {
     "id": "8008620009290",
@@ -765,7 +860,8 @@
     "preco": 2.18,
     "un": "12",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM198.JPG"
+    "marca": "Imagem198.jpg",
+    "img": "Imagem198.jpg"
   },
   {
     "id": "8008620009610",
@@ -773,7 +869,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM194.JPG"
+    "marca": "Imagem194.jpg",
+    "img": "Imagem194.jpg"
   },
   {
     "id": "8008620050766",
@@ -781,7 +878,8 @@
     "preco": 2.18,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM197.JPG"
+    "marca": "Imagem197.jpg",
+    "img": "Imagem197.jpg"
   },
   {
     "id": "5941194002270",
@@ -789,7 +887,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA7.JPG"
+    "marca": "hipbolacha7.jpg",
+    "img": "hipbolacha7.jpg"
   },
   {
     "id": "5941194002287",
@@ -797,7 +896,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA8.JPG"
+    "marca": "hipbolacha8.jpg",
+    "img": "hipbolacha8.jpg"
   },
   {
     "id": "5941194000047",
@@ -805,7 +905,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA2.JPG"
+    "marca": "hipbolacha2.jpg",
+    "img": "hipbolacha2.jpg"
   },
   {
     "id": "5941194002423",
@@ -813,7 +914,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM202.JPG"
+    "marca": "Imagem202.jpg",
+    "img": "Imagem202.jpg"
   },
   {
     "id": "5941194002737",
@@ -821,7 +923,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM201.JPG"
+    "marca": "Imagem201.jpg",
+    "img": "Imagem201.jpg"
   },
   {
     "id": "8410956600216",
@@ -829,7 +932,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM203.JPG"
+    "marca": "Imagem203.jpg",
+    "img": "Imagem203.jpg"
   },
   {
     "id": "8434165471184",
@@ -837,7 +941,8 @@
     "preco": 0.97,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM240.JPG"
+    "marca": "Imagem240.jpg",
+    "img": "Imagem240.jpg"
   },
   {
     "id": "8434165599994",
@@ -845,7 +950,8 @@
     "preco": 0.97,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM239.JPG"
+    "marca": "Imagem239.jpg",
+    "img": "Imagem239.jpg"
   },
   {
     "id": "8434165439559",
@@ -853,7 +959,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM227.JPG"
+    "marca": "Imagem227.jpg",
+    "img": "Imagem227.jpg"
   },
   {
     "id": "8434165599673",
@@ -861,7 +968,8 @@
     "preco": 0.95,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM204.JPG"
+    "marca": "Imagem204.jpg",
+    "img": "Imagem204.jpg"
   },
   {
     "id": "8434165446984",
@@ -869,7 +977,8 @@
     "preco": 0.59,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM226.JPG"
+    "marca": "Imagem226.jpg",
+    "img": "Imagem226.jpg"
   },
   {
     "id": "5601039000105",
@@ -877,7 +986,8 @@
     "preco": 1.69,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM225.JPG"
+    "marca": "Imagem225.jpg",
+    "img": "Imagem225.jpg"
   },
   {
     "id": "8434165446519",
@@ -885,7 +995,8 @@
     "preco": 1.69,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM228.JPG"
+    "marca": "Imagem228.jpg",
+    "img": "Imagem228.jpg"
   },
   {
     "id": "8434165446953",
@@ -893,7 +1004,8 @@
     "preco": 0.64,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM216.JPG"
+    "marca": "Imagem216.jpg",
+    "img": "Imagem216.jpg"
   },
   {
     "id": "8434165678347",
@@ -901,7 +1013,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM233.JPG"
+    "marca": "Imagem233.jpg",
+    "img": "Imagem233.jpg"
   },
   {
     "id": "8434165615465",
@@ -909,7 +1022,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM235.JPG"
+    "marca": "Imagem235.jpg",
+    "img": "Imagem235.jpg"
   },
   {
     "id": "8434165588912",
@@ -917,7 +1031,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM210.JPG"
+    "marca": "Imagem210.jpg",
+    "img": "Imagem210.jpg"
   },
   {
     "id": "8434165660724",
@@ -925,7 +1040,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM210.JPG"
+    "marca": "Imagem210.jpg",
+    "img": "Imagem210.jpg"
   },
   {
     "id": "8434165660731",
@@ -933,7 +1049,8 @@
     "preco": 1.14,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM211.JPG"
+    "marca": "Imagem211.jpg",
+    "img": "Imagem211.jpg"
   },
   {
     "id": "8434165446434",
@@ -941,7 +1058,8 @@
     "preco": 1.05,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM205.JPG"
+    "marca": "Imagem205.jpg",
+    "img": "Imagem205.jpg"
   },
   {
     "id": "8434165461154",
@@ -949,7 +1067,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM208.JPG"
+    "marca": "Imagem208.jpg",
+    "img": "Imagem208.jpg"
   },
   {
     "id": "8434165452145",
@@ -957,7 +1076,8 @@
     "preco": 0.976,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM207.JPG"
+    "marca": "Imagem207.jpg",
+    "img": "Imagem207.jpg"
   },
   {
     "id": "8434165608023",
@@ -965,7 +1085,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM223.JPG"
+    "marca": "Imagem223.jpg",
+    "img": "Imagem223.jpg"
   },
   {
     "id": "8434165608030",
@@ -973,7 +1094,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM224.JPG"
+    "marca": "Imagem224.jpg",
+    "img": "Imagem224.jpg"
   },
   {
     "id": "8434165629721",
@@ -981,7 +1103,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM242.JPG"
+    "marca": "Imagem242.jpg",
+    "img": "Imagem242.jpg"
   },
   {
     "id": "8434165629714",
@@ -989,7 +1112,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM241.JPG"
+    "marca": "Imagem241.jpg",
+    "img": "Imagem241.jpg"
   },
   {
     "id": "8434165612549",
@@ -997,7 +1121,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM217.JPG"
+    "marca": "Imagem217.jpg",
+    "img": "Imagem217.jpg"
   },
   {
     "id": "8434165655478",
@@ -1005,7 +1130,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM234.JPG"
+    "marca": "Imagem234.jpg",
+    "img": "Imagem234.jpg"
   },
   {
     "id": "8434165488663",
@@ -1013,7 +1139,8 @@
     "preco": 2.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM230.JPG"
+    "marca": "Imagem230.jpg",
+    "img": "Imagem230.jpg"
   },
   {
     "id": "8434165488656",
@@ -1021,7 +1148,8 @@
     "preco": 3.85,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM229.JPG"
+    "marca": "Imagem229.jpg",
+    "img": "Imagem229.jpg"
   },
   {
     "id": "8434165446977",
@@ -1029,7 +1157,8 @@
     "preco": 1.94,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM215.JPG"
+    "marca": "Imagem215.jpg",
+    "img": "Imagem215.jpg"
   },
   {
     "id": "8434165599659",
@@ -1037,7 +1166,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM236.JPG"
+    "marca": "Imagem236.jpg",
+    "img": "Imagem236.jpg"
   },
   {
     "id": "8434165599819",
@@ -1045,7 +1175,8 @@
     "preco": 1.11,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM227.JPG"
+    "marca": "Imagem227.jpg",
+    "img": "Imagem227.jpg"
   },
   {
     "id": "8436048963502",
@@ -1053,7 +1184,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM206.JPG"
+    "marca": "Imagem206.jpg",
+    "img": "Imagem206.jpg"
   },
   {
     "id": "8410120501172",
@@ -1061,7 +1193,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM214.JPG"
+    "marca": "Imagem214.jpg",
+    "img": "Imagem214.jpg"
   },
   {
     "id": "5601069201121",
@@ -1069,7 +1202,8 @@
     "preco": 2.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM246.JPG"
+    "marca": "Imagem246.jpg",
+    "img": "Imagem246.jpg"
   },
   {
     "id": "5601069006672",
@@ -1077,7 +1211,8 @@
     "preco": 1.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM245.JPG"
+    "marca": "Imagem245.jpg",
+    "img": "Imagem245.jpg"
   },
   {
     "id": "5601069100103",
@@ -1085,7 +1220,8 @@
     "preco": 1.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM243.JPG"
+    "marca": "Imagem243.jpg",
+    "img": "Imagem243.jpg"
   },
   {
     "id": "5601069102046",
@@ -1093,7 +1229,8 @@
     "preco": 1.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM244.JPG"
+    "marca": "Imagem244.jpg",
+    "img": "Imagem244.jpg"
   },
   {
     "id": "5601560111134",
@@ -1101,7 +1238,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM253.JPG"
+    "marca": "Imagem253.jpg",
+    "img": "Imagem253.jpg"
   },
   {
     "id": "5601560111295",
@@ -1109,7 +1247,8 @@
     "preco": 2.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM251.JPG"
+    "marca": "Imagem251.jpg",
+    "img": "Imagem251.jpg"
   },
   {
     "id": "5601560112650",
@@ -1117,7 +1256,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM247.JPG"
+    "marca": "Imagem247.jpg",
+    "img": "Imagem247.jpg"
   },
   {
     "id": "5601560111196",
@@ -1125,7 +1265,8 @@
     "preco": 1.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM248.JPG"
+    "marca": "Imagem248.jpg",
+    "img": "Imagem248.jpg"
   },
   {
     "id": "5601560111844",
@@ -1133,7 +1274,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM249.JPG"
+    "marca": "Imagem249.jpg",
+    "img": "Imagem249.jpg"
   },
   {
     "id": "5601560111110",
@@ -1141,7 +1283,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM252.JPG"
+    "marca": "Imagem252.jpg",
+    "img": "Imagem252.jpg"
   },
   {
     "id": "5601560111288",
@@ -1149,7 +1292,8 @@
     "preco": 2.59,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM180.JPG"
+    "marca": "Imagem180.jpg",
+    "img": "Imagem180.jpg"
   },
   {
     "id": "5601489302200",
@@ -1157,7 +1301,8 @@
     "preco": 1.22,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM256.JPG"
+    "marca": "Imagem256.jpg",
+    "img": "Imagem256.jpg"
   },
   {
     "id": "5601489300152",
@@ -1165,7 +1310,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM254.JPG"
+    "marca": "Imagem254.jpg",
+    "img": "Imagem254.jpg"
   },
   {
     "id": "",
@@ -1173,7 +1319,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM255.JPG"
+    "marca": "Imagem255.jpg",
+    "img": "Imagem255.jpg"
   },
   {
     "id": "8413675000190",
@@ -1181,7 +1328,8 @@
     "preco": 0.894,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM257.JPG"
+    "marca": "Imagem257.jpg",
+    "img": "Imagem257.jpg"
   },
   {
     "id": "8413675000176",
@@ -1189,7 +1337,8 @@
     "preco": 0.894,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM258.JPG"
+    "marca": "Imagem258.jpg",
+    "img": "Imagem258.jpg"
   },
   {
     "id": "8410087543543",
@@ -1197,7 +1346,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM267.JPG"
+    "marca": "Imagem267.jpg",
+    "img": "Imagem267.jpg"
   },
   {
     "id": "8410087540641",
@@ -1205,7 +1355,8 @@
     "preco": 1.45,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM488.JPG"
+    "marca": "Imagem488.jpg",
+    "img": "Imagem488.jpg"
   },
   {
     "id": "8410087529424",
@@ -1213,7 +1364,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM270.JPG"
+    "marca": "Imagem270.jpg",
+    "img": "Imagem270.jpg"
   },
   {
     "id": "8410087529844",
@@ -1221,7 +1373,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM271.JPG"
+    "marca": "Imagem271.jpg",
+    "img": "Imagem271.jpg"
   },
   {
     "id": "8410087280356",
@@ -1229,7 +1382,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM275.JPG"
+    "marca": "Imagem275.jpg",
+    "img": "Imagem275.jpg"
   },
   {
     "id": "8410087243993",
@@ -1237,7 +1391,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM489.JPG"
+    "marca": "Imagem489.jpg",
+    "img": "Imagem489.jpg"
   },
   {
     "id": "8410087243627",
@@ -1245,7 +1400,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM301.JPG"
+    "marca": "Imagem301.jpg",
+    "img": "Imagem301.jpg"
   },
   {
     "id": "8410087243979",
@@ -1253,7 +1409,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM298.JPG"
+    "marca": "Imagem298.jpg",
+    "img": "Imagem298.jpg"
   },
   {
     "id": "8410087243986",
@@ -1261,7 +1418,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM300.JPG"
+    "marca": "Imagem300.jpg",
+    "img": "Imagem300.jpg"
   },
   {
     "id": "8410087142180",
@@ -1269,7 +1427,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM285.JPG"
+    "marca": "Imagem285.jpg",
+    "img": "Imagem285.jpg"
   },
   {
     "id": "8410087527994",
@@ -1277,7 +1436,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM302.JPG"
+    "marca": "Imagem302.jpg",
+    "img": "Imagem302.jpg"
   },
   {
     "id": "8410087571249",
@@ -1285,7 +1445,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM288.JPG"
+    "marca": "Imagem288.jpg",
+    "img": "Imagem288.jpg"
   },
   {
     "id": "8410087147444",
@@ -1293,7 +1454,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM287.JPG"
+    "marca": "Imagem287.jpg",
+    "img": "Imagem287.jpg"
   },
   {
     "id": "8410087147215",
@@ -1301,7 +1463,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM286.JPG"
+    "marca": "Imagem286.jpg",
+    "img": "Imagem286.jpg"
   },
   {
     "id": "8410087122618",
@@ -1309,7 +1472,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM263.JPG"
+    "marca": "Imagem263.jpg",
+    "img": "Imagem263.jpg"
   },
   {
     "id": "8410087151083",
@@ -1317,7 +1481,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM303.JPG"
+    "marca": "Imagem303.jpg",
+    "img": "Imagem303.jpg"
   },
   {
     "id": "8410087421704",
@@ -1325,7 +1490,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM304.JPG"
+    "marca": "Imagem304.jpg",
+    "img": "Imagem304.jpg"
   },
   {
     "id": "8410087035307",
@@ -1333,7 +1499,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM219.JPG"
+    "marca": "Imagem219.jpg",
+    "img": "Imagem219.jpg"
   },
   {
     "id": "8410087271095",
@@ -1341,7 +1508,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM274.JPG"
+    "marca": "Imagem274.jpg",
+    "img": "Imagem274.jpg"
   },
   {
     "id": "8410087271378",
@@ -1349,7 +1517,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM305.JPG"
+    "marca": "Imagem305.jpg",
+    "img": "Imagem305.jpg"
   },
   {
     "id": "8410087041230",
@@ -1357,7 +1526,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM278.JPG"
+    "marca": "Imagem278.jpg",
+    "img": "Imagem278.jpg"
   },
   {
     "id": "8410087082226",
@@ -1365,7 +1535,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM273.JPG"
+    "marca": "Imagem273.jpg",
+    "img": "Imagem273.jpg"
   },
   {
     "id": "8410087023304",
@@ -1373,7 +1544,8 @@
     "preco": 1.196,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM697.JPG"
+    "marca": "Imagem697.jpg",
+    "img": "Imagem697.jpg"
   },
   {
     "id": "8410087412832",
@@ -1381,7 +1553,8 @@
     "preco": 1.45,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM698.JPG"
+    "marca": "Imagem698.jpg",
+    "img": "Imagem698.jpg"
   },
   {
     "id": "8410087821375",
@@ -1389,7 +1562,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM294.JPG"
+    "marca": "Imagem294.jpg",
+    "img": "Imagem294.jpg"
   },
   {
     "id": "",
@@ -1397,7 +1571,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM295.JPG"
+    "marca": "Imagem295.jpg",
+    "img": "Imagem295.jpg"
   },
   {
     "id": "8410087145839",
@@ -1405,7 +1580,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM277.JPG"
+    "marca": "Imagem277.jpg",
+    "img": "Imagem277.jpg"
   },
   {
     "id": "8410087529769",
@@ -1413,7 +1589,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM276.JPG"
+    "marca": "Imagem276.jpg",
+    "img": "Imagem276.jpg"
   },
   {
     "id": "8410087142197",
@@ -1421,7 +1598,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM487.JPG"
+    "marca": "Imagem487.jpg",
+    "img": "Imagem487.jpg"
   },
   {
     "id": "8410087010090",
@@ -1429,7 +1607,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM265.JPG"
+    "marca": "Imagem265.jpg",
+    "img": "Imagem265.jpg"
   },
   {
     "id": "8410087101583",
@@ -1437,7 +1616,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM266.JPG"
+    "marca": "Imagem266.jpg",
+    "img": "Imagem266.jpg"
   },
   {
     "id": "8410087166506",
@@ -1445,7 +1625,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM269.JPG"
+    "marca": "Imagem269.jpg",
+    "img": "Imagem269.jpg"
   },
   {
     "id": "8410087341415",
@@ -1453,7 +1634,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM284.JPG"
+    "marca": "Imagem284.jpg",
+    "img": "Imagem284.jpg"
   },
   {
     "id": "8410087830162",
@@ -1461,7 +1643,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM260.JPG"
+    "marca": "Imagem260.jpg",
+    "img": "Imagem260.jpg"
   },
   {
     "id": "8410087023144",
@@ -1469,7 +1652,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM261.JPG"
+    "marca": "Imagem261.jpg",
+    "img": "Imagem261.jpg"
   },
   {
     "id": "8410251004177",
@@ -1477,7 +1661,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM311.JPG"
+    "marca": "Imagem311.jpg",
+    "img": "Imagem311.jpg"
   },
   {
     "id": "5601306097715",
@@ -1485,7 +1670,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM318.JPG"
+    "marca": "Imagem318.jpg",
+    "img": "Imagem318.jpg"
   },
   {
     "id": "5608480000463",
@@ -1493,7 +1679,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM315.JPG"
+    "marca": "Imagem315.jpg",
+    "img": "Imagem315.jpg"
   },
   {
     "id": "5601306097753",
@@ -1501,7 +1688,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM317.JPG"
+    "marca": "Imagem317.jpg",
+    "img": "Imagem317.jpg"
   },
   {
     "id": "5600216776000",
@@ -1509,7 +1697,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM310.JPG"
+    "marca": "Imagem310.jpg",
+    "img": "Imagem310.jpg"
   },
   {
     "id": "5604160004141",
@@ -1517,7 +1706,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM650.JPG"
+    "marca": "Imagem650.jpg",
+    "img": "Imagem650.jpg"
   },
   {
     "id": "5604160004158",
@@ -1525,7 +1715,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM651.JPG"
+    "marca": "Imagem651.jpg",
+    "img": "Imagem651.jpg"
   },
   {
     "id": "8410251024151",
@@ -1533,7 +1724,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM312.JPG"
+    "marca": "Imagem312.jpg",
+    "img": "Imagem312.jpg"
   },
   {
     "id": "8410251005037",
@@ -1541,7 +1733,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM316.JPG"
+    "marca": "Imagem316.jpg",
+    "img": "Imagem316.jpg"
   },
   {
     "id": "5602794000669",
@@ -1549,7 +1742,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM314.JPG"
+    "marca": "Imagem314.jpg",
+    "img": "Imagem314.jpg"
   },
   {
     "id": "5602794000676",
@@ -1557,7 +1751,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM313.JPG"
+    "marca": "Imagem313.jpg",
+    "img": "Imagem313.jpg"
   },
   {
     "id": "8004800003065",
@@ -1565,7 +1760,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM410.JPG"
+    "marca": "Imagem410.jpg",
+    "img": "Imagem410.jpg"
   },
   {
     "id": "8004800003072",
@@ -1573,7 +1769,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM409.JPG"
+    "marca": "Imagem409.jpg",
+    "img": "Imagem409.jpg"
   },
   {
     "id": "8004800003058",
@@ -1581,7 +1778,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM411.JPG"
+    "marca": "Imagem411.jpg",
+    "img": "Imagem411.jpg"
   },
   {
     "id": "8004800003089",
@@ -1589,7 +1787,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM408.JPG"
+    "marca": "Imagem408.jpg",
+    "img": "Imagem408.jpg"
   },
   {
     "id": "8004800001467",
@@ -1597,7 +1796,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM412.JPG"
+    "marca": "Imagem412.jpg",
+    "img": "Imagem412.jpg"
   },
   {
     "id": "8004800001450",
@@ -1605,7 +1805,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM413.JPG"
+    "marca": "Imagem413.jpg",
+    "img": "Imagem413.jpg"
   },
   {
     "id": "8437027509605",
@@ -1613,7 +1814,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM486.JPG"
+    "marca": "Imagem486.jpg",
+    "img": "Imagem486.jpg"
   },
   {
     "id": "8437022182643",
@@ -1621,7 +1823,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM404.JPG"
+    "marca": "Imagem404.jpg",
+    "img": "Imagem404.jpg"
   },
   {
     "id": "8437022182858",
@@ -1629,7 +1832,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM406.JPG"
+    "marca": "Imagem406.jpg",
+    "img": "Imagem406.jpg"
   },
   {
     "id": "8437022182889",
@@ -1637,7 +1841,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM405.JPG"
+    "marca": "Imagem405.jpg",
+    "img": "Imagem405.jpg"
   },
   {
     "id": "8436048963335",
@@ -1645,7 +1850,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM402.JPG"
+    "marca": "Imagem402.jpg",
+    "img": "Imagem402.jpg"
   },
   {
     "id": "8436048963359",
@@ -1653,7 +1859,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM401.JPG"
+    "marca": "Imagem401.jpg",
+    "img": "Imagem401.jpg"
   },
   {
     "id": "8436048963342",
@@ -1661,7 +1868,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM403.JPG"
+    "marca": "Imagem403.jpg",
+    "img": "Imagem403.jpg"
   },
   {
     "id": "8411414014972",
@@ -1669,7 +1877,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM336.JPG"
+    "marca": "Imagem336.jpg",
+    "img": "Imagem336.jpg"
   },
   {
     "id": "8411414014644",
@@ -1677,7 +1886,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM392.JPG"
+    "marca": "Imagem392.jpg",
+    "img": "Imagem392.jpg"
   },
   {
     "id": "8411414014385",
@@ -1685,7 +1895,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM337.JPG"
+    "marca": "Imagem337.jpg",
+    "img": "Imagem337.jpg"
   },
   {
     "id": "8411414010783",
@@ -1693,7 +1904,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM395.JPG"
+    "marca": "Imagem395.jpg",
+    "img": "Imagem395.jpg"
   },
   {
     "id": "8411414012763",
@@ -1701,7 +1913,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM333.JPG"
+    "marca": "Imagem333.jpg",
+    "img": "Imagem333.jpg"
   },
   {
     "id": "8411414010677",
@@ -1709,7 +1922,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM332.JPG"
+    "marca": "Imagem332.jpg",
+    "img": "Imagem332.jpg"
   },
   {
     "id": "8411414012077",
@@ -1717,7 +1931,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM334.JPG"
+    "marca": "Imagem334.jpg",
+    "img": "Imagem334.jpg"
   },
   {
     "id": "8411414014729",
@@ -1725,7 +1940,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM394.JPG"
+    "marca": "Imagem394.jpg",
+    "img": "Imagem394.jpg"
   },
   {
     "id": "8411414014057",
@@ -1733,7 +1949,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM397.JPG"
+    "marca": "Imagem397.jpg",
+    "img": "Imagem397.jpg"
   },
   {
     "id": "8411414014064",
@@ -1741,7 +1958,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM396.JPG"
+    "marca": "Imagem396.jpg",
+    "img": "Imagem396.jpg"
   },
   {
     "id": "8411414014736",
@@ -1749,7 +1967,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM393.JPG"
+    "marca": "Imagem393.jpg",
+    "img": "Imagem393.jpg"
   },
   {
     "id": "8411414012220",
@@ -1757,7 +1976,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM400.JPG"
+    "marca": "Imagem400.jpg",
+    "img": "Imagem400.jpg"
   },
   {
     "id": "8411414014620",
@@ -1765,7 +1985,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM398.JPG"
+    "marca": "Imagem398.jpg",
+    "img": "Imagem398.jpg"
   },
   {
     "id": "8411414012510",
@@ -1773,7 +1994,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM330.JPG"
+    "marca": "Imagem330.jpg",
+    "img": "Imagem330.jpg"
   },
   {
     "id": "8411414013982",
@@ -1781,7 +2003,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM326.JPG"
+    "marca": "Imagem326.jpg",
+    "img": "Imagem326.jpg"
   },
   {
     "id": "8411414015252",
@@ -1789,7 +2012,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM328.JPG"
+    "marca": "Imagem328.jpg",
+    "img": "Imagem328.jpg"
   },
   {
     "id": "8411414012275",
@@ -1797,7 +2021,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM341.JPG"
+    "marca": "Imagem341.jpg",
+    "img": "Imagem341.jpg"
   },
   {
     "id": "8411414011940",
@@ -1805,7 +2030,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM338.JPG"
+    "marca": "Imagem338.jpg",
+    "img": "Imagem338.jpg"
   },
   {
     "id": "8411414013722",
@@ -1813,7 +2039,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM327.JPG"
+    "marca": "Imagem327.jpg",
+    "img": "Imagem327.jpg"
   },
   {
     "id": "8411414013739",
@@ -1821,7 +2048,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM485.JPG"
+    "marca": "Imagem485.jpg",
+    "img": "Imagem485.jpg"
   },
   {
     "id": "8411414013197",
@@ -1829,7 +2057,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM484.JPG"
+    "marca": "Imagem484.jpg",
+    "img": "Imagem484.jpg"
   },
   {
     "id": "8411414014712",
@@ -1837,7 +2066,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM339.JPG"
+    "marca": "Imagem339.jpg",
+    "img": "Imagem339.jpg"
   },
   {
     "id": "8411414015139",
@@ -1845,7 +2075,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM340.JPG"
+    "marca": "Imagem340.jpg",
+    "img": "Imagem340.jpg"
   },
   {
     "id": "8436546051428",
@@ -1853,7 +2084,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (33).JPG"
+    "marca": "APERITIVOS (33).jpg",
+    "img": "APERITIVOS (33).jpg"
   },
   {
     "id": "8436546051381",
@@ -1861,7 +2093,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (30).JPG"
+    "marca": "APERITIVOS (30).jpg",
+    "img": "APERITIVOS (30).jpg"
   },
   {
     "id": "8436546051367",
@@ -1869,7 +2102,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (35).JPG"
+    "marca": "APERITIVOS (35).jpg",
+    "img": "APERITIVOS (35).jpg"
   },
   {
     "id": "8436546051374",
@@ -1877,7 +2111,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (34).JPG"
+    "marca": "APERITIVOS (34).jpg",
+    "img": "APERITIVOS (34).jpg"
   },
   {
     "id": "8437008505657",
@@ -1885,7 +2120,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (32).JPG"
+    "marca": "APERITIVOS (32).jpg",
+    "img": "APERITIVOS (32).jpg"
   },
   {
     "id": "8410956601732",
@@ -1893,7 +2129,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM458.JPG"
+    "marca": "Imagem458.jpg",
+    "img": "Imagem458.jpg"
   },
   {
     "id": "5600270553005",
@@ -1901,7 +2138,8 @@
     "preco": 2.65,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM690.JPG"
+    "marca": "Imagem690.jpg",
+    "img": "Imagem690.jpg"
   },
   {
     "id": "8013355999662",
@@ -1909,7 +2147,8 @@
     "preco": 2.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM297.JPG"
+    "marca": "Imagem297.jpg",
+    "img": "Imagem297.jpg"
   },
   {
     "id": "8013355999679",
@@ -1917,7 +2156,8 @@
     "preco": 2.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM296.JPG"
+    "marca": "Imagem296.jpg",
+    "img": "Imagem296.jpg"
   },
   {
     "id": "8410376006544",
@@ -1925,7 +2165,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM367.JPG"
+    "marca": "Imagem367.jpg",
+    "img": "Imagem367.jpg"
   },
   {
     "id": "8410376038132",
@@ -1933,7 +2174,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM370.JPG"
+    "marca": "Imagem370.jpg",
+    "img": "Imagem370.jpg"
   },
   {
     "id": "8410376008371",
@@ -1941,7 +2183,8 @@
     "preco": 1.399,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM371.JPG"
+    "marca": "Imagem371.jpg",
+    "img": "Imagem371.jpg"
   },
   {
     "id": "8410376060409",
@@ -1949,7 +2192,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM452.JPG"
+    "marca": "Imagem452.jpg",
+    "img": "Imagem452.jpg"
   },
   {
     "id": "8410376006070",
@@ -1957,7 +2201,8 @@
     "preco": 1.399,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM368.JPG"
+    "marca": "Imagem368.jpg",
+    "img": "Imagem368.jpg"
   },
   {
     "id": "8410376017113",
@@ -1965,7 +2210,8 @@
     "preco": 1.39,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM372.JPG"
+    "marca": "Imagem372.jpg",
+    "img": "Imagem372.jpg"
   },
   {
     "id": "8410376047288",
@@ -1973,7 +2219,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM456.JPG"
+    "marca": "Imagem456.jpg",
+    "img": "Imagem456.jpg"
   },
   {
     "id": "8410376048216",
@@ -1981,7 +2228,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM366.JPG"
+    "marca": "Imagem366.jpg",
+    "img": "Imagem366.jpg"
   },
   {
     "id": "8410376048346",
@@ -1989,7 +2237,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM457.JPG"
+    "marca": "Imagem457.jpg",
+    "img": "Imagem457.jpg"
   },
   {
     "id": "8410376065596",
@@ -1997,7 +2246,8 @@
     "preco": 0.97,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM361.JPG"
+    "marca": "Imagem361.jpg",
+    "img": "Imagem361.jpg"
   },
   {
     "id": "8410376000146",
@@ -2005,7 +2255,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM369.JPG"
+    "marca": "Imagem369.jpg",
+    "img": "Imagem369.jpg"
   },
   {
     "id": "8410376046939",
@@ -2013,7 +2264,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM453.JPG"
+    "marca": "Imagem453.jpg",
+    "img": "Imagem453.jpg"
   },
   {
     "id": "8410376047202",
@@ -2021,7 +2273,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM360.JPG"
+    "marca": "Imagem360.jpg",
+    "img": "Imagem360.jpg"
   },
   {
     "id": "8410376031898",
@@ -2029,7 +2282,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM454.JPG"
+    "marca": "Imagem454.jpg",
+    "img": "Imagem454.jpg"
   },
   {
     "id": "8410376075946",
@@ -2037,7 +2291,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM455.JPG"
+    "marca": "Imagem455.jpg",
+    "img": "Imagem455.jpg"
   },
   {
     "id": "8410376013658",
@@ -2045,7 +2300,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM356.JPG"
+    "marca": "Imagem356.jpg",
+    "img": "Imagem356.jpg"
   },
   {
     "id": "8410376013672",
@@ -2053,7 +2309,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM354.JPG"
+    "marca": "Imagem354.jpg",
+    "img": "Imagem354.jpg"
   },
   {
     "id": "8410376013665",
@@ -2061,7 +2318,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM355.JPG"
+    "marca": "Imagem355.jpg",
+    "img": "Imagem355.jpg"
   },
   {
     "id": "8410376041002",
@@ -2069,7 +2327,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM359.JPG"
+    "marca": "Imagem359.jpg",
+    "img": "Imagem359.jpg"
   },
   {
     "id": "8410376058796",
@@ -2077,7 +2336,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM357.JPG"
+    "marca": "Imagem357.jpg",
+    "img": "Imagem357.jpg"
   },
   {
     "id": "8410376046908",
@@ -2085,7 +2345,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM358.JPG"
+    "marca": "Imagem358.jpg",
+    "img": "Imagem358.jpg"
   },
   {
     "id": "5908234813814",
@@ -2093,7 +2354,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA34.JPG"
+    "marca": "hipbolacha34.jpg",
+    "img": "hipbolacha34.jpg"
   },
   {
     "id": "5908234813791",
@@ -2101,7 +2363,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA36.JPG"
+    "marca": "hipbolacha36.jpg",
+    "img": "hipbolacha36.jpg"
   },
   {
     "id": "5908234813777",
@@ -2109,7 +2372,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA35.JPG"
+    "marca": "hipbolacha35.jpg",
+    "img": "hipbolacha35.jpg"
   },
   {
     "id": "5908234813852",
@@ -2117,7 +2381,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA19.JPG"
+    "marca": "hipbolacha19.jpg",
+    "img": "hipbolacha19.jpg"
   },
   {
     "id": "5908234805666",
@@ -2125,7 +2390,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA5.JPG"
+    "marca": "hipbolacha5.jpg",
+    "img": "hipbolacha5.jpg"
   },
   {
     "id": "5908234805642",
@@ -2133,7 +2399,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA4.JPG"
+    "marca": "hipbolacha4.jpg",
+    "img": "hipbolacha4.jpg"
   },
   {
     "id": "5908234814460",
@@ -2141,7 +2408,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA29.JPG"
+    "marca": "hipbolacha29.jpg",
+    "img": "hipbolacha29.jpg"
   },
   {
     "id": "5908234805635",
@@ -2149,7 +2417,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA3.JPG"
+    "marca": "hipbolacha3.jpg",
+    "img": "hipbolacha3.jpg"
   },
   {
     "id": "5908234812312",
@@ -2157,7 +2426,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA21.JPG"
+    "marca": "hipbolacha21.jpg",
+    "img": "hipbolacha21.jpg"
   },
   {
     "id": "5908234805659",
@@ -2165,7 +2435,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA20.JPG"
+    "marca": "hipbolacha20.jpg",
+    "img": "hipbolacha20.jpg"
   },
   {
     "id": "5908234815221",
@@ -2173,7 +2444,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA6.JPG"
+    "marca": "hipbolacha6.jpg",
+    "img": "hipbolacha6.jpg"
   },
   {
     "id": "5908234815047",
@@ -2181,7 +2453,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA22.JPG"
+    "marca": "hipbolacha22.jpg",
+    "img": "hipbolacha22.jpg"
   },
   {
     "id": "5908234807912",
@@ -2189,7 +2462,8 @@
     "preco": 1.3,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA37.JPG"
+    "marca": "hipbolacha37.jpg",
+    "img": "hipbolacha37.jpg"
   },
   {
     "id": "8410391711126",
@@ -2197,7 +2471,8 @@
     "preco": 1.02,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM450.JPG"
+    "marca": "Imagem450.jpg",
+    "img": "Imagem450.jpg"
   },
   {
     "id": "8410391351629",
@@ -2205,7 +2480,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM451.JPG"
+    "marca": "Imagem451.jpg",
+    "img": "Imagem451.jpg"
   },
   {
     "id": "5606480100954",
@@ -2213,7 +2489,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA12.JPG"
+    "marca": "hipbolacha12.jpg",
+    "img": "hipbolacha12.jpg"
   },
   {
     "id": "5606480100947",
@@ -2221,7 +2498,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA10.JPG"
+    "marca": "hipbolacha10.jpg",
+    "img": "hipbolacha10.jpg"
   },
   {
     "id": "5606480100930",
@@ -2229,7 +2507,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA11.JPG"
+    "marca": "hipbolacha11.jpg",
+    "img": "hipbolacha11.jpg"
   },
   {
     "id": "5606480100923",
@@ -2237,7 +2516,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA13.JPG"
+    "marca": "hipbolacha13.jpg",
+    "img": "hipbolacha13.jpg"
   },
   {
     "id": "5606480100886",
@@ -2245,7 +2525,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA14.JPG"
+    "marca": "hipbolacha14.jpg",
+    "img": "hipbolacha14.jpg"
   },
   {
     "id": "5606480100879",
@@ -2253,7 +2534,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA18.JPG"
+    "marca": "hipbolacha18.jpg",
+    "img": "hipbolacha18.jpg"
   },
   {
     "id": "5606480100893",
@@ -2261,7 +2543,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA32.JPG"
+    "marca": "hipbolacha32.jpg",
+    "img": "hipbolacha32.jpg"
   },
   {
     "id": "5606480100855",
@@ -2269,7 +2552,8 @@
     "preco": 1.17,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA33.JPG"
+    "marca": "hipbolacha33.jpg",
+    "img": "hipbolacha33.jpg"
   },
   {
     "id": "5606480100657",
@@ -2277,7 +2561,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA15.JPG"
+    "marca": "hipbolacha15.jpg",
+    "img": "hipbolacha15.jpg"
   },
   {
     "id": "5606480100640",
@@ -2285,7 +2570,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA16.JPG"
+    "marca": "hipbolacha16.jpg",
+    "img": "hipbolacha16.jpg"
   },
   {
     "id": "5606480100435",
@@ -2293,7 +2579,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA17.JPG"
+    "marca": "hipbolacha17.jpg",
+    "img": "hipbolacha17.jpg"
   },
   {
     "id": "5602794000041",
@@ -2301,7 +2588,8 @@
     "preco": 0.35,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA30.JPG"
+    "marca": "hipbolacha30.jpg",
+    "img": "hipbolacha30.jpg"
   },
   {
     "id": "5602794000058",
@@ -2309,7 +2597,8 @@
     "preco": 0.35,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "HIPBOLACHA30.JPG"
+    "marca": "hipbolacha30.jpg",
+    "img": "hipbolacha30.jpg"
   },
   {
     "id": "8422283073601",
@@ -2317,7 +2606,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM701.JPG"
+    "marca": "Imagem701.jpg",
+    "img": "Imagem701.jpg"
   },
   {
     "id": "8422283075346",
@@ -2325,7 +2615,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM700.JPG"
+    "marca": "Imagem700.jpg",
+    "img": "Imagem700.jpg"
   },
   {
     "id": "8423621000242",
@@ -2333,7 +2624,8 @@
     "preco": 0.94,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM449.JPG"
+    "marca": "Imagem449.jpg",
+    "img": "Imagem449.jpg"
   },
   {
     "id": "5410041000900",
@@ -2341,7 +2633,8 @@
     "preco": 1.04,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM422.JPG"
+    "marca": "Imagem422.jpg",
+    "img": "Imagem422.jpg"
   },
   {
     "id": "8436547647033",
@@ -2349,7 +2642,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM424.JPG"
+    "marca": "Imagem424.jpg",
+    "img": "Imagem424.jpg"
   },
   {
     "id": "8436547640843",
@@ -2357,7 +2651,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM353.JPG"
+    "marca": "Imagem353.jpg",
+    "img": "Imagem353.jpg"
   },
   {
     "id": "8435319705599",
@@ -2365,7 +2660,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM423.JPG"
+    "marca": "Imagem423.jpg",
+    "img": "Imagem423.jpg"
   },
   {
     "id": "8436547646746",
@@ -2373,7 +2669,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM425.JPG"
+    "marca": "Imagem425.jpg",
+    "img": "Imagem425.jpg"
   },
   {
     "id": "5310002750946",
@@ -2381,7 +2678,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM448.JPG"
+    "marca": "Imagem448.jpg",
+    "img": "Imagem448.jpg"
   },
   {
     "id": "5310002750694",
@@ -2389,7 +2687,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM446.JPG"
+    "marca": "Imagem446.jpg",
+    "img": "Imagem446.jpg"
   },
   {
     "id": "5310002750700",
@@ -2397,7 +2696,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM445.JPG"
+    "marca": "Imagem445.jpg",
+    "img": "Imagem445.jpg"
   },
   {
     "id": "5310002750878",
@@ -2405,7 +2705,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM444.JPG"
+    "marca": "Imagem444.jpg",
+    "img": "Imagem444.jpg"
   },
   {
     "id": "5310002750908",
@@ -2413,7 +2714,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM447.JPG"
+    "marca": "Imagem447.jpg",
+    "img": "Imagem447.jpg"
   },
   {
     "id": "8436540922090",
@@ -2421,7 +2723,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM374.JPG"
+    "marca": "Imagem374.jpg",
+    "img": "Imagem374.jpg"
   },
   {
     "id": "8436540922106",
@@ -2429,7 +2732,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM373.JPG"
+    "marca": "Imagem373.jpg",
+    "img": "Imagem373.jpg"
   },
   {
     "id": "7622300766610",
@@ -2437,7 +2741,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM391.JPG"
+    "marca": "Imagem391.jpg",
+    "img": "Imagem391.jpg"
   },
   {
     "id": "7622210405302",
@@ -2445,7 +2750,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM390.JPG"
+    "marca": "Imagem390.jpg",
+    "img": "Imagem390.jpg"
   },
   {
     "id": "7622202296208",
@@ -2453,7 +2759,8 @@
     "preco": 1.943,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "LOGODM.JPG"
+    "marca": "logoDM.jpg",
+    "img": "logoDM.jpg"
   },
   {
     "id": "7622300344757",
@@ -2461,7 +2768,8 @@
     "preco": 1.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM426.JPG"
+    "marca": "Imagem426.jpg",
+    "img": "Imagem426.jpg"
   },
   {
     "id": "8436547646753",
@@ -2469,7 +2777,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM159.JPG"
+    "marca": "Imagem159.jpg",
+    "img": "Imagem159.jpg"
   },
   {
     "id": "5604993547969",
@@ -2477,7 +2786,8 @@
     "preco": 0.81,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM417.JPG"
+    "marca": "Imagem417.jpg",
+    "img": "Imagem417.jpg"
   },
   {
     "id": "5604993547983",
@@ -2485,7 +2795,8 @@
     "preco": 0.81,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM418.JPG"
+    "marca": "Imagem418.jpg",
+    "img": "Imagem418.jpg"
   },
   {
     "id": "8411037892308",
@@ -2493,7 +2804,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM433.JPG"
+    "marca": "Imagem433.jpg",
+    "img": "Imagem433.jpg"
   },
   {
     "id": "8411037884624",
@@ -2501,7 +2813,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM431.JPG"
+    "marca": "Imagem431.jpg",
+    "img": "Imagem431.jpg"
   },
   {
     "id": "8411037892490",
@@ -2509,7 +2822,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM443.JPG"
+    "marca": "Imagem443.jpg",
+    "img": "Imagem443.jpg"
   },
   {
     "id": "8411037800037",
@@ -2517,7 +2831,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM428.JPG"
+    "marca": "Imagem428.jpg",
+    "img": "Imagem428.jpg"
   },
   {
     "id": "8411037892315",
@@ -2525,7 +2840,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM429.JPG"
+    "marca": "Imagem429.jpg",
+    "img": "Imagem429.jpg"
   },
   {
     "id": "8411037892476",
@@ -2533,7 +2849,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM430.JPG"
+    "marca": "Imagem430.jpg",
+    "img": "Imagem430.jpg"
   },
   {
     "id": "8411037892452",
@@ -2541,7 +2858,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM419.JPG"
+    "marca": "Imagem419.jpg",
+    "img": "Imagem419.jpg"
   },
   {
     "id": "8411037892438",
@@ -2549,7 +2867,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM420.JPG"
+    "marca": "Imagem420.jpg",
+    "img": "Imagem420.jpg"
   },
   {
     "id": "5601066401005",
@@ -2557,7 +2876,8 @@
     "preco": 1.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM459.JPG"
+    "marca": "Imagem459.jpg",
+    "img": "Imagem459.jpg"
   },
   {
     "id": "5601286430670",
@@ -2565,7 +2885,8 @@
     "preco": 0.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM345.JPG"
+    "marca": "Imagem345.jpg",
+    "img": "Imagem345.jpg"
   },
   {
     "id": "5601286402332",
@@ -2573,7 +2894,8 @@
     "preco": 0.64,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM343.JPG"
+    "marca": "Imagem343.jpg",
+    "img": "Imagem343.jpg"
   },
   {
     "id": "5601066400954",
@@ -2581,7 +2903,8 @@
     "preco": 0.59,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM379.JPG"
+    "marca": "Imagem379.jpg",
+    "img": "Imagem379.jpg"
   },
   {
     "id": "5601286414762",
@@ -2589,7 +2912,8 @@
     "preco": 0.5,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM344.JPG"
+    "marca": "Imagem344.jpg",
+    "img": "Imagem344.jpg"
   },
   {
     "id": "5601286402301",
@@ -2597,7 +2921,8 @@
     "preco": 0.41,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM350.JPG"
+    "marca": "Imagem350.jpg",
+    "img": "Imagem350.jpg"
   },
   {
     "id": "5601066401029",
@@ -2605,7 +2930,8 @@
     "preco": 1.05,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM378.JPG"
+    "marca": "Imagem378.jpg",
+    "img": "Imagem378.jpg"
   },
   {
     "id": "5601066400978",
@@ -2613,7 +2939,8 @@
     "preco": 0.59,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM346.JPG"
+    "marca": "Imagem346.jpg",
+    "img": "Imagem346.jpg"
   },
   {
     "id": "5601066400923",
@@ -2621,7 +2948,8 @@
     "preco": 0.81,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM349.JPG"
+    "marca": "Imagem349.jpg",
+    "img": "Imagem349.jpg"
   },
   {
     "id": "5601066400947",
@@ -2629,7 +2957,8 @@
     "preco": 0.94,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM348.JPG"
+    "marca": "Imagem348.jpg",
+    "img": "Imagem348.jpg"
   },
   {
     "id": "5601286413765",
@@ -2637,7 +2966,8 @@
     "preco": 0.41,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM347.JPG"
+    "marca": "Imagem347.jpg",
+    "img": "Imagem347.jpg"
   },
   {
     "id": "7622300281182",
@@ -2645,7 +2975,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM415.JPG"
+    "marca": "Imagem415.jpg",
+    "img": "Imagem415.jpg"
   },
   {
     "id": "7622300744663",
@@ -2653,7 +2984,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM414.JPG"
+    "marca": "Imagem414.jpg",
+    "img": "Imagem414.jpg"
   },
   {
     "id": "8410000810004",
@@ -2661,7 +2993,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM416.JPG"
+    "marca": "Imagem416.jpg",
+    "img": "Imagem416.jpg"
   },
   {
     "id": "7622300165628",
@@ -2669,7 +3002,8 @@
     "preco": 1.299,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM377.JPG"
+    "marca": "Imagem377.jpg",
+    "img": "Imagem377.jpg"
   },
   {
     "id": "5600355580261",
@@ -2677,7 +3011,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM706.JPG"
+    "marca": "Imagem706.jpg",
+    "img": "Imagem706.jpg"
   },
   {
     "id": "5600355580247",
@@ -2685,7 +3020,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM492.JPG"
+    "marca": "Imagem492.jpg",
+    "img": "Imagem492.jpg"
   },
   {
     "id": "5600355580230",
@@ -2693,7 +3029,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM712.JPG"
+    "marca": "Imagem712.jpg",
+    "img": "Imagem712.jpg"
   },
   {
     "id": "5600355581428",
@@ -2701,7 +3038,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM708.JPG"
+    "marca": "Imagem708.jpg",
+    "img": "Imagem708.jpg"
   },
   {
     "id": "5600355581220",
@@ -2709,7 +3047,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM711.JPG"
+    "marca": "Imagem711.jpg",
+    "img": "Imagem711.jpg"
   },
   {
     "id": "",
@@ -2717,7 +3056,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM707.JPG"
+    "marca": "Imagem707.jpg",
+    "img": "Imagem707.jpg"
   },
   {
     "id": "5600355580216",
@@ -2725,7 +3065,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM709.JPG"
+    "marca": "Imagem709.jpg",
+    "img": "Imagem709.jpg"
   },
   {
     "id": "5600355580254",
@@ -2733,7 +3074,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM714.JPG"
+    "marca": "Imagem714.jpg",
+    "img": "Imagem714.jpg"
   },
   {
     "id": "5600355581251",
@@ -2741,7 +3083,8 @@
     "preco": 0.86,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM710.JPG"
+    "marca": "Imagem710.jpg",
+    "img": "Imagem710.jpg"
   },
   {
     "id": "8427656008105",
@@ -2749,7 +3092,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM482.JPG"
+    "marca": "Imagem482.jpg",
+    "img": "Imagem482.jpg"
   },
   {
     "id": "8436547646654",
@@ -2757,7 +3101,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM155.JPG"
+    "marca": "Imagem155.jpg",
+    "img": "Imagem155.jpg"
   },
   {
     "id": "8436547646647",
@@ -2765,7 +3110,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM158.JPG"
+    "marca": "Imagem158.jpg",
+    "img": "Imagem158.jpg"
   },
   {
     "id": "5907536116371",
@@ -2773,7 +3119,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM125.JPG"
+    "marca": "Imagem125.jpg",
+    "img": "Imagem125.jpg"
   },
   {
     "id": "5907536116388",
@@ -2781,7 +3128,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM124.JPG"
+    "marca": "Imagem124.jpg",
+    "img": "Imagem124.jpg"
   },
   {
     "id": "3045471009111",
@@ -2789,7 +3137,8 @@
     "preco": 0.89,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM704.JPG"
+    "marca": "Imagem704.jpg",
+    "img": "Imagem704.jpg"
   },
   {
     "id": "3045471008114",
@@ -2797,7 +3146,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM705.JPG"
+    "marca": "Imagem705.jpg",
+    "img": "Imagem705.jpg"
   },
   {
     "id": "5907768229818",
@@ -2805,7 +3155,8 @@
     "preco": 1.19,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM380.JPG"
+    "marca": "Imagem380.jpg",
+    "img": "Imagem380.jpg"
   },
   {
     "id": "5053990127726",
@@ -2813,7 +3164,8 @@
     "preco": 1.69,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (23).JPG"
+    "marca": "APERITIVOS (23).jpg",
+    "img": "APERITIVOS (23).jpg"
   },
   {
     "id": "5410076067657",
@@ -2821,7 +3173,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (59).JPG"
+    "marca": "APERITIVOS (59).jpg",
+    "img": "APERITIVOS (59).jpg"
   },
   {
     "id": "5053990127672",
@@ -2829,7 +3182,8 @@
     "preco": 1.69,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (22).JPG"
+    "marca": "APERITIVOS (22).jpg",
+    "img": "APERITIVOS (22).jpg"
   },
   {
     "id": "5413149775244",
@@ -2837,7 +3191,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (60).JPG"
+    "marca": "APERITIVOS (60).jpg",
+    "img": "APERITIVOS (60).jpg"
   },
   {
     "id": "5053990127740",
@@ -2845,7 +3200,8 @@
     "preco": 1.69,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (24).JPG"
+    "marca": "APERITIVOS (24).jpg",
+    "img": "APERITIVOS (24).jpg"
   },
   {
     "id": "5413149775183",
@@ -2853,7 +3209,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (62).JPG"
+    "marca": "APERITIVOS (62).jpg",
+    "img": "APERITIVOS (62).jpg"
   },
   {
     "id": "5606439000502",
@@ -2861,7 +3218,8 @@
     "preco": 0.94,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM389.JPG"
+    "marca": "Imagem389.jpg",
+    "img": "Imagem389.jpg"
   },
   {
     "id": "5600744051013",
@@ -2869,7 +3227,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM375.JPG"
+    "marca": "Imagem375.jpg",
+    "img": "Imagem375.jpg"
   },
   {
     "id": "5600744051020",
@@ -2877,7 +3236,8 @@
     "preco": 1.09,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM376.JPG"
+    "marca": "Imagem376.jpg",
+    "img": "Imagem376.jpg"
   },
   {
     "id": "8413675000404",
@@ -2885,7 +3245,8 @@
     "preco": 1.194,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM388.JPG"
+    "marca": "Imagem388.jpg",
+    "img": "Imagem388.jpg"
   },
   {
     "id": "8413675000381",
@@ -2893,7 +3254,8 @@
     "preco": 1.194,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM387.JPG"
+    "marca": "Imagem387.jpg",
+    "img": "Imagem387.jpg"
   },
   {
     "id": "8412309707344",
@@ -2901,7 +3263,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM385.JPG"
+    "marca": "Imagem385.jpg",
+    "img": "Imagem385.jpg"
   },
   {
     "id": "8412309607019",
@@ -2909,7 +3272,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM386.JPG"
+    "marca": "Imagem386.jpg",
+    "img": "Imagem386.jpg"
   },
   {
     "id": "8412309707412",
@@ -2917,7 +3281,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM479.JPG"
+    "marca": "Imagem479.jpg",
+    "img": "Imagem479.jpg"
   },
   {
     "id": "8412309400023",
@@ -2925,7 +3290,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM483.JPG"
+    "marca": "Imagem483.jpg",
+    "img": "Imagem483.jpg"
   },
   {
     "id": "8412309402898",
@@ -2933,7 +3299,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM478.JPG"
+    "marca": "Imagem478.jpg",
+    "img": "Imagem478.jpg"
   },
   {
     "id": "5605458202423",
@@ -2941,7 +3308,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (3).JPG"
+    "marca": "APERITIVOS (3).jpg",
+    "img": "APERITIVOS (3).jpg"
   },
   {
     "id": "5605458203055",
@@ -2949,7 +3317,8 @@
     "preco": 0.75,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "APERITIVOS (4).JPG"
+    "marca": "APERITIVOS (4).jpg",
+    "img": "APERITIVOS (4).jpg"
   },
   {
     "id": "7622210252074",
@@ -2957,7 +3326,8 @@
     "preco": 0.93,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM480.JPG"
+    "marca": "Imagem480.jpg",
+    "img": "Imagem480.jpg"
   },
   {
     "id": "7622202214493",
@@ -2965,7 +3335,8 @@
     "preco": 0.85,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM481.JPG"
+    "marca": "Imagem481.jpg",
+    "img": "Imagem481.jpg"
   },
   {
     "id": "5601008100058",
@@ -2973,7 +3344,8 @@
     "preco": 0.52,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM466.JPG"
+    "marca": "Imagem466.jpg",
+    "img": "Imagem466.jpg"
   },
   {
     "id": "5601008100560",
@@ -2981,7 +3353,8 @@
     "preco": 1.299,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM467.JPG"
+    "marca": "Imagem467.jpg",
+    "img": "Imagem467.jpg"
   },
   {
     "id": "5601008101031",
@@ -2989,7 +3362,8 @@
     "preco": 1.36,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM477.JPG"
+    "marca": "Imagem477.jpg",
+    "img": "Imagem477.jpg"
   },
   {
     "id": "5601008200314",
@@ -2997,7 +3371,8 @@
     "preco": 1.29,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM471.JPG"
+    "marca": "Imagem471.jpg",
+    "img": "Imagem471.jpg"
   },
   {
     "id": "5601008200017",
@@ -3005,7 +3380,8 @@
     "preco": 1.18,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM468.JPG"
+    "marca": "Imagem468.jpg",
+    "img": "Imagem468.jpg"
   },
   {
     "id": "5601008100126",
@@ -3013,7 +3389,8 @@
     "preco": 0.98,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM469.JPG"
+    "marca": "Imagem469.jpg",
+    "img": "Imagem469.jpg"
   },
   {
     "id": "5601008100362",
@@ -3021,7 +3398,8 @@
     "preco": 0.37,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM463.JPG"
+    "marca": "Imagem463.jpg",
+    "img": "Imagem463.jpg"
   },
   {
     "id": "5601008100539",
@@ -3029,7 +3407,8 @@
     "preco": 1.299,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM464.JPG"
+    "marca": "Imagem464.jpg",
+    "img": "Imagem464.jpg"
   },
   {
     "id": "5601008200864",
@@ -3037,7 +3416,8 @@
     "preco": 1.49,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM470.JPG"
+    "marca": "Imagem470.jpg",
+    "img": "Imagem470.jpg"
   },
   {
     "id": "5601008100164",
@@ -3045,7 +3425,8 @@
     "preco": 0.56,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM462.JPG"
+    "marca": "Imagem462.jpg",
+    "img": "Imagem462.jpg"
   },
   {
     "id": "5601008100119",
@@ -3053,7 +3434,8 @@
     "preco": 0.53,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM461.JPG"
+    "marca": "Imagem461.jpg",
+    "img": "Imagem461.jpg"
   },
   {
     "id": "5601008101901",
@@ -3061,7 +3443,8 @@
     "preco": 0.79,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM460.JPG"
+    "marca": "Imagem460.jpg",
+    "img": "Imagem460.jpg"
   },
   {
     "id": "5310345009077",
@@ -3069,7 +3452,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM474.JPG"
+    "marca": "Imagem474.jpg",
+    "img": "Imagem474.jpg"
   },
   {
     "id": "5310345009084",
@@ -3077,7 +3461,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM475.JPG"
+    "marca": "Imagem475.jpg",
+    "img": "Imagem475.jpg"
   },
   {
     "id": "5310115007753",
@@ -3085,7 +3470,8 @@
     "preco": 0.68,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM476.JPG"
+    "marca": "Imagem476.jpg",
+    "img": "Imagem476.jpg"
   },
   {
     "id": "8410087400730",
@@ -3093,7 +3479,8 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM702.JPG"
+    "marca": "Imagem702.jpg",
+    "img": "Imagem702.jpg"
   },
   {
     "id": "8410087361444",
@@ -3101,6 +3488,7 @@
     "preco": 0.99,
     "un": "UNI",
     "familia": "BOLACHAS / APERITIVOS",
-    "marca": "IMAGEM703.JPG"
+    "marca": "Imagem703.jpg",
+    "img": "Imagem703.jpg"
   }
 ]
