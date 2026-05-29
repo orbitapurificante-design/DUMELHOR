@@ -89,16 +89,17 @@
            ══════════════════════════════ */
         .marcas-container {
             position: fixed; left: 0; right: 0;
-            top: -110%;                      /* escondida acima */
+            top: -110%;
             max-height: calc(100vh - 52px);
-            background: #1A1A1A;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
+            background: var(--light);          /* cinza da app */
+            border-bottom: 2px solid var(--border);
             z-index: 4000;
             overflow-y: auto; overflow-x: hidden;
             transition: top 0.15s ease-out;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            /* padding-top = altura do header para não ficar por baixo */
-            padding: 60px 10px 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            /* padding-top = header (52px) + pequena margem */
+            padding: 56px 10px 14px;
+            box-sizing: border-box;
         }
         .marcas-container.aberto { top: 0; }
 
@@ -114,19 +115,22 @@
             display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
         }
         .marcas-search input {
-            flex: 1; height: 36px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.09); color: white;
+            flex: 1; height: 38px; border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: white; color: var(--grey);
             padding: 0 12px; font-size: 12px; font-weight: 600;
             font-family: 'Montserrat', sans-serif; outline: none;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
-        .marcas-search input::placeholder { color: rgba(255,255,255,0.3); }
+        .marcas-search input::placeholder { color: #B0B0B0; }
+        .marcas-search input:focus { border-color: var(--red); }
         .btn-fechar-marcas {
-            width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.07);
-            color: rgba(255,255,255,0.6); font-size: 18px; cursor: pointer;
+            width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: white; color: var(--mid);
+            font-size: 18px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         /* Grelha: 4 col mobile, 6 col landscape */
@@ -156,19 +160,22 @@
         /* fallback quando não há imagem: inicial da marca */
         .marca-inicial {
             font-size: 20px; font-weight: 900; color: var(--red); line-height: 1;
+            background: var(--light); width:100%; height:100%;
+            display:flex; align-items:center; justify-content:center;
         }
 
         /* Rodapé do menu marcas */
         .marcas-footer {
             margin-top: 10px; padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid var(--border);
         }
         .btn-todas {
-            width: 100%; height: 38px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65);
+            width: 100%; height: 40px; border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: white; color: var(--mid);
             font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
             cursor: pointer; letter-spacing: 0.5px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         /* ══════════════════════════════
@@ -259,43 +266,44 @@
         .btn-add:active { background: var(--red-d); }
         .btn-remove { width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.4); font-size:12px; font-weight:600; cursor:pointer; font-family:'Montserrat',sans-serif; margin-bottom:10px; }
 
-        /* ══════════════════════════════
-           PAINEL CARRINHO
-           ══════════════════════════════ */
         .cart-panel { position: fixed; inset: 0; z-index: 7000; background: white; display: none; flex-direction: column; }
         .cart-panel.open { display: flex; }
         .cart-header { background: var(--red); height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 14px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .cart-header h2 { color: white; font-size: 15px; font-weight: 800; flex: 1; }
-        .btn-back { width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-        .cart-body { flex: 1; overflow-y: auto; background: var(--light); }
-        .cart-footer { flex-shrink: 0; background: white; padding: 14px; border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
+        .btn-back { width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        /* corpo ocupa todo o espaço disponível */
+        .cart-body { flex: 1; overflow-y: auto; background: var(--light); -webkit-overflow-scrolling: touch; }
+        /* footer mínimo — só total + botões */
+        .cart-footer-min { flex-shrink: 0; background: white; padding: 12px 14px 16px; border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
 
         .flbl { font-size:10px; font-weight:700; color:#B0B0B0; letter-spacing:1.2px; text-transform:uppercase; display:block; margin-bottom:4px; margin-top:10px; }
-        .finp, .ftxt { width:100%; padding:11px 13px; background:var(--light); border:1.5px solid var(--border); border-radius:10px; font-size:14px; color:var(--grey); font-family:'Montserrat',sans-serif; outline:none; -webkit-appearance:none; }
+        .finp, .ftxt { width:100%; padding:11px 13px; background:var(--light); border:1.5px solid var(--border); border-radius:10px; font-size:14px; color:var(--grey); font-family:'Montserrat',sans-serif; outline:none; -webkit-appearance:none; box-sizing:border-box; }
         .finp:focus, .ftxt:focus { border-color:var(--red); background:white; }
         .ftxt { resize:none; height:70px; }
 
-        .total-strip { display:flex; justify-content:space-between; align-items:center; background:var(--light); border-radius:10px; padding:12px 14px; margin:12px 0 10px; border:1px solid var(--border); }
+        .total-strip { display:flex; justify-content:space-between; align-items:center; background:var(--light); border-radius:10px; padding:10px 14px; margin-bottom:10px; border:1px solid var(--border); }
         .total-lbl { font-size:11px; font-weight:700; color:var(--mid); letter-spacing:0.5px; }
-        .total-val { font-size:24px; font-weight:900; color:var(--red); }
+        .total-val { font-size:22px; font-weight:900; color:var(--red); }
         .total-items { font-size:11px; color:var(--mid); }
 
         .envio-btns { display:flex; flex-direction:column; gap:8px; }
-        .btn-wpp { width:100%; padding:15px; border-radius:14px; border:none; background:#25D366; color:white; font-size:15px; font-weight:900; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-wpp { width:100%; padding:14px; border-radius:14px; border:none; background:#25D366; color:white; font-size:14px; font-weight:900; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
         .btn-wpp:active { background:#1ea952; }
-        .btn-eml { width:100%; padding:13px; border-radius:14px; border:1.5px solid var(--border); background:white; color:var(--grey); font-size:14px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-eml { width:100%; padding:12px; border-radius:14px; border:1.5px solid var(--border); background:white; color:var(--grey); font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
         .btn-eml:active { background:var(--light); }
         .btn-dis { opacity:0.45; pointer-events:none; }
 
-        .cart-item { background:white; border-bottom:1px solid #F0F0F0; padding:10px 12px; display:flex; align-items:center; gap:10px; }
-        .ci-img { width:48px; height:48px; border-radius:8px; flex-shrink:0; object-fit:contain; background:var(--light); border:1px solid var(--border); }
-        .ci-info { flex:1; min-width:0; }
+        /* cart items — corrigir overflow dos controlos */
+        .cart-item { background:white; border-bottom:1px solid #F0F0F0; padding:10px 12px; display:flex; align-items:center; gap:8px; overflow:hidden; }
+        .ci-img { width:46px; height:46px; border-radius:8px; flex-shrink:0; object-fit:contain; background:var(--light); border:1px solid var(--border); }
+        .ci-info { flex:1; min-width:0; overflow:hidden; }
         .ci-nome { font-size:12px; font-weight:700; color:var(--grey); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .ci-preco { font-size:11px; color:var(--mid); margin-top:2px; }
-        .ci-ctrl { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-        .bqs { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--border); background:var(--light); color:var(--grey); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        /* controlos quantidade — fixos à direita, nunca saem do ecrã */
+        .ci-ctrl { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+        .bqs { width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--light); color:var(--grey); font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
         .bqs.del { border-color:#ffcccc; background:#fff5f5; color:#cc0000; }
-        .qd { font-size:16px; font-weight:900; color:var(--grey); min-width:22px; text-align:center; }
+        .qd { font-size:15px; font-weight:900; color:var(--grey); min-width:24px; text-align:center; flex-shrink:0; }
         .cart-sec { padding:8px 12px; font-size:9px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:#B0B0B0; background:var(--light); border-bottom:1px solid var(--border); }
         .cart-empty { text-align:center; padding:60px 20px; color:var(--mid); }
 
@@ -440,14 +448,12 @@
         <button class="btn-back" onclick="fecharCarrinho()">←</button>
         <h2>🛒 CARRINHO</h2>
     </div>
+
+    <!-- Lista de produtos — ocupa tudo -->
     <div class="cart-body" id="cart-body"></div>
-    <div class="cart-footer">
-        <label class="flbl">O SEU NOME</label>
-        <input type="text" class="finp" id="cli-nome" placeholder="Nome completo">
-        <label class="flbl">TELEFONE (opcional)</label>
-        <input type="text" class="finp" id="cli-tel" placeholder="Telefone">
-        <label class="flbl">OBSERVAÇÕES (opcional)</label>
-        <textarea class="ftxt" id="cli-obs" placeholder="Notas sobre a encomenda..."></textarea>
+
+    <!-- Footer mínimo — só total + botão enviar -->
+    <div class="cart-footer-min">
         <div class="total-strip">
             <div>
                 <div class="total-lbl">TOTAL A PAGAR</div>
@@ -456,9 +462,35 @@
             <div class="total-val" id="total-val">0,00 €</div>
         </div>
         <div class="envio-btns">
-            <button class="btn-wpp" id="btn-wpp" onclick="enviar('wpp')">📲 ENVIAR POR WHATSAPP</button>
-            <button class="btn-eml" id="btn-eml" onclick="enviar('email')">✉️ ENVIAR POR EMAIL</button>
+            <button class="btn-wpp" id="btn-wpp" onclick="abrirFormEnvio('wpp')">📲 ENVIAR POR WHATSAPP</button>
+            <button class="btn-eml" id="btn-eml" onclick="abrirFormEnvio('email')">✉️ ENVIAR POR EMAIL</button>
         </div>
+    </div>
+</div>
+
+<!-- ══ MODAL FORMULÁRIO ENVIO ══ -->
+<div id="modal-form-envio" style="display:none; position:fixed; inset:0; z-index:8500;
+    background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center;">
+    <div style="background:white; border-radius:20px 20px 0 0; padding:20px 16px 30px;
+        width:100%; max-width:520px; box-shadow:0 -4px 30px rgba(0,0,0,0.2);">
+        <div style="display:flex; align-items:center; margin-bottom:16px;">
+            <div style="font-size:15px; font-weight:900; color:var(--grey); flex:1">Dados da Encomenda</div>
+            <button onclick="fecharFormEnvio()" style="background:var(--light);border:none;border-radius:50%;
+                width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--mid)">✕</button>
+        </div>
+        <label class="flbl">O SEU NOME *</label>
+        <input type="text" class="finp" id="cli-nome" placeholder="Nome completo">
+        <label class="flbl">TELEFONE (opcional)</label>
+        <input type="tel" class="finp" id="cli-tel" placeholder="Telefone">
+        <label class="flbl">OBSERVAÇÕES (opcional)</label>
+        <textarea class="ftxt" id="cli-obs" placeholder="Notas sobre a encomenda..."></textarea>
+        <button id="btn-confirmar-envio" onclick="confirmarEnvio()"
+            style="margin-top:16px; width:100%; padding:16px; border-radius:14px;
+            border:none; background:#25D366; color:white; font-size:15px; font-weight:900;
+            cursor:pointer; font-family:'Montserrat',sans-serif; display:flex;
+            align-items:center; justify-content:center; gap:8px;">
+            📲 CONFIRMAR E ENVIAR
+        </button>
     </div>
 </div>
 
@@ -827,6 +859,32 @@ function atualizarUI() {
 // ══════════════════════════════
 // ENVIAR ENCOMENDA
 // ══════════════════════════════
+let _viaEnvio = 'wpp';
+
+function abrirFormEnvio(via) {
+    const items = Object.values(CART);
+    if (!items.length) return;
+    _viaEnvio = via;
+    // Atualizar botão conforme via
+    const btn = document.getElementById('btn-confirmar-envio');
+    if (via === 'wpp') {
+        btn.style.background = '#25D366';
+        btn.innerHTML = '📲 CONFIRMAR E ENVIAR POR WHATSAPP';
+    } else {
+        btn.style.background = 'var(--red)';
+        btn.innerHTML = '✉️ CONFIRMAR E ENVIAR POR EMAIL';
+    }
+    document.getElementById('modal-form-envio').style.display = 'flex';
+}
+
+function fecharFormEnvio() {
+    document.getElementById('modal-form-envio').style.display = 'none';
+}
+
+function confirmarEnvio() {
+    enviar(_viaEnvio);
+}
+
 function enviar(via) {
     const nome = document.getElementById('cli-nome').value.trim();
     const tel  = document.getElementById('cli-tel').value.trim();
@@ -849,6 +907,7 @@ function enviar(via) {
         const subj = `Encomenda ${CONFIG.nomeLoja} — ${nome}`;
         window.open(`mailto:${CONFIG.email}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`, '_blank');
     }
+    fecharFormEnvio();
     setTimeout(() => {
         document.getElementById('cart-panel').classList.remove('open');
         document.getElementById('success-screen').classList.add('open');
@@ -988,6 +1047,9 @@ window.addEventListener('popstate', () => {
     }
     if (document.getElementById('modal-qty').classList.contains('open')) {
         fecharModal(); pushBack(); return;
+    }
+    if (document.getElementById('modal-form-envio').style.display === 'flex') {
+        fecharFormEnvio(); pushBack(); return;
     }
     if (document.getElementById('modal-instalar').style.display === 'flex') {
         fecharModalInstalar(); pushBack(); return;
