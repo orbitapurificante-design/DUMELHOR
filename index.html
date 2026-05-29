@@ -913,22 +913,83 @@ document.getElementById('modal-qty').addEventListener('click', e => { if(e.targe
 document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal(); fecharMarcas(); fecharCarrinho(); } });
 
 // ══════════════════════════════
+// PWA — SERVICE WORKER + INSTALAR
+// ══════════════════════════════
+let _pwaPrompt = null;
+
+// Registar service worker com o scope correto
+if ('serviceWorker' in navigator) {
+    // Determina o caminho base (para GitHub Pages com subpasta)
+    const swPath = location.pathname.replace(/\/[^/]*$/, '/') + 'sw.js';
+    navigator.serviceWorker.register(swPath, {
+        scope: location.pathname.replace(/\/[^/]*$/, '/')
+    }).then(reg => {
+        console.log('SW registado:', reg.scope);
+    }).catch(err => {
+        console.warn('SW falhou:', err);
+    });
+}
+
+// Interceta prompt de instalação
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    _pwaPrompt = e;
+    // Mostrar banner
+    const banner = document.getElementById('banner-instalar');
+    if (banner) banner.style.display = 'flex';
+    console.log('PWA instalável!');
+});
+
+window.addEventListener('appinstalled', () => {
+    const banner = document.getElementById('banner-instalar');
+    if (banner) banner.style.display = 'none';
+    localStorage.setItem('dm_installed', '1');
+    console.log('PWA instalada!');
+});
+
+// Mostrar banner de instalação após 4 segundos
+// (se não estiver já instalado nem em modo standalone)
+const jaInstalado = localStorage.getItem('dm_installed');
+const emStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+if (!jaInstalado && !emStandalone) {
+    setTimeout(() => {
+        const banner = document.getElementById('banner-instalar');
+        if (banner) banner.style.display = 'flex';
+    }, 4000);
+}
+
+function instalarApp() {
+    if (_pwaPrompt) {
+        // Chrome Android — instala diretamente
+        _pwaPrompt.prompt();
+        _pwaPrompt.userChoice.then(() => {
+            _pwaPrompt = null;
+            const banner = document.getElementById('banner-instalar');
+            if (banner) banner.style.display = 'none';
+        });
+    } else {
+        // Mostrar instruções manuais
+        document.getElementById('modal-instalar').style.display = 'flex';
+    }
+}
+
+function fecharModalInstalar() {
+    document.getElementById('modal-instalar').style.display = 'none';
+}
+
+// ══════════════════════════════
 // BOTÃO RETROCEDER ANDROID
 // ══════════════════════════════
-// Estratégia: manter SEMPRE pelo menos 2 entradas no histórico
-// para que o popstate dispare antes de sair da app
-
 function pushBack() {
     history.pushState({ dumelhor: Date.now() }, '', location.href);
 }
 
-// Ao carregar empurra 3 estados extra para ter "espaço" para recuar
-history.pushState({ dumelhor: 1 }, '', location.href);
-history.pushState({ dumelhor: 2 }, '', location.href);
-history.pushState({ dumelhor: 3 }, '', location.href);
+// Empurra estados iniciais
+pushBack(); pushBack(); pushBack();
 
 window.addEventListener('popstate', () => {
-    // Fechar painéis por ordem de prioridade
     if (document.getElementById('success-screen').classList.contains('open')) {
         novaEncomenda(); pushBack(); return;
     }
@@ -938,19 +999,20 @@ window.addEventListener('popstate', () => {
     if (document.getElementById('modal-qty').classList.contains('open')) {
         fecharModal(); pushBack(); return;
     }
+    if (document.getElementById('modal-instalar').style.display === 'flex') {
+        fecharModalInstalar(); pushBack(); return;
+    }
     if (MARCAS_ABERTO) {
         fecharMarcas(); pushBack(); return;
     }
     if (MARCA_ATIVA) {
         selecionarMarca(null); pushBack(); return;
     }
-    // Nada aberto — avisa se tiver carrinho
     if (Object.keys(CART).length > 0) {
         if (!confirm('Tem itens no carrinho. Sair mesmo assim?')) {
             pushBack(); return;
         }
     }
-    // Deixa sair
     history.back();
 });
 
@@ -964,57 +1026,6 @@ window.addEventListener('beforeunload', e => {
         return '';
     }
 });
-
-// ══════════════════════════════
-// PWA — SERVICE WORKER
-// ══════════════════════════════
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('SW ok'))
-        .catch(e => console.log('SW erro', e));
-}
-
-// Mostrar banner instalar se suportado
-let _pwaPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    _pwaPrompt = e;
-    document.getElementById('banner-instalar').style.display = 'flex';
-});
-window.addEventListener('appinstalled', () => {
-    document.getElementById('banner-instalar').style.display = 'none';
-    localStorage.setItem('dm_installed', '1');
-});
-
-// Se já instalado, não mostrar banner
-if (localStorage.getItem('dm_installed')) {
-    // já instalado
-} else if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-    // já a correr como PWA standalone — não mostrar
-} else {
-    // Mostrar botão manual de instalação sempre (funciona no iOS também)
-    setTimeout(() => {
-        document.getElementById('banner-instalar').style.display = 'flex';
-    }, 3000);
-}
-
-function instalarApp() {
-    if (_pwaPrompt) {
-        // Android Chrome — instala direto
-        _pwaPrompt.prompt();
-        _pwaPrompt.userChoice.then(r => {
-            _pwaPrompt = null;
-            document.getElementById('banner-instalar').style.display = 'none';
-        });
-    } else {
-        // iOS Safari ou outros — mostrar instruções
-        document.getElementById('modal-instalar').style.display = 'flex';
-    }
-}
-
-function fecharModalInstalar() {
-    document.getElementById('modal-instalar').style.display = 'none';
-}
 
 // ── INIT ──
 carregarProdutos();

@@ -1,51 +1,74 @@
-const CACHE = 'dumelhor-v2';
-const SHELL = ['./index.html', './manifest.json'];
+// sw.js — DUMELHOR Shop Service Worker
+const VERSAO = 'dumelhor-v3';
 
-self.addEventListener('install', e => {
-    e.waitUntil(
-        caches.open(CACHE)
-            .then(c => c.addAll(SHELL))
+// Ficheiros essenciais para cache
+const CACHE_FIXO = [
+    './',
+    './index.html',
+    './manifest.json',
+    './images/icon-192.png',
+    './images/icon-512.png'
+];
+
+// INSTALAR — cache ficheiros essenciais
+self.addEventListener('install', evento => {
+    evento.waitUntil(
+        caches.open(VERSAO)
+            .then(cache => cache.addAll(CACHE_FIXO))
             .then(() => self.skipWaiting())
     );
 });
 
-self.addEventListener('activate', e => {
-    e.waitUntil(
-        caches.keys()
-            .then(keys => Promise.all(
-                keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-            ))
-            .then(() => self.clients.claim())
+// ATIVAR — limpar caches antigas
+self.addEventListener('activate', evento => {
+    evento.waitUntil(
+        caches.keys().then(chaves =>
+            Promise.all(
+                chaves
+                    .filter(chave => chave !== VERSAO)
+                    .map(chave => caches.delete(chave))
+            )
+        ).then(() => self.clients.claim())
     );
 });
 
-self.addEventListener('fetch', e => {
-    const url = e.request.url;
+// FETCH — responder pedidos
+self.addEventListener('fetch', evento => {
+    // Só tratar pedidos GET
+    if (evento.request.method !== 'GET') return;
 
-    // produtos.json — sempre rede primeiro, fallback cache
+    const url = evento.request.url;
+
+    // produtos.json — sempre rede primeiro (dados frescos), fallback cache
     if (url.includes('produtos.json')) {
-        e.respondWith(
-            fetch(e.request)
-                .then(r => {
-                    const clone = r.clone();
-                    caches.open(CACHE).then(c => c.put(e.request, clone));
-                    return r;
+        evento.respondWith(
+            fetch(evento.request)
+                .then(resposta => {
+                    const copia = resposta.clone();
+                    caches.open(VERSAO).then(cache => cache.put(evento.request, copia));
+                    return resposta;
                 })
-                .catch(() => caches.match(e.request))
+                .catch(() => caches.match(evento.request))
         );
         return;
     }
 
-    // Tudo o resto — cache first, rede como fallback
-    e.respondWith(
-        caches.match(e.request).then(cached => {
-            if (cached) return cached;
-            return fetch(e.request).then(r => {
-                if (r && r.status === 200) {
-                    const clone = r.clone();
-                    caches.open(CACHE).then(c => c.put(e.request, clone));
+    // Tudo o resto — cache primeiro, rede como fallback
+    evento.respondWith(
+        caches.match(evento.request).then(emCache => {
+            if (emCache) return emCache;
+            return fetch(evento.request).then(resposta => {
+                // Guardar em cache só respostas válidas
+                if (resposta && resposta.status === 200 && resposta.type === 'basic') {
+                    const copia = resposta.clone();
+                    caches.open(VERSAO).then(cache => cache.put(evento.request, copia));
                 }
-                return r;
+                return resposta;
+            }).catch(() => {
+                // Offline e não está em cache — retorna página principal
+                if (evento.request.destination === 'document') {
+                    return caches.match('./index.html');
+                }
             });
         })
     );
