@@ -917,17 +917,8 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal()
 // ══════════════════════════════
 let _pwaPrompt = null;
 
-// Registar service worker com o scope correto
 if ('serviceWorker' in navigator) {
-    // Determina o caminho base (para GitHub Pages com subpasta)
-    const swPath = location.pathname.replace(/\/[^/]*$/, '/') + 'sw.js';
-    navigator.serviceWorker.register(swPath, {
-        scope: location.pathname.replace(/\/[^/]*$/, '/')
-    }).then(reg => {
-        console.log('SW registado:', reg.scope);
-    }).catch(err => {
-        console.warn('SW falhou:', err);
-    });
+    navigator.serviceWorker.register('./sw.js');
 }
 
 // Interceta prompt de instalação
