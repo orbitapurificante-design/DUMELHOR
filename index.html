@@ -904,6 +904,43 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
+// ── BOTÃO RETROCEDER ANDROID ──
+// Empurra um estado no histórico para intercetarmos o "back"
+history.pushState({ app: true }, '');
+
+window.addEventListener('popstate', e => {
+    // Se algum painel estiver aberto, fecha-o em vez de sair
+    if (document.getElementById('success-screen').classList.contains('open')) {
+        novaEncomenda(); history.pushState({ app: true }, ''); return;
+    }
+    if (document.getElementById('cart-panel').classList.contains('open')) {
+        fecharCarrinho(); history.pushState({ app: true }, ''); return;
+    }
+    if (document.getElementById('modal-qty').classList.contains('open')) {
+        fecharModal(); history.pushState({ app: true }, ''); return;
+    }
+    if (MARCAS_ABERTO) {
+        fecharMarcas(); history.pushState({ app: true }, ''); return;
+    }
+    if (MARCA_ATIVA) {
+        selecionarMarca(null); history.pushState({ app: true }, ''); return;
+    }
+    // Nada aberto — sai só se carrinho vazio
+    if (Object.keys(CART).length > 0) {
+        const sair = confirm('Tem ' + Object.keys(CART).length + ' produto(s) no carrinho.\nTem a certeza que quer sair?');
+        if (!sair) { history.pushState({ app: true }, ''); }
+    }
+});
+
+// ── AVISO AO FECHAR/ATUALIZAR A PÁGINA ──
+window.addEventListener('beforeunload', e => {
+    if (Object.keys(CART).length > 0) {
+        e.preventDefault();
+        e.returnValue = 'Tem produtos no carrinho. Tem a certeza que quer sair?';
+        return e.returnValue;
+    }
+});
+
 // ── INIT ──
 carregarProdutos();
 </script>
