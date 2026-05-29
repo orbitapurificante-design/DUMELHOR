@@ -8,7 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DUMELHOR">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="images/logo.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="images/icon-512.png">
     <title>DUMELHOR — Encomendas</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -462,6 +463,40 @@
     </div>
 </div>
 
+<!-- ══ MODAL INSTALAR iOS ══ -->
+<div id="modal-instalar" style="display:none; position:fixed; inset:0; z-index:9500;
+    background:rgba(0,0,0,0.85); align-items:flex-end; justify-content:center;">
+    <div style="background:#1A1A1A; border-radius:20px 20px 0 0; padding:24px 20px 36px;
+        width:100%; max-width:480px; border-top:1px solid rgba(255,255,255,0.12);">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:32px; margin-bottom:8px">📲</div>
+            <div style="color:white; font-size:16px; font-weight:900; margin-bottom:6px">Instalar como App</div>
+            <div style="color:rgba(255,255,255,0.5); font-size:12px; line-height:1.6">Siga os passos para o seu telemóvel:</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.07); border-radius:12px; padding:16px; margin-bottom:12px;">
+            <div style="color:white; font-size:12px; font-weight:800; margin-bottom:10px; letter-spacing:0.5px">📱 ANDROID (Chrome)</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:12px; line-height:1.8">
+                1. Toque nos <b style="color:white">⋮ três pontos</b> no canto superior direito<br>
+                2. Toque em <b style="color:white">"Adicionar ao ecrã principal"</b><br>
+                3. Confirme e a app fica instalada
+            </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.07); border-radius:12px; padding:16px; margin-bottom:20px;">
+            <div style="color:white; font-size:12px; font-weight:800; margin-bottom:10px; letter-spacing:0.5px">🍎 iOS (Safari)</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:12px; line-height:1.8">
+                1. Toque no ícone <b style="color:white">⎙ partilhar</b> (barra inferior)<br>
+                2. Toque em <b style="color:white">"Adicionar ao ecrã de início"</b><br>
+                3. Confirme e a app fica instalada
+            </div>
+        </div>
+        <button onclick="fecharModalInstalar()" style="width:100%; padding:15px; border-radius:12px;
+            border:none; background:var(--red); color:white; font-size:15px; font-weight:800;
+            cursor:pointer; font-family:'Montserrat',sans-serif;">
+            Entendido ✓
+        </button>
+    </div>
+</div>
+
 <!-- ══ ECRÃ SUCESSO ══ -->
 <div class="success-screen" id="success-screen">
     <div class="em">✅</div>
@@ -877,69 +912,109 @@ function showToast(msg) {
 document.getElementById('modal-qty').addEventListener('click', e => { if(e.target===e.currentTarget) fecharModal(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal(); fecharMarcas(); fecharCarrinho(); } });
 
-// ── PWA SERVICE WORKER + INSTALAR ──
-let _pwaPrompt = null;
+// ══════════════════════════════
+// BOTÃO RETROCEDER ANDROID
+// ══════════════════════════════
+// Estratégia: manter SEMPRE pelo menos 2 entradas no histórico
+// para que o popstate dispare antes de sair da app
 
+function pushBack() {
+    history.pushState({ dumelhor: Date.now() }, '', location.href);
+}
+
+// Ao carregar empurra 3 estados extra para ter "espaço" para recuar
+history.pushState({ dumelhor: 1 }, '', location.href);
+history.pushState({ dumelhor: 2 }, '', location.href);
+history.pushState({ dumelhor: 3 }, '', location.href);
+
+window.addEventListener('popstate', () => {
+    // Fechar painéis por ordem de prioridade
+    if (document.getElementById('success-screen').classList.contains('open')) {
+        novaEncomenda(); pushBack(); return;
+    }
+    if (document.getElementById('cart-panel').classList.contains('open')) {
+        fecharCarrinho(); pushBack(); return;
+    }
+    if (document.getElementById('modal-qty').classList.contains('open')) {
+        fecharModal(); pushBack(); return;
+    }
+    if (MARCAS_ABERTO) {
+        fecharMarcas(); pushBack(); return;
+    }
+    if (MARCA_ATIVA) {
+        selecionarMarca(null); pushBack(); return;
+    }
+    // Nada aberto — avisa se tiver carrinho
+    if (Object.keys(CART).length > 0) {
+        if (!confirm('Tem itens no carrinho. Sair mesmo assim?')) {
+            pushBack(); return;
+        }
+    }
+    // Deixa sair
+    history.back();
+});
+
+// ══════════════════════════════
+// AVISO AO FECHAR/ATUALIZAR
+// ══════════════════════════════
+window.addEventListener('beforeunload', e => {
+    if (Object.keys(CART).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+    }
+});
+
+// ══════════════════════════════
+// PWA — SERVICE WORKER
+// ══════════════════════════════
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW ok'))
+        .catch(e => console.log('SW erro', e));
+}
+
+// Mostrar banner instalar se suportado
+let _pwaPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     _pwaPrompt = e;
     document.getElementById('banner-instalar').style.display = 'flex';
 });
-
 window.addEventListener('appinstalled', () => {
     document.getElementById('banner-instalar').style.display = 'none';
+    localStorage.setItem('dm_installed', '1');
 });
+
+// Se já instalado, não mostrar banner
+if (localStorage.getItem('dm_installed')) {
+    // já instalado
+} else if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    // já a correr como PWA standalone — não mostrar
+} else {
+    // Mostrar botão manual de instalação sempre (funciona no iOS também)
+    setTimeout(() => {
+        document.getElementById('banner-instalar').style.display = 'flex';
+    }, 3000);
+}
 
 function instalarApp() {
     if (_pwaPrompt) {
+        // Android Chrome — instala direto
         _pwaPrompt.prompt();
-        _pwaPrompt.userChoice.then(() => {
+        _pwaPrompt.userChoice.then(r => {
             _pwaPrompt = null;
             document.getElementById('banner-instalar').style.display = 'none';
         });
+    } else {
+        // iOS Safari ou outros — mostrar instruções
+        document.getElementById('modal-instalar').style.display = 'flex';
     }
 }
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+function fecharModalInstalar() {
+    document.getElementById('modal-instalar').style.display = 'none';
 }
-
-// ── BOTÃO RETROCEDER ANDROID ──
-// Empurra um estado no histórico para intercetarmos o "back"
-history.pushState({ app: true }, '');
-
-window.addEventListener('popstate', e => {
-    // Se algum painel estiver aberto, fecha-o em vez de sair
-    if (document.getElementById('success-screen').classList.contains('open')) {
-        novaEncomenda(); history.pushState({ app: true }, ''); return;
-    }
-    if (document.getElementById('cart-panel').classList.contains('open')) {
-        fecharCarrinho(); history.pushState({ app: true }, ''); return;
-    }
-    if (document.getElementById('modal-qty').classList.contains('open')) {
-        fecharModal(); history.pushState({ app: true }, ''); return;
-    }
-    if (MARCAS_ABERTO) {
-        fecharMarcas(); history.pushState({ app: true }, ''); return;
-    }
-    if (MARCA_ATIVA) {
-        selecionarMarca(null); history.pushState({ app: true }, ''); return;
-    }
-    // Nada aberto — sai só se carrinho vazio
-    if (Object.keys(CART).length > 0) {
-        const sair = confirm('Tem ' + Object.keys(CART).length + ' produto(s) no carrinho.\nTem a certeza que quer sair?');
-        if (!sair) { history.pushState({ app: true }, ''); }
-    }
-});
-
-// ── AVISO AO FECHAR/ATUALIZAR A PÁGINA ──
-window.addEventListener('beforeunload', e => {
-    if (Object.keys(CART).length > 0) {
-        e.preventDefault();
-        e.returnValue = 'Tem produtos no carrinho. Tem a certeza que quer sair?';
-        return e.returnValue;
-    }
-});
 
 // ── INIT ──
 carregarProdutos();
