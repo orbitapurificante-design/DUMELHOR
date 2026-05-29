@@ -332,6 +332,21 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Banner instalar como App -->
+<div id="banner-instalar" style="display:none; position:fixed; bottom:70px; left:10px; right:10px; z-index:6000;
+    background:#1A1A1A; border:1px solid rgba(255,255,255,0.15); border-radius:14px;
+    padding:12px 14px; align-items:center; gap:10px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+    <img src="images/logo.png" style="width:36px;height:36px;border-radius:8px;object-fit:contain;background:white;padding:3px;flex-shrink:0" onerror="this.style.display='none'">
+    <div style="flex:1;min-width:0;">
+        <div style="color:white;font-size:12px;font-weight:800;letter-spacing:0.3px">Instalar DUMELHOR</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:10px;font-weight:500;margin-top:1px">Adicionar ao ecrã inicial como App</div>
+    </div>
+    <button onclick="instalarApp()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Montserrat',sans-serif;white-space:nowrap;flex-shrink:0">
+        INSTALAR
+    </button>
+    <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;padding:0;flex-shrink:0;line-height:1">✕</button>
+</div>
+
 <!-- ══ HEADER ══ -->
 <header>
     <!-- ☰ abre grelha de marcas -->
@@ -578,7 +593,14 @@ function renderLoja() {
     let produtos = DADOS;
     if (MARCA_ATIVA) {
         const ma = MARCA_ATIVA.trim().toUpperCase();
-        produtos = produtos.filter(p => (p.marca||'').trim().toUpperCase() === ma);
+        produtos = produtos.filter(p => {
+            // 1. campo marca (se existir)
+            const marcaCampo = (p.marca || '').trim().toUpperCase();
+            if (marcaCampo && marcaCampo === ma) return true;
+            // 2. fallback: nome do produto começa ou contém o nome da marca
+            const nome = (p.nome || '').toUpperCase();
+            return nome.includes(ma);
+        });
     }
     if (BUSCA) {
         const q = BUSCA.toLowerCase();
@@ -855,7 +877,29 @@ function showToast(msg) {
 document.getElementById('modal-qty').addEventListener('click', e => { if(e.target===e.currentTarget) fecharModal(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal(); fecharMarcas(); fecharCarrinho(); } });
 
-// ── PWA SERVICE WORKER ──
+// ── PWA SERVICE WORKER + INSTALAR ──
+let _pwaPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    _pwaPrompt = e;
+    document.getElementById('banner-instalar').style.display = 'flex';
+});
+
+window.addEventListener('appinstalled', () => {
+    document.getElementById('banner-instalar').style.display = 'none';
+});
+
+function instalarApp() {
+    if (_pwaPrompt) {
+        _pwaPrompt.prompt();
+        _pwaPrompt.userChoice.then(() => {
+            _pwaPrompt = null;
+            document.getElementById('banner-instalar').style.display = 'none';
+        });
+    }
+}
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
 }
