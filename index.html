@@ -464,26 +464,29 @@ const CONFIG = {
 // ══════════════════════════════
 // ESTADO
 // ══════════════════════════════
-let DADOS = [], MARCAS = [], CART = {};
+let DADOS = [], CART = {};
 let MARCA_ATIVA = null, BUSCA = '', PROD_MODAL = null;
 let FAM_EST = {}, MARCAS_ABERTO = false;
+
+// Lista fixa de marcas — ficheiros: SAYMA.jpg, COCA COLA.jpg, etc.
+const MARCAS = [
+    "TREVI","MILKA","DULCESOL","EDUBOM","MILANEZA","HIPERD","COMPAL","JUVER",
+    "WIKINGER","DIATOSTA","KNORR","NESTLE","BOCK CERVEJA","COCA COLA","VIDAL",
+    "CIRIO","FUN","PLOK","AMALFI","VILEDA","SCOTCH-BRITE","NIVEA","EVAX",
+    "CASA BELLA","JOKER","DENIM","AXE","SAYMA","MISTOLIN","AJAX","GILLETTE",
+    "VINHO","WHISKY","ARROZ","OLEO","AZEITE","FARINHA","ROLL-ON","SACOS LIXO","ROUPA"
+];
 
 // ══════════════════════════════
 // CARREGAR PRODUTOS
 // ══════════════════════════════
 async function carregarProdutos() {
+    // Mostra grelha de marcas imediatamente (não depende do JSON)
+    renderMarcasGrid();
     try {
         const r = await fetch(CONFIG.produtosJson + '?v=' + Date.now());
         if (!r.ok) throw new Error();
         DADOS = await r.json();
-        // Marcas únicas, por ordem de aparecimento no JSON (preserva ordem do Excel)
-        const seen = new Set();
-        MARCAS = [];
-        DADOS.forEach(p => {
-            const m = (p.marca || '').trim();
-            if (m && !seen.has(m)) { seen.add(m); MARCAS.push(m); }
-        });
-        renderMarcasGrid();
         renderLoja();
     } catch(e) {
         document.getElementById('loja-container').innerHTML =
@@ -528,26 +531,15 @@ function renderMarcasGrid(filtro) {
     }
 
     grid.innerHTML = lista.map(marca => {
-        // O ficheiro de imagem da marca deve chamar-se igual à marca em minúsculas
-        // ex: marca "SUPER BOCK" → images/super-bock.png  OU  images/super bock.jpg
-        const slug = marca.toLowerCase().replace(/\s+/g, '-');
-        const slugS = marca.toLowerCase().replace(/\s+/g, '');
+        // Ficheiros são sempre MARCA.jpg em maiúsculas — ex: SAYMA.jpg, COCA COLA.jpg
         const ativo = MARCA_ATIVA === marca ? ' ativo' : '';
+        const ficheiro = marca + '.jpg';  // ex: COCA COLA.jpg
+        const ficheiroEnc = encodeURIComponent(marca) + '.jpg'; // para URLs com espaços
 
-        // Tenta .png depois .jpg depois sem espaços — onerror em cadeia
         const imgHtml = `<img
-            src="${CONFIG.imagesDir}${slug}.png"
-            onerror="this.src='${CONFIG.imagesDir}${slug}.jpg';
-                     this.onerror=function(){
-                         this.src='${CONFIG.imagesDir}${slugS}.png';
-                         this.onerror=function(){
-                             this.src='${CONFIG.imagesDir}${slugS}.jpg';
-                             this.onerror=function(){
-                                 this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>';
-                             };
-                         };
-                     };"
-            alt="${marca}" title="${marca}">`;
+            src="${CONFIG.imagesDir}${ficheiroEnc}"
+            alt="${marca}" title="${marca}"
+            onerror="this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>'">`;
 
         return `<button class="marca-btn${ativo}" onclick="selecionarMarca('${marca.replace(/'/g,"\\'")}')">
             ${imgHtml}
