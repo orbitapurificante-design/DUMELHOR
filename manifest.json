@@ -2,14 +2,13 @@
   "name": "DUMELHOR Encomendas",
   "short_name": "DUMELHOR",
   "description": "Loja de encomendas DUMELHOR",
-  "start_url": "./index.html?pwa=1",
-  "scope": "./",
+  "start_url": "index.html",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#E60000",
   "theme_color": "#E60000",
   "orientation": "portrait-primary",
-  "lang": "pt",
-  "categories": ["shopping"],
+  "lang": "pt-PT",
   "icons": [
     {
       "src": "images/icon-192.png",
