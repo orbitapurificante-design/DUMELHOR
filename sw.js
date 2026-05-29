@@ -1,38 +1,45 @@
-const CACHE_NAME = "dumelhor-v2";
-const FILES_TO_CACHE = ["./DUMELHOR.html"];
+const CACHE = 'dumelhor-v1';
+const SHELL = [
+  './',
+  './index.html',
+  './manifest.json',
+  'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap'
+];
 
-// Instalar e fazer cache do HTML principal
-self.addEventListener("install", e => {
-    e.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
-    );
-    self.skipWaiting();
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())
+  );
 });
 
-// Activar e limpar caches antigos
-self.addEventListener("activate", e => {
-    e.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-        )
-    );
-    self.clients.claim();
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
 
-// Servir do cache se offline, rede se online
-self.addEventListener("fetch", e => {
+self.addEventListener('fetch', e => {
+  // produtos.json: sempre rede, fallback cache
+  if (e.request.url.includes('produtos.json')) {
     e.respondWith(
-        caches.match(e.request).then(cached => {
-            return fetch(e.request)
-                .then(response => {
-                    // Actualizar cache com versão mais recente
-                    if(response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-                    }
-                    return response;
-                })
-                .catch(() => cached); // offline: usar cache
-        })
+      fetch(e.request).then(r => {
+        const clone = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return r;
+      }).catch(() => caches.match(e.request))
     );
+    return;
+  }
+  // resto: cache first
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(r => {
+      if (r && r.status === 200 && r.type !== 'opaque') {
+        const clone = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return r;
+    }))
+  );
 });

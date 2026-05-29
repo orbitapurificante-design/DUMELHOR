@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#E60000">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DUMELHOR">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/logo.png">
     <title>DUMELHOR — Encomendas</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -146,7 +150,9 @@
             border-color: var(--red); border-width: 2.5px;
             box-shadow: 0 0 10px rgba(230,0,0,0.45);
         }
-        .marca-btn img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+        /* imagem preenche botão todo sem bordas brancas */
+        .marca-btn { padding: 0 !important; }
+        .marca-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
         /* fallback quando não há imagem: inicial da marca */
         .marca-inicial {
             font-size: 20px; font-weight: 900; color: var(--red); line-height: 1;
@@ -570,7 +576,10 @@ function renderLoja() {
     container.innerHTML = '';
 
     let produtos = DADOS;
-    if (MARCA_ATIVA) produtos = produtos.filter(p => (p.marca||'').trim() === MARCA_ATIVA);
+    if (MARCA_ATIVA) {
+        const ma = MARCA_ATIVA.trim().toUpperCase();
+        produtos = produtos.filter(p => (p.marca||'').trim().toUpperCase() === ma);
+    }
     if (BUSCA) {
         const q = BUSCA.toLowerCase();
         produtos = produtos.filter(p =>
@@ -599,11 +608,15 @@ function renderLoja() {
         const cards = prods.map(p => {
             const qty = CART[p.id] ? CART[p.id].qty : 0;
             const src = imgSrc(p);
-            return `<div class="card-pro" onclick="abrirModal('${String(p.id).replace(/'/g,"\\'")}')">
+            return `<div class="card-pro"
+                onpointerdown="iniciarPress('${String(p.id).replace(/'/g,"\\'")}', event)"
+                onpointerup="terminarPress(event)"
+                onpointercancel="cancelarPress()"
+                oncontextmenu="return false">
                 <div class="b-qty${qty>0?' show':''}" id="bq-${p.id}">${qty}</div>
                 ${src
                     ? `<img class="card-pro-img" src="${src}" loading="lazy"
-                            onerror="this.outerHTML='<div class=\\'card-pro-img ph\\'>📦</div>'">`
+                            onerror="this.outerHTML='<div class=\\'card-pro-img ph\\'>📦</div>'" draggable="false">`
                     : `<div class="card-pro-img ph">📦</div>`}
                 <div class="card-pro-nome">${p.nome}</div>
                 <div class="card-pro-preco">${fmt(p.preco)}</div>
@@ -794,8 +807,46 @@ function novaEncomenda() {
 }
 
 // ══════════════════════════════
-// UTILS
+// CLIQUE CURTO = +1 / LONGO = MODAL
 // ══════════════════════════════
+let _pressTimer = null, _pressId = null, _pressMovido = false;
+
+function iniciarPress(id, e) {
+    _pressId = id; _pressMovido = false;
+    _pressTimer = setTimeout(() => {
+        _pressTimer = null;
+        abrirModal(id); // longo = modal
+    }, 500);
+}
+
+function terminarPress(e) {
+    if (_pressMovido) { cancelarPress(); return; }
+    if (_pressTimer) {
+        // curto = +1
+        clearTimeout(_pressTimer); _pressTimer = null;
+        adicionarUm(_pressId);
+    }
+    // se timer já disparou (longo) não faz nada aqui
+}
+
+function cancelarPress() {
+    if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
+}
+
+function adicionarUm(id) {
+    const p = DADOS.find(x => String(x.id) === String(id));
+    if (!p) return;
+    if (CART[id]) {
+        CART[id].qty += 1;
+    } else {
+        CART[id] = { nome: p.nome, preco: p.preco, un: p.un, img: imgSrc(p), qty: 1 };
+    }
+    atualizarUI();
+    showToast('1x ' + p.nome + ' adicionado');
+}
+
+// Detectar scroll/move para cancelar press
+document.addEventListener('pointermove', () => { _pressMovido = true; });
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -803,6 +854,11 @@ function showToast(msg) {
 }
 document.getElementById('modal-qty').addEventListener('click', e => { if(e.target===e.currentTarget) fecharModal(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal(); fecharMarcas(); fecharCarrinho(); } });
+
+// ── PWA SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 
 // ── INIT ──
 carregarProdutos();

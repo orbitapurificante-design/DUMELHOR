@@ -1,23 +1,24 @@
 {
-  "name": "DUMELHOR PRO",
+  "name": "DUMELHOR Encomendas",
   "short_name": "DUMELHOR",
-  "start_url": "./DUMELHOR.html",
-  "scope": "./",
+  "description": "Loja de encomendas DUMELHOR",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#E60000",
   "theme_color": "#E60000",
-  "description": "Gestão de pedidos DUMELHOR",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23E60000'/><text y='140' x='20' font-size='120' fill='white'>D</text></svg>",
+      "src": "images/logo.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23E60000'/><text y='380' x='50' font-size='320' fill='white'>D</text></svg>",
+      "src": "images/logo.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
