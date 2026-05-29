@@ -8,8 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DUMELHOR">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="192x192" href="images/icon-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="images/icon-512.png">
+    <link rel="apple-touch-icon" href="icon.png">
     <title>DUMELHOR — Encomendas</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -320,11 +319,11 @@
         .toast.show { opacity:1; }
 
         /* Barra inferior */
-        .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:2500; background:white; border-top:1px solid var(--border); padding:8px 14px 10px; box-shadow:0 -2px 12px rgba(0,0,0,0.06); display:flex; align-items:center; gap:12px; }
-        .bt-total { flex:1; }
-        .bt-lbl { font-size:9px; font-weight:700; color:#B0B0B0; letter-spacing:1px; text-transform:uppercase; }
-        .bt-val { font-size:20px; font-weight:900; color:var(--red); line-height:1; }
-        .btn-ver-cart { background:var(--red); color:white; border:none; border-radius:12px; padding:12px 20px; font-size:13px; font-weight:800; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+        .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:2500; background:white; border-top:1px solid var(--border); padding:8px 12px 10px; box-shadow:0 -2px 12px rgba(0,0,0,0.06); display:flex; align-items:center; gap:8px; overflow:hidden; }
+        .bt-total { flex:1; min-width:0; overflow:hidden; }
+        .bt-lbl { font-size:9px; font-weight:700; color:#B0B0B0; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
+        .bt-val { font-size:18px; font-weight:900; color:var(--red); line-height:1; white-space:nowrap; }
+        .btn-ver-cart { background:var(--red); color:white; border:none; border-radius:12px; padding:11px 14px; font-size:12px; font-weight:800; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:5px; white-space:nowrap; flex-shrink:0; max-width:160px; }
         .btn-ver-cart:active { background:var(--red-d); }
         .btn-ver-cart.hidden { display:none; }
     </style>
