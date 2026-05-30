@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#E60000">
+    <!-- barra de navegação inferior Android também vermelha -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#E60000">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#E60000">
+    <meta name="background-color" content="#E60000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DUMELHOR">
@@ -19,8 +23,16 @@
             --border: #E0E0E0; --green: #00A651;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        html { scroll-padding-top: 52px; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--light); color: var(--grey); overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+        /* html e body vermelhos — a cor aparece na barra de topo e na barra inferior Android */
+        html { scroll-padding-top: 52px; background: #E60000; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--light); color: var(--grey);
+            overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%;
+            /* garante que a barra inferior Android vê o fundo vermelho */
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
 
         /* ══════════════════════════════
            HEADER
