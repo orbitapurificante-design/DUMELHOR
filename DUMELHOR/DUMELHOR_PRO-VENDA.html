@@ -5905,6 +5905,44 @@ async function exportarBackup() {
 // Por omissão exporta só as encomendas ainda não marcadas como enviadas.
 // Marca-as como enviadas depois de exportar, para não duplicar da próxima vez
 // (o utilizador pode sempre voltar a escolher "TODAS" quando perguntado).
+// ── Vai buscar ao IndexedDB de fotos só as imagens dos produtos indicados (por nome de ficheiro) ──
+// Mantém o pacote leve: em vez do catálogo completo, só as fotos realmente necessárias.
+async function coletarFotosParaItens(itens) {
+    const chaves = new Set();
+    itens.forEach(it => { if(it.f) chaves.add(String(it.f).toLowerCase()); });
+    if(!chaves.size || !db) return {};
+
+    const todasFotos = await new Promise((resolve) => {
+        try {
+            const store = db.transaction("fotos", "readonly").objectStore("fotos");
+            const reqKeys = store.getAllKeys();
+            const reqValues = store.getAll();
+            let keys = null, values = null;
+            const tentar = () => { if(keys === null || values === null) return; resolve(keys.map((k,i) => ({ key: k, blob: values[i] }))); };
+            reqKeys.onsuccess = () => { keys = reqKeys.result; tentar(); };
+            reqValues.onsuccess = () => { values = reqValues.result; tentar(); };
+            reqKeys.onerror = () => resolve([]);
+            reqValues.onerror = () => resolve([]);
+        } catch(e) { resolve([]); }
+    });
+
+    const fotos = {};
+    for(const nome of chaves) {
+        const candidatos = [nome, nome + '.jpg', nome + '.png', nome + '.jpeg'];
+        const encontrado = todasFotos.find(x => candidatos.includes(String(x.key).toLowerCase()));
+        if(encontrado) {
+            const dataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = ev => resolve(ev.target.result);
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(encontrado.blob);
+            });
+            if(dataUrl) fotos[nome] = dataUrl;
+        }
+    }
+    return fotos;
+}
+
 async function exportarEncomendasLeve() {
     try {
         if(!PEDIDOS_DB.length) { alert('Não há encomendas para enviar.'); return; }
@@ -5926,17 +5964,22 @@ async function exportarEncomendasLeve() {
             obs: p.obs || '',
             cliente: p.cliente,
             itens: Object.values(p.itens || {}).map(it => ({
-                id: it.id, codigo: it.codigo || '', nome: it.nome, cat: it.cat || '',
-                preco: it.preco || 0, q: it.q
+                id: it.id, ean: it.ean || '', nome: it.nomeCustom || it.nome, cat: it.cat || '',
+                preco: it.precoCustom ?? it.preco ?? 0, q: it.q, f: it.f || it.foto || ''
             }))
         }));
+
+        // ── Juntar as fotos só dos produtos que entram nestas encomendas (mantém o ficheiro leve) ──
+        const todosItens = encomendas.flatMap(e => e.itens);
+        const fotos = await coletarFotosParaItens(todosItens);
 
         const pacote = {
             tipo: 'dumelhor_encomendas',
             versao: 1,
             vendedor: vendedor || '',
             dataEnvio: new Date().toISOString(),
-            encomendas
+            encomendas,
+            fotos
         };
 
         const json = JSON.stringify(pacote);
@@ -5954,7 +5997,7 @@ async function exportarEncomendasLeve() {
         lista.forEach(p => p._enviadoResidual = true);
         dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
 
-        alert('✅ ' + encomendas.length + ' encomenda(s) exportada(s)!\n\nFicheiro: ' + nomeFicheiro + '\n\nEnvia este ficheiro para o tablet de separação (WhatsApp, e-mail, pasta partilhada, pen ou Bluetooth) e importa-o lá no botão "Importar Encomendas".');
+        alert('✅ ' + encomendas.length + ' encomenda(s) exportada(s)!\n📸 ' + Object.keys(fotos).length + ' foto(s) incluída(s)\n\nFicheiro: ' + nomeFicheiro + '\n\nEnvia este ficheiro para o tablet de separação (WhatsApp, e-mail, pasta partilhada, pen ou Bluetooth) e importa-o lá no botão "Importar Encomendas".');
     } catch(e) {
         console.error('Erro ao exportar encomendas:', e);
         alert('❌ Erro ao exportar encomendas: ' + e.message);
