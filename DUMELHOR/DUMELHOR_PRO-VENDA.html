@@ -758,6 +758,11 @@
             <div class="icon-emoji">📥</div>
             <div class="icon-text" style="background:#E60000; color:white;">IMPORTAR</div>
         </button>
+        <button class="menu-btn-icon" onclick="exportarEncomendasLeve(); toggleMenu()">
+            <img class="btn-img" data-nome="enviarencomendas.jpg" src="" onerror="this.style.display='none'">
+            <div class="icon-emoji">📤</div>
+            <div class="icon-text" style="background:#1a6b8a; color:white; font-size:7px;">ENVIAR<br>ENCOMENDAS</div>
+        </button>
     </div>
     
     <!-- INPUTS DE ARQUIVO movidos para o final do body -->
@@ -5893,6 +5898,66 @@ async function exportarBackup() {
     } catch(e) {
         console.error('❌ Erro ao exportar backup:', e);
         alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.');
+    }
+}
+
+// ── Exporta só as encomendas (leve, sem fotos) para levar ao tablet residual ──
+// Por omissão exporta só as encomendas ainda não marcadas como enviadas.
+// Marca-as como enviadas depois de exportar, para não duplicar da próxima vez
+// (o utilizador pode sempre voltar a escolher "TODAS" quando perguntado).
+async function exportarEncomendasLeve() {
+    try {
+        if(!PEDIDOS_DB.length) { alert('Não há encomendas para enviar.'); return; }
+
+        const porEnviar = PEDIDOS_DB.filter(p => !p._enviadoResidual);
+        const usarTodas = porEnviar.length === 0
+            ? confirm('Todas as encomendas já foram enviadas antes.\n\nQueres reenviar TODAS as ' + PEDIDOS_DB.length + ' encomendas na mesma?')
+            : !confirm('Enviar só as ' + porEnviar.length + ' encomenda(s) NOVA(S)?\n\n(Cancelar = enviar TODAS as ' + PEDIDOS_DB.length + ')');
+
+        const lista = usarTodas ? PEDIDOS_DB : porEnviar;
+        if(!lista.length) { alert('Não há encomendas novas para enviar.'); return; }
+
+        const [vendedor] = await dbGetAll(['DM_VENDEDOR']);
+
+        const encomendas = lista.map(p => ({
+            id: p.id,
+            data: p.data,
+            dataISO: p.dataISO,
+            obs: p.obs || '',
+            cliente: p.cliente,
+            itens: Object.values(p.itens || {}).map(it => ({
+                id: it.id, codigo: it.codigo || '', nome: it.nome, cat: it.cat || '',
+                preco: it.preco || 0, q: it.q
+            }))
+        }));
+
+        const pacote = {
+            tipo: 'dumelhor_encomendas',
+            versao: 1,
+            vendedor: vendedor || '',
+            dataEnvio: new Date().toISOString(),
+            encomendas
+        };
+
+        const json = JSON.stringify(pacote);
+        const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
+        const horaStr = new Date().toTimeString().slice(0,5).replace(':','');
+        const nomeFicheiro = 'dumelhor-encomendas-' + (vendedor ? vendedor.replace(/[^a-z0-9]+/gi,'-') + '-' : '') + dataStr + '-' + horaStr + '.json';
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = nomeFicheiro;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+        // Marcar como enviadas para não duplicar da próxima vez
+        lista.forEach(p => p._enviadoResidual = true);
+        dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
+
+        alert('✅ ' + encomendas.length + ' encomenda(s) exportada(s)!\n\nFicheiro: ' + nomeFicheiro + '\n\nEnvia este ficheiro para o tablet de separação (WhatsApp, e-mail, pasta partilhada, pen ou Bluetooth) e importa-o lá no botão "Importar Encomendas".');
+    } catch(e) {
+        console.error('Erro ao exportar encomendas:', e);
+        alert('❌ Erro ao exportar encomendas: ' + e.message);
     }
 }
 
