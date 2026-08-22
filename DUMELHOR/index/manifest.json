@@ -1,4 +1,5 @@
 {
+  "id": "./index.html",
   "name": "DUMELHOR — Separação de Encomendas",
   "short_name": "DUMELHOR",
   "start_url": "./index.html",
@@ -8,7 +9,9 @@
   "background_color": "#1A1A1A",
   "theme_color": "#1A1A1A",
   "icons": [
-    { "src": "./logo.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./logo.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
