@@ -44,36 +44,62 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .m1-footer{margin-top:26px;font-size:10px;color:#777;letter-spacing:1px;}
 
 /* ---------- BARRA SUPERIOR ---------- */
-.topbar{position:sticky;top:0;z-index:20;background:var(--deep);color:#fff;display:flex;align-items:center;
-  gap:10px;padding:12px 12px;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
-.topbar .voltar{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#1f1f1f,#0e0e0e);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:14px 14px;box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.topbar .voltar{background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;
+  padding:8px 12px;border-radius:10px;line-height:1;transition:background .15s;}
+.topbar .voltar:active{background:rgba(255,255,255,0.25);}
 .topbar h2{margin:0;font-size:15px;font-weight:800;flex:1;letter-spacing:0.3px;}
-.topbar button.act{background:rgba(255,255,255,0.12);border:none;color:#fff;padding:8px 12px;border-radius:8px;
-  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.topbar .count-chip{background:rgba(255,255,255,0.14);color:#fff;font-size:10px;font-weight:800;
+  padding:3px 8px;border-radius:20px;margin-left:6px;}
+.topbar button.act{background:rgba(255,255,255,0.12);border:none;color:#fff;padding:9px 13px;border-radius:10px;
+  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s, transform .1s;}
+.topbar button.act:active{transform:scale(0.95);}
+.topbar-sub{background:#fff;padding:8px 14px;font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--border);}
 
 /* ---------- LISTA DE ENCOMENDAS ---------- */
-#lista-encomendas{padding:12px;}
-.enc-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,0.08);
-  border-left:6px solid var(--border); display:flex; align-items:center; gap:10px; cursor:pointer;}
-.enc-card .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
-.enc-info{flex:1;}
-.enc-info b{font-size:14px;color:var(--deep);}
-.enc-info .meta{font-size:11px;color:var(--muted);margin-top:3px;}
-.enc-card .apagar{background:none;border:none;color:#c00;font-size:18px;cursor:pointer;padding:6px;}
-.vazio-msg{text-align:center;color:var(--muted);font-size:13px;padding:60px 20px;}
-.btn-importar-grande{display:block;margin:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;
-  padding:16px;font-size:14px;font-weight:800;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(230,0,0,0.3);}
+#lista-encomendas{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.enc-card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);
+  border:1px solid #EFEFEF; display:flex; align-items:center; gap:12px; cursor:pointer;
+  transition:transform .1s, box-shadow .15s;}
+.enc-card:active{transform:scale(0.985); box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.enc-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:15px;color:#fff;letter-spacing:0.5px;}
+.enc-info{flex:1;min-width:0;}
+.enc-info b{font-size:14.5px;color:var(--deep);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.enc-info .meta{font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.enc-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 9px;
+  border-radius:20px;letter-spacing:0.3px;white-space:nowrap;}
+.enc-side{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.enc-card .chevron{color:#C6C6C6;font-size:18px;}
+.enc-card .apagar{background:none;border:none;color:#ccc;font-size:17px;cursor:pointer;padding:6px;border-radius:8px;}
+.enc-card .apagar:active{background:#fdeaea;color:#c00;}
+.vazio-msg{text-align:center;color:var(--muted);font-size:13px;padding:70px 24px;line-height:1.6;}
+.vazio-msg .vic{font-size:44px;display:block;margin-bottom:12px;}
+.btn-importar-grande{display:block;margin:16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
+  color:#fff;border:none;border-radius:14px;padding:17px;font-size:14px;font-weight:800;text-align:center;
+  cursor:pointer;box-shadow:0 4px 14px rgba(230,0,0,0.32);letter-spacing:0.3px;}
 
-/* ---------- SEPARAÇÃO ---------- */
+/* ---------- SEPARAÇÃO (estilo catálogo) ---------- */
+.sep-header{background:linear-gradient(135deg,#1f1f1f,#0e0e0e);color:#fff;padding:14px 14px 12px;
+  position:sticky;top:0;z-index:20;box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.sep-header-top{display:flex;align-items:center;gap:10px;}
+.sep-cliente-bloco{flex:1;text-align:center;min-width:0;padding:0 6px;}
+.sep-cliente-label{font-size:8px;color:#9a9a9a;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;}
+.sep-cliente-nome{font-size:14px;font-weight:900;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sep-actions{display:flex;gap:8px;margin-top:10px;justify-content:center;}
 #filtro-btn{display:flex;align-items:center;gap:6px;}
-#filtro-btn .fdot{width:10px;height:10px;border-radius:50%;background:#999;}
-.grid-produtos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;}
+#filtro-btn .fdot{width:9px;height:9px;border-radius:50%;background:#999;}
+.grid-produtos{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;padding:14px;}
 @media(max-width:700px){.grid-produtos{grid-template-columns:repeat(2,1fr);}}
-.prod-card{background:#fff;border-radius:14px;padding:0 0 10px;text-align:center;border:3px solid var(--border);
-  position:relative;cursor:pointer;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.06);overflow:hidden;}
-.prod-card[data-status="verde"]{border-color:var(--verde);}
-.prod-card[data-status="vermelho"]{border-color:var(--vermelho);}
-.prod-card[data-status="laranja"]{border-color:var(--laranja);}
+.prod-card{background:#fff;border-radius:16px;padding:0 0 10px;text-align:center;border:3px solid transparent;
+  position:relative;cursor:pointer;user-select:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden;
+  transition:border-color .15s, transform .1s;}
+.prod-card:active{transform:scale(0.97);}
+.prod-card[data-status="verde"]{border-color:var(--verde); box-shadow:0 2px 10px rgba(22,163,74,0.25);}
+.prod-card[data-status="vermelho"]{border-color:var(--vermelho); box-shadow:0 2px 10px rgba(230,0,0,0.25);}
+.prod-card[data-status="laranja"]{border-color:var(--laranja); box-shadow:0 2px 10px rgba(255,140,0,0.25);}
 .prod-img-wrap{position:relative;width:100%;aspect-ratio:1/1;background:#f4f4f4;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .prod-img-wrap img{width:100%;height:100%;object-fit:contain;display:block;}
 .prod-img-placeholder{font-size:34px;color:#c9c9c9;}
@@ -82,16 +108,17 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .prod-card .qtd{font-size:20px;font-weight:900;color:var(--deep);}
 .prod-card .qtd small{font-size:10px;font-weight:600;color:var(--muted);}
 .qtd-pedida-badge{position:absolute;top:6px;left:6px;background:rgba(26,26,26,0.85);color:#fff;font-size:12px;
-  font-weight:800;padding:2px 8px;border-radius:10px;}
-.badge-estado{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;display:none;
-  align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;z-index:2;}
+  font-weight:800;padding:2px 9px;border-radius:10px;}
+.badge-estado{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;display:none;
+  align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;z-index:2;
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);}
 .badge-estado.verde{display:flex;background:var(--verde);}
 .badge-estado.vermelho{display:flex;background:var(--vermelho);}
 .badge-estado.laranja{display:flex;background:var(--laranja);}
-.qtd-sep-input{width:44px;margin-top:6px;padding:4px;border-radius:6px;border:1px solid var(--laranja);
+.qtd-sep-input{width:46px;margin-top:6px;padding:4px;border-radius:6px;border:1px solid var(--laranja);
   text-align:center;font-weight:800;font-size:12px;}
-.fam-header{grid-column:1/-1;background:var(--deep);color:#fff;font-size:12px;font-weight:800;padding:8px 12px;
-  border-radius:8px;margin-top:6px;}
+.fam-header{grid-column:1/-1;background:var(--deep);color:#fff;font-size:12px;font-weight:800;padding:9px 14px;
+  border-radius:10px;margin-top:6px;letter-spacing:0.5px;}
 
 /* ---------- IMPRESSÃO ---------- */
 #print-area{display:none;}
@@ -125,21 +152,29 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 <div id="tela-lista" class="screen">
   <div class="topbar">
     <button class="voltar" onclick="irM1()">←</button>
-    <h2>Encomendas</h2>
+    <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
     <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
   </div>
+  <div class="topbar-sub">🕓 Mais recentes primeiro</div>
   <input type="file" id="f-import" accept=".json" multiple style="display:none">
-  <button class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
+  <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
   <div id="lista-encomendas"></div>
 </div>
 
-<!-- ================= SEPARAÇÃO DE ENCOMENDA ================= -->
+<!-- ================= SEPARAÇÃO DE ENCOMENDA (estilo catálogo) ================= -->
 <div id="tela-sep" class="screen">
-  <div class="topbar">
-    <button class="voltar" onclick="abrirLista()">←</button>
-    <h2 id="sep-titulo">Cliente</h2>
-    <button class="act" id="filtro-btn" onclick="ciclarFiltro()"><span class="fdot"></span><span id="filtro-label">FILTRO</span></button>
-    <button class="act" onclick="imprimirResumo()">🖨️</button>
+  <div class="sep-header">
+    <div class="sep-header-top">
+      <button class="voltar" onclick="abrirLista()">←</button>
+      <div class="sep-cliente-bloco">
+        <div class="sep-cliente-label">Preparado para</div>
+        <div class="sep-cliente-nome" id="sep-titulo">Cliente</div>
+      </div>
+      <button class="act" onclick="imprimirResumo()">🖨️</button>
+    </div>
+    <div class="sep-actions">
+      <button class="act" id="filtro-btn" onclick="ciclarFiltro()"><span class="fdot"></span><span id="filtro-label">TODOS</span></button>
+    </div>
   </div>
   <div id="grid-produtos" class="grid-produtos"></div>
 </div>
@@ -268,8 +303,11 @@ async function importarPacote(dados){
   const atuais = getPedidos();
   novasEncomendas.forEach(nova => {
     const idx = atuais.findIndex(p => p.id === nova.id);
-    if(idx >= 0) atuais[idx] = nova; else atuais.unshift(nova);
+    if(idx >= 0) atuais[idx] = nova; else atuais.push(nova);
   });
+  // Ordena sempre por data de criação (id = timestamp), da mais recente para a mais antiga.
+  // (Evita o problema de ordem trocada quando se importam vários pedidos de uma vez.)
+  atuais.sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
   savePedidos(atuais);
 
   await guardarFotos(fotosObj);
@@ -289,26 +327,56 @@ function estadoGeralEncomenda(pedido){
   return null;
 }
 
+function iniciaisCliente(nome){
+  if(!nome) return '?';
+  const partes = nome.trim().split(/\s+/);
+  return ((partes[0]?.[0]||'') + (partes[partes.length-1]?.[0]||'')).toUpperCase();
+}
+
+// Chave de ordenação: id (timestamp de criação) com fallback em dataISO — sempre mais recente primeiro.
+function chaveOrdenacao(p){
+  const porId = Number(p.id);
+  if(!isNaN(porId) && porId > 0) return porId;
+  return p.dataISO ? new Date(p.dataISO).getTime() : 0;
+}
+
 function renderLista(){
-  const pedidos = getPedidos();
+  const pedidos = getPedidos().slice().sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
+  document.getElementById('btn-importar-grande').style.display = pedidos.length ? 'none' : 'block';
+  document.getElementById('count-chip').textContent = pedidos.length;
   const cont = document.getElementById('lista-encomendas');
   if(!pedidos.length){
-    cont.innerHTML = '<div class="vazio-msg">Ainda não há encomendas importadas.<br>Usa "Importar" para carregar os ficheiros enviados pelos vendedores.</div>';
+    cont.innerHTML = '<div class="vazio-msg"><span class="vic">📭</span>Ainda não há encomendas importadas.<br>Usa "Importar" para carregar os ficheiros enviados pelos vendedores.</div>';
     return;
   }
   const cores = {verde:'#16a34a', vermelho:'#E60000', laranja:'#FF8C00'};
-  cont.innerHTML = pedidos.map(p=>{
+  const labelsEstado = {verde:'✓ Completo', vermelho:'✕ Em falta', laranja:'! Incompleto'};
+  const avatarCores = ['#0B63C5','#1FA24A','#B30000','#8E44AD','#D68910','#117864'];
+  cont.innerHTML = pedidos.map((p,i)=>{
     const estado = estadoGeralEncomenda(p);
-    const cor = estado ? cores[estado] : '#B0B0B0';
+    const cor = estado ? cores[estado] : '#8a8a8a';
     const nItens = (p.itens||[]).length;
     const dataTxt = p.data || (p.dataISO ? new Date(p.dataISO).toLocaleDateString('pt-PT') : '');
-    return `<div class="enc-card" style="border-left-color:${cor}" onclick="abrirSeparacao(${JSON.stringify(p.id)})">
-      <div class="dot" style="background:${cor}"></div>
+    const nome = (p.cliente && p.cliente.nome) || 'Cliente';
+    const avatarCor = avatarCores[iniciaisCliente(nome).charCodeAt(0) % avatarCores.length];
+    const statusChip = estado
+      ? `<span class="enc-status" style="background:${cor}1A;color:${cor}">${labelsEstado[estado]}</span>`
+      : `<span class="enc-status" style="background:#F0F0F0;color:#888">Por separar</span>`;
+    return `<div class="enc-card" onclick="abrirSeparacao(${JSON.stringify(p.id)})">
+      <div class="enc-avatar" style="background:${avatarCor}">${iniciaisCliente(nome)}</div>
       <div class="enc-info">
-        <b>${(p.cliente && p.cliente.nome) || 'Cliente'}</b>
-        <div class="meta">📅 ${dataTxt} · ${nItens} produto(s) ${p.vendedor ? '· 👤 '+p.vendedor : ''}</div>
+        <b>${nome}</b>
+        <div class="meta">
+          ${statusChip}
+          <span>📅 ${dataTxt}</span>
+          <span>· 📦 ${nItens}</span>
+          ${p.vendedor ? '<span>· 👤 '+p.vendedor+'</span>' : ''}
+        </div>
       </div>
-      <button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button>
+      <div class="enc-side">
+        <button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button>
+        <span class="chevron">›</span>
+      </div>
     </div>`;
   }).join('');
 }
@@ -413,7 +481,7 @@ function ciclarFiltro(){
 }
 function atualizarFiltroVisual(){
   const cores = {todos:'#999', verde:'#16a34a', vermelho:'#E60000', laranja:'#FF8C00'};
-  const labels = {todos:'FILTRO', verde:'✓ SEPARADOS', vermelho:'✕ EM FALTA', laranja:'! INCOMPLETOS'};
+  const labels = {todos:'TODOS', verde:'✓ SEPARADOS', vermelho:'✕ EM FALTA', laranja:'! INCOMPLETOS'};
   document.querySelector('#filtro-btn .fdot').style.background = cores[FILTRO];
   document.getElementById('filtro-label').textContent = labels[FILTRO];
   const btn = document.getElementById('filtro-btn');
