@@ -20,15 +20,16 @@
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--grey);
-  -webkit-tap-highlight-color:transparent; touch-action:manipulation; overflow-x:hidden;}
+  -webkit-tap-highlight-color:transparent; touch-action:manipulation; overflow-x:hidden;
+  height:100%; overflow:hidden;}
 
 /* ── Navegação estrita: só o .screen com .active é mostrado; todos os outros ficam
    completamente fora do fluxo (display:none), sem ocupar espaço nem provocar scroll. ── */
-.screen{display:none !important; min-height:100vh;}
+.screen{display:none !important; position:fixed; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
 .screen.active{display:block !important;}
 
 /* ---------- M1 : MENU PRINCIPAL ---------- */
-#m1{background:linear-gradient(160deg,#1A1A1A 0%,#1A1A1A 60%,#1A1A1A 100%); min-height:100vh;
+#m1{background:linear-gradient(160deg,#1A1A1A 0%,#1A1A1A 60%,#1A1A1A 100%); min-height:100%;
   display:flex !important; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 20px 30px;}
 #m1 img#logo{width:225px;height:225px;object-fit:contain;margin:0 auto;display:block;}
 #m1 img#logo.hidden{display:none;}
