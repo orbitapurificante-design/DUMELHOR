@@ -38,6 +38,12 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .m1-sub .azul{color:#025EC6;}
 .m1-sub .verde{color:#05BB74;}
 .m1-quadrados{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap;justify-content:center;}
+.m1-mini-stack{position:absolute;left:10px;top:22px;display:flex;flex-direction:column;gap:9px;z-index:6;}
+.m1-mini-btn{width:38px;aspect-ratio:6/10;border-radius:8px;border:none;padding:0;overflow:hidden;
+  cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.35);background:#333;transition:transform .12s;}
+.m1-mini-btn:active{transform:scale(0.92);}
+.m1-mini-btn img{width:100%;height:100%;object-fit:cover;display:block;}
+
 .m1-quadrado{width:189px;aspect-ratio:6/10;border-radius:18px;border:none;cursor:pointer;
   position:relative;overflow:hidden;padding:0;
   display:flex;align-items:flex-end;justify-content:center;
@@ -253,6 +259,17 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 
 <!-- ================= M1 — MENU PRINCIPAL ================= -->
 <div id="m1" class="screen active">
+  <div class="m1-mini-stack">
+    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/gaspar-fragancias/index.html','_blank')">
+      <img src="./gaspar.jpg" alt="Gaspar" onerror="this.style.display='none'">
+    </button>
+    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/gaspar-fragancias/orbita/INDEX_ORBITA.html','_blank')">
+      <img src="./gaspar_internacional.jpg" alt="Gaspar Internacional" onerror="this.style.display='none'">
+    </button>
+    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/MARINHA-APP/index.html','_blank')">
+      <img src="./promocoes.jpg" alt="Promoções" onerror="this.style.display='none'">
+    </button>
+  </div>
   <img id="logo" src="./logo.png" onerror="this.classList.add('hidden')">
   <div class="m1-sub"><span class="azul">Sistema de Vendas</span> <span class="verde">e Pagamentos</span></div>
   <div class="m1-quadrados">
@@ -272,7 +289,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 <!-- ================= M2 — LISTA DE ENCOMENDAS ================= -->
 <div id="m2" class="screen">
   <div class="topbar">
-    <button class="voltar" onclick="irM1()">←</button>
+    <button class="voltar" onclick="history.back()">←</button>
     <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
     <button class="act" id="btn-sync" onclick="sincronizarGithub(true)">🔄 Sincronizar</button>
     <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
@@ -383,7 +400,7 @@ let PEDIDO_ATUAL = null;
    ========================================================= */
 const GH_OWNER = 'orbitapurificante-design';
 const GH_REPO = 'DUMELHOR';
-const GH_BRANCH = 'main';
+const GH_BRANCH = 'dados-encomendas'; // ramo dedicado às encomendas, sem regras de proteção do main
 const GH_PASTA_ENCOMENDAS = 'DUMELHOR/encomendas';
 let A_SINCRONIZAR = false;
 
@@ -441,9 +458,21 @@ function mostrarTela(id){
   document.getElementById('bbar-m3').classList.toggle('show', id === 'm3');
   window.scrollTo(0,0);
 }
-function irM1(){ atualizarBotaoEncomendas(); mostrarTela('m1'); }
-function irM2(){ renderLista(); mostrarTela('m2'); sincronizarGithub(false); }
-function voltarDeM3(){ irM2(); }
+function irM1(){ history.pushState({tela:'m1'}, '', location.href); mostrarM1(); }
+function irM2(){ history.pushState({tela:'m2'}, '', location.href); mostrarM2(); }
+function voltarDeM3(){ history.back(); }
+
+function mostrarM1(){ atualizarBotaoEncomendas(); mostrarTela('m1'); }
+function mostrarM2(){ renderLista(); mostrarTela('m2'); sincronizarGithub(false); }
+
+// Chamado pelo botão "Retroceder" do tablet/telemóvel (ou o gesto de deslizar) —
+// em vez de sair logo da app, navega para o ecrã anterior (M3→M2→M1).
+window.addEventListener('popstate', function(e){
+  const state = e.state || {tela:'m1'};
+  if(state.tela === 'm3' && state.id != null) mostrarM3(state.id);
+  else if(state.tela === 'm2') mostrarM2();
+  else mostrarM1();
+});
 function abrirPagamentos(){ window.open('https://orbitapurificante-design.github.io/SCANNER/index', '_blank'); }
 
 /* =========================================================
@@ -601,6 +630,11 @@ let FILTRO_SEPARACAO_TICKET = 'todos';
 let CAT_COLUNAS = parseInt(localStorage.getItem('DM_RESIDUAL_CAT_COLUNAS')) || 5;
 
 async function abrirM3(id){
+  history.pushState({tela:'m3', id}, '', location.href);
+  await mostrarM3(id);
+}
+
+async function mostrarM3(id){
   const p = getPedidos().find(x=>x.id===id);
   if(!p) return;
   PEDIDO_ATUAL = p;
@@ -920,6 +954,10 @@ if('serviceWorker' in navigator){
 }
 
 /* Init */
+/* Estado inicial do histórico — necessário para o botão "Retroceder" do tablet
+   funcionar corretamente desde o primeiro ecrã. */
+history.replaceState({tela:'m1'}, '', location.href);
+
 abrirFotosDb().then(()=> { renderLista(); atualizarBotaoEncomendas(); sincronizarGithub(false); });
 </script>
 </body>
