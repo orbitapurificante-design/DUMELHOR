@@ -5915,8 +5915,10 @@ async function exportarBackup() {
 // ── Ligação ao GitHub (para as encomendas chegarem sozinhas ao tablet de separação) ──
 const GH_OWNER = 'orbitapurificante-design';
 const GH_REPO = 'DUMELHOR';
-const GH_BRANCH = 'main';
+const GH_BRANCH_PRINCIPAL = 'main';
+const GH_BRANCH_DADOS = 'dados-encomendas'; // ramo próprio, sem regras de proteção, só para os JSON das encomendas
 const GH_PASTA_ENCOMENDAS = 'DUMELHOR/encomendas';
+let _ghBranchDadosPronto = false;
 
 async function configurarGithub() {
     const atual = (await dbGetAll(['DM_GH_TOKEN']))[0] || '';
@@ -5928,6 +5930,7 @@ async function configurarGithub() {
     );
     if(token === null) return; // cancelado
     await dbSave('DM_GH_TOKEN', token.trim());
+    _ghBranchDadosPronto = false;
     alert(token.trim() ? '✅ Chave do GitHub guardada. As próximas encomendas enviadas vão automaticamente para o tablet de separação.' : '🗑️ Chave removida. O envio automático fica desligado.');
 }
 
@@ -5937,42 +5940,81 @@ function slugify(txt) {
         .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'vendedor';
 }
 
-// Cria/atualiza um ficheiro no GitHub (precisa do sha atual se o ficheiro já existir)
+// Garante que o ramo "dados-encomendas" existe (cria-o a partir do main, uma única vez,
+// se ainda não existir). Este ramo não tem as regras de proteção do main, por isso o
+// envio automático não fica bloqueado por elas.
+async function garantirBranchDados(token) {
+    if(_ghBranchDadosPronto) return;
+    const checkResp = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/branches/${GH_BRANCH_DADOS}`, {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+    });
+    if(checkResp.ok) { _ghBranchDadosPronto = true; return; }
+
+    // Não existe ainda — cria-o a apontar para o mesmo commit do main
+    const mainResp = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/git/ref/heads/${GH_BRANCH_PRINCIPAL}`, {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!mainResp.ok) throw new Error('Não consegui ler o ramo principal para criar o ramo de dados.');
+    const mainData = await mainResp.json();
+    const shaMain = mainData.object.sha;
+
+    const criarResp = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/git/refs`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref: 'refs/heads/' + GH_BRANCH_DADOS, sha: shaMain })
+    });
+    if(!criarResp.ok && criarResp.status !== 422) { // 422 = já existe (corrida entre pedidos), ignora
+        const errData = await criarResp.json().catch(() => ({}));
+        throw new Error('Não consegui criar o ramo de dados: ' + (errData.message || criarResp.status));
+    }
+    _ghBranchDadosPronto = true;
+}
+
+// Cria/atualiza um ficheiro no GitHub, no ramo de dados (com nova tentativa automática
+// em caso de erro passageiro, tal como o próprio GitHub sugere).
 async function githubPutFile(path, objetoJson, mensagem) {
     const token = (await dbGetAll(['DM_GH_TOKEN']))[0];
     if(!token) throw new Error('Sem chave do GitHub configurada. Usa o botão "Ligar GitHub" no menu.');
 
-    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
-    let sha;
-    try {
-        const getResp = await fetch(apiUrl + '?ref=' + GH_BRANCH, {
-            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-        });
-        if(getResp.ok) { const d = await getResp.json(); sha = d.sha; }
-    } catch(e) { /* assume que o ficheiro ainda não existe */ }
+    await garantirBranchDados(token);
 
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
     const conteudoStr = JSON.stringify(objetoJson);
     const base64Content = btoa(unescape(encodeURIComponent(conteudoStr)));
 
-    const putResp = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Accept': 'application/vnd.github+json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            message: mensagem || ('Atualizar encomendas — ' + new Date().toLocaleString('pt-PT')),
-            content: base64Content,
-            branch: GH_BRANCH,
-            ...(sha ? { sha } : {})
-        })
-    });
-    if(!putResp.ok) {
-        const errData = await putResp.json().catch(() => ({}));
-        throw new Error('GitHub (' + putResp.status + '): ' + (errData.message || 'falha desconhecida'));
+    let ultimoErro;
+    for(let tentativa = 1; tentativa <= 3; tentativa++) {
+        try {
+            let sha;
+            const getResp = await fetch(apiUrl + '?ref=' + GH_BRANCH_DADOS, {
+                headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+            });
+            if(getResp.ok) { const d = await getResp.json(); sha = d.sha; }
+
+            const putResp = await fetch(apiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: mensagem || ('Atualizar encomendas — ' + new Date().toLocaleString('pt-PT')),
+                    content: base64Content,
+                    branch: GH_BRANCH_DADOS,
+                    ...(sha ? { sha } : {})
+                })
+            });
+            if(putResp.ok) return true;
+
+            const errData = await putResp.json().catch(() => ({}));
+            ultimoErro = new Error('GitHub (' + putResp.status + '): ' + (errData.message || 'falha desconhecida'));
+        } catch(e) {
+            ultimoErro = e;
+        }
+        if(tentativa < 3) await new Promise(r => setTimeout(r, 1200 * tentativa));
     }
-    return true;
+    throw ultimoErro;
 }
 
 async function coletarFotosParaItens(itens) {
@@ -6056,12 +6098,15 @@ async function exportarEncomendasLeve() {
         const nomeFicheiro = 'dumelhor-encomendas-' + (vendedor ? vendedor.replace(/[^a-z0-9]+/gi,'-') + '-' : '') + dataStr + '-' + horaStr + '.json';
 
         // ── Tenta enviar automaticamente para o GitHub (chega sozinho ao tablet de separação) ──
+        // Vai sem fotos: o tablet residual já tem as fotos do catálogo guardadas (importadas
+        // uma vez via backup completo), e a API do GitHub rejeita ficheiros grandes (>1MB).
         let enviadoGithub = false, erroGithub = '';
         try {
             const slug = slugify(vendedor);
+            const pacoteGithub = { ...pacote, fotos: {} };
             await githubPutFile(
                 GH_PASTA_ENCOMENDAS + '/' + slug + '.json',
-                pacote,
+                pacoteGithub,
                 'Encomendas de ' + (vendedor || 'vendedor') + ' — ' + new Date().toLocaleString('pt-PT')
             );
             enviadoGithub = true;
@@ -6083,7 +6128,7 @@ async function exportarEncomendasLeve() {
         dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
 
         if(enviadoGithub) {
-            alert('✅ ' + encomendas.length + ' encomenda(s) enviada(s) automaticamente para o tablet de separação!\n📸 ' + Object.keys(fotos).length + ' foto(s) incluída(s)\n\n(Foi também guardado um ficheiro local de reserva: ' + nomeFicheiro + ')');
+            alert('✅ ' + encomendas.length + ' encomenda(s) enviada(s) automaticamente para o tablet de separação!\n\n(Foi também guardado um ficheiro local de reserva com fotos, ' + nomeFicheiro + ' — só é preciso se a internet falhar)');
         } else {
             alert('⚠️ Não foi possível enviar automaticamente (' + erroGithub + ').\n\nFicheiro guardado localmente: ' + nomeFicheiro + '\n\nEnvia-o manualmente (WhatsApp, e-mail, pasta partilhada, pen) e importa-o no tablet de separação.');
         }
