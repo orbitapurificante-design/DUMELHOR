@@ -38,7 +38,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .m1-sub .azul{color:#025EC6;}
 .m1-sub .verde{color:#05BB74;}
 .m1-quadrados{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap;justify-content:center;}
-.m1-quadrado{width:210px;aspect-ratio:10/6;border-radius:18px;border:none;cursor:pointer;
+.m1-quadrado{width:189px;aspect-ratio:6/10;border-radius:18px;border:none;cursor:pointer;
   position:relative;overflow:hidden;padding:0;
   display:flex;align-items:flex-end;justify-content:center;
   box-shadow:0 8px 24px rgba(0,0,0,0.28); transition:transform .12s;}
@@ -254,11 +254,11 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="m1-sub"><span class="azul">Sistema de Vendas</span> <span class="verde">e Pagamentos</span></div>
   <div class="m1-quadrados">
     <button class="m1-quadrado q-encomendas" onclick="irM2()">
-      <img id="img-encomendas" src="./encomendas0.jpeg" alt="Encomendas" onerror="this.style.display='none'">
+      <img id="img-encomendas" src="./encomendas0.jpg" alt="Encomendas" onerror="this.style.display='none'">
       <div class="quad-label">ENCOMENDAS</div>
     </button>
     <button class="m1-quadrado q-pagamentos" onclick="abrirPagamentos()">
-      <img src="./pagamentos.jpeg" alt="Pagamentos" onerror="this.style.display='none'">
+      <img src="./pagamentos.jpg" alt="Pagamentos" onerror="this.style.display='none'">
       <div class="quad-label">PAGAMENTOS</div>
     </button>
   </div>
@@ -460,14 +460,14 @@ function iniciaisCliente(nome){
   return ((partes[0]?.[0]||'') + (partes[partes.length-1]?.[0]||'')).toUpperCase();
 }
 
-// Troca a foto do quadrado "Encomendas" no M1: encomendas1.jpeg se houver alguma
-// encomenda nova ou ainda não totalmente separada, encomendas0.jpeg caso contrário.
+// Troca a foto do quadrado "Encomendas" no M1: encomendas1.jpg se houver alguma
+// encomenda nova ou ainda não totalmente separada, encomendas0.jpg caso contrário.
 function atualizarBotaoEncomendas(){
   const img = document.getElementById('img-encomendas');
   if(!img) return;
   const pedidos = getPedidos();
   const temPendentes = pedidos.some(p => estadoGeralEncomenda(p) !== 'verde');
-  img.src = temPendentes ? './encomendas1.jpeg' : './encomendas0.jpeg';
+  img.src = temPendentes ? './encomendas1.jpg' : './encomendas0.jpg';
 }
 function renderLista(){
   const pedidos = getPedidos().slice().sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
