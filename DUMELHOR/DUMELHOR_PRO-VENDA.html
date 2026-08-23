@@ -763,6 +763,11 @@
             <div class="icon-emoji">📤</div>
             <div class="icon-text" style="background:#1a6b8a; color:white; font-size:7px;">ENVIAR<br>ENCOMENDAS</div>
         </button>
+        <button class="menu-btn-icon" onclick="configurarGithub(); toggleMenu()">
+            <img class="btn-img" data-nome="github.jpg" src="" onerror="this.style.display='none'">
+            <div class="icon-emoji">🔗</div>
+            <div class="icon-text" style="background:#24292e; color:white; font-size:7px;">LIGAR<br>GITHUB</div>
+        </button>
     </div>
     
     <!-- INPUTS DE ARQUIVO movidos para o final do body -->
@@ -5907,6 +5912,69 @@ async function exportarBackup() {
 // (o utilizador pode sempre voltar a escolher "TODAS" quando perguntado).
 // ── Vai buscar ao IndexedDB de fotos só as imagens dos produtos indicados (por nome de ficheiro) ──
 // Mantém o pacote leve: em vez do catálogo completo, só as fotos realmente necessárias.
+// ── Ligação ao GitHub (para as encomendas chegarem sozinhas ao tablet de separação) ──
+const GH_OWNER = 'orbitapurificante-design';
+const GH_REPO = 'DUMELHOR';
+const GH_BRANCH = 'main';
+const GH_PASTA_ENCOMENDAS = 'DUMELHOR/encomendas';
+
+async function configurarGithub() {
+    const atual = (await dbGetAll(['DM_GH_TOKEN']))[0] || '';
+    const token = prompt(
+        'Cola aqui a chave de acesso do GitHub (github_pat_...).\n\n' +
+        'Fica guardada só neste tablet (nunca é enviada para mais lado nenhum além do GitHub).\n' +
+        'Para desligar, apaga o texto e confirma em branco.',
+        atual
+    );
+    if(token === null) return; // cancelado
+    await dbSave('DM_GH_TOKEN', token.trim());
+    alert(token.trim() ? '✅ Chave do GitHub guardada. As próximas encomendas enviadas vão automaticamente para o tablet de separação.' : '🗑️ Chave removida. O envio automático fica desligado.');
+}
+
+function slugify(txt) {
+    return String(txt || 'vendedor').toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'vendedor';
+}
+
+// Cria/atualiza um ficheiro no GitHub (precisa do sha atual se o ficheiro já existir)
+async function githubPutFile(path, objetoJson, mensagem) {
+    const token = (await dbGetAll(['DM_GH_TOKEN']))[0];
+    if(!token) throw new Error('Sem chave do GitHub configurada. Usa o botão "Ligar GitHub" no menu.');
+
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
+    let sha;
+    try {
+        const getResp = await fetch(apiUrl + '?ref=' + GH_BRANCH, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+        });
+        if(getResp.ok) { const d = await getResp.json(); sha = d.sha; }
+    } catch(e) { /* assume que o ficheiro ainda não existe */ }
+
+    const conteudoStr = JSON.stringify(objetoJson);
+    const base64Content = btoa(unescape(encodeURIComponent(conteudoStr)));
+
+    const putResp = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: mensagem || ('Atualizar encomendas — ' + new Date().toLocaleString('pt-PT')),
+            content: base64Content,
+            branch: GH_BRANCH,
+            ...(sha ? { sha } : {})
+        })
+    });
+    if(!putResp.ok) {
+        const errData = await putResp.json().catch(() => ({}));
+        throw new Error('GitHub (' + putResp.status + '): ' + (errData.message || 'falha desconhecida'));
+    }
+    return true;
+}
+
 async function coletarFotosParaItens(itens) {
     const chaves = new Set();
     itens.forEach(it => { if(it.f) chaves.add(String(it.f).toLowerCase()); });
@@ -5986,6 +6054,23 @@ async function exportarEncomendasLeve() {
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
         const horaStr = new Date().toTimeString().slice(0,5).replace(':','');
         const nomeFicheiro = 'dumelhor-encomendas-' + (vendedor ? vendedor.replace(/[^a-z0-9]+/gi,'-') + '-' : '') + dataStr + '-' + horaStr + '.json';
+
+        // ── Tenta enviar automaticamente para o GitHub (chega sozinho ao tablet de separação) ──
+        let enviadoGithub = false, erroGithub = '';
+        try {
+            const slug = slugify(vendedor);
+            await githubPutFile(
+                GH_PASTA_ENCOMENDAS + '/' + slug + '.json',
+                pacote,
+                'Encomendas de ' + (vendedor || 'vendedor') + ' — ' + new Date().toLocaleString('pt-PT')
+            );
+            enviadoGithub = true;
+        } catch(ghErr) {
+            console.error('Erro ao enviar para o GitHub:', ghErr);
+            erroGithub = ghErr.message;
+        }
+
+        // Guarda sempre também um ficheiro local, como reserva (ex: se a internet falhar)
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -5997,7 +6082,11 @@ async function exportarEncomendasLeve() {
         lista.forEach(p => p._enviadoResidual = true);
         dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
 
-        alert('✅ ' + encomendas.length + ' encomenda(s) exportada(s)!\n📸 ' + Object.keys(fotos).length + ' foto(s) incluída(s)\n\nFicheiro: ' + nomeFicheiro + '\n\nEnvia este ficheiro para o tablet de separação (WhatsApp, e-mail, pasta partilhada, pen ou Bluetooth) e importa-o lá no botão "Importar Encomendas".');
+        if(enviadoGithub) {
+            alert('✅ ' + encomendas.length + ' encomenda(s) enviada(s) automaticamente para o tablet de separação!\n📸 ' + Object.keys(fotos).length + ' foto(s) incluída(s)\n\n(Foi também guardado um ficheiro local de reserva: ' + nomeFicheiro + ')');
+        } else {
+            alert('⚠️ Não foi possível enviar automaticamente (' + erroGithub + ').\n\nFicheiro guardado localmente: ' + nomeFicheiro + '\n\nEnvia-o manualmente (WhatsApp, e-mail, pasta partilhada, pen) e importa-o no tablet de separação.');
+        }
     } catch(e) {
         console.error('Erro ao exportar encomendas:', e);
         alert('❌ Erro ao exportar encomendas: ' + e.message);
