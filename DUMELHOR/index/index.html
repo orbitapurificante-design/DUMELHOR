@@ -44,6 +44,9 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   box-shadow:0 8px 24px rgba(0,0,0,0.28); transition:transform .12s;}
 .m1-quadrado:active{transform:scale(0.96);}
 .m1-quadrado img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.badge-contador{position:absolute;top:-8px;right:-8px;z-index:5;background:#E60000;color:#fff;
+  min-width:30px;height:30px;border-radius:50%;display:none;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);padding:0 4px;}
 .m1-quadrado .quad-label{position:relative;z-index:2;width:100%;font-size:13px;font-weight:800;color:#fff;
   letter-spacing:0.6px;text-align:center;padding:20px 8px 8px;
   background:linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));}
@@ -254,6 +257,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="m1-sub"><span class="azul">Sistema de Vendas</span> <span class="verde">e Pagamentos</span></div>
   <div class="m1-quadrados">
     <button class="m1-quadrado q-encomendas" onclick="irM2()">
+      <div class="badge-contador" id="badge-encomendas"></div>
       <img id="img-encomendas" src="./encomendas0.jpg" alt="Encomendas" onerror="this.style.display='none'">
       <div class="quad-label">ENCOMENDAS</div>
     </button>
@@ -270,9 +274,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="topbar">
     <button class="voltar" onclick="irM1()">←</button>
     <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
+    <button class="act" id="btn-sync" onclick="sincronizarGithub(true)">🔄 Sincronizar</button>
     <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
   </div>
-  <div class="topbar-sub">🕓 Mais recentes primeiro</div>
+  <div class="topbar-sub" id="topbar-sub-status">🕓 Mais recentes primeiro</div>
   <input type="file" id="f-import" accept=".json" multiple style="display:none">
   <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
   <div id="lista-encomendas"></div>
@@ -372,6 +377,62 @@ function chaveOrdenacao(p){
 let PEDIDO_ATUAL = null;
 
 /* =========================================================
+   SINCRONIZAÇÃO AUTOMÁTICA COM O GITHUB
+   (o repositório é público, por isso a leitura não precisa de chave —
+   só o tablet dos vendedores precisa de chave, para poder escrever lá)
+   ========================================================= */
+const GH_OWNER = 'orbitapurificante-design';
+const GH_REPO = 'DUMELHOR';
+const GH_BRANCH = 'main';
+const GH_PASTA_ENCOMENDAS = 'DUMELHOR/encomendas';
+let A_SINCRONIZAR = false;
+
+async function sincronizarGithub(mostrarFeedback){
+  if(A_SINCRONIZAR) return;
+  A_SINCRONIZAR = true;
+  const status = document.getElementById('topbar-sub-status');
+  const btn = document.getElementById('btn-sync');
+  if(status) status.textContent = '🔄 A sincronizar…';
+  if(btn) btn.style.opacity = '0.5';
+  try{
+    const listUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PASTA_ENCOMENDAS}?ref=${GH_BRANCH}`;
+    const resp = await fetch(listUrl, { cache: 'no-store' });
+    if(resp.status === 404){
+      if(status) status.textContent = '🕓 Mais recentes primeiro';
+      if(mostrarFeedback) alert('Ainda não há nenhuma encomenda enviada pelos vendedores via GitHub.');
+      return;
+    }
+    if(!resp.ok) throw new Error('Erro ao ligar ao GitHub (' + resp.status + ')');
+    const arquivos = await resp.json();
+
+    let totalNovas = 0, totalFotos = 0;
+    for(const f of arquivos){
+      if(f.type !== 'file' || !f.name.toLowerCase().endsWith('.json')) continue;
+      try{
+        const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
+        if(!rawResp.ok) continue;
+        const dados = await rawResp.json();
+        const res = await importarPacote(dados);
+        totalNovas += res.novas;
+        totalFotos += res.fotos;
+      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
+    }
+
+    renderLista();
+    atualizarBotaoEncomendas();
+    if(status) status.textContent = '✅ Sincronizado agora mesmo';
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
+  }catch(e){
+    console.error(e);
+    if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
+    if(mostrarFeedback) alert('❌ Não foi possível sincronizar: ' + e.message);
+  }finally{
+    A_SINCRONIZAR = false;
+    if(btn) btn.style.opacity = '1';
+  }
+}
+
+/* =========================================================
    NAVEGAÇÃO — estrita, um ecrã de cada vez
    ========================================================= */
 function mostrarTela(id){
@@ -381,7 +442,7 @@ function mostrarTela(id){
   window.scrollTo(0,0);
 }
 function irM1(){ atualizarBotaoEncomendas(); mostrarTela('m1'); }
-function irM2(){ renderLista(); mostrarTela('m2'); }
+function irM2(){ renderLista(); mostrarTela('m2'); sincronizarGithub(false); }
 function voltarDeM3(){ irM2(); }
 function abrirPagamentos(){ window.open('https://orbitapurificante-design.github.io/SCANNER/index', '_blank'); }
 
@@ -460,14 +521,24 @@ function iniciaisCliente(nome){
   return ((partes[0]?.[0]||'') + (partes[partes.length-1]?.[0]||'')).toUpperCase();
 }
 
-// Troca a foto do quadrado "Encomendas" no M1: encomendas1.jpg se houver alguma
-// encomenda nova ou ainda não totalmente separada, encomendas0.jpg caso contrário.
+// Troca a foto do quadrado "Encomendas" no M1 e atualiza a bolinha com o nº de
+// encomendas novas/por separar: encomendas1.jpg se houver alguma pendente,
+// encomendas0.jpg caso contrário.
 function atualizarBotaoEncomendas(){
   const img = document.getElementById('img-encomendas');
+  const badge = document.getElementById('badge-encomendas');
   if(!img) return;
   const pedidos = getPedidos();
-  const temPendentes = pedidos.some(p => estadoGeralEncomenda(p) !== 'verde');
-  img.src = temPendentes ? './encomendas1.jpg' : './encomendas0.jpg';
+  const pendentes = pedidos.filter(p => estadoGeralEncomenda(p) !== 'verde');
+  img.src = pendentes.length ? './encomendas1.jpg' : './encomendas0.jpg';
+  if(badge){
+    if(pendentes.length){
+      badge.textContent = pendentes.length > 99 ? '99+' : pendentes.length;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 function renderLista(){
   const pedidos = getPedidos().slice().sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
@@ -849,7 +920,7 @@ if('serviceWorker' in navigator){
 }
 
 /* Init */
-abrirFotosDb().then(()=> { renderLista(); atualizarBotaoEncomendas(); });
+abrirFotosDb().then(()=> { renderLista(); atualizarBotaoEncomendas(); sincronizarGithub(false); });
 </script>
 </body>
 </html>
