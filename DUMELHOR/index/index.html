@@ -78,6 +78,20 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 
 /* ---------- LISTA DE ENCOMENDAS (M2) ---------- */
 #lista-encomendas{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.selecao-bar{display:none;align-items:center;justify-content:space-between;gap:10px;
+  background:#1A1A1A;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;}
+.selecao-bar.show{display:flex;}
+.selecao-bar-acoes{display:flex;gap:8px;}
+.selecao-btn{border:none;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;}
+.selecao-btn.cancelar{background:rgba(255,255,255,0.14);color:#fff;}
+.selecao-btn.apagar{background:var(--primary);color:#fff;}
+.selecao-btn.apagar:active, .selecao-btn.cancelar:active{opacity:0.7;}
+.enc-checkbox{width:22px;height:22px;border-radius:50%;border:2px solid #C9C1B2;flex-shrink:0;
+  display:none;align-items:center;justify-content:center;background:#fff;font-size:13px;color:#fff;font-weight:900;}
+.enc-card.modo-selecao .enc-checkbox{display:flex;}
+.enc-card.selecionado{outline:2px solid var(--primary);background:#FFF3F3;}
+.enc-card.selecionado .enc-checkbox{background:var(--primary);border-color:var(--primary);}
+
 .enc-card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);
   border:1px solid #EFEFEF; display:flex; align-items:center; gap:12px; cursor:pointer;
   transition:transform .1s, box-shadow .15s;}
@@ -291,10 +305,18 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="topbar">
     <button class="voltar" onclick="history.back()">←</button>
     <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
+    <button class="act" id="btn-selecionar" onclick="alternarModoSelecao()">☑️ Selecionar</button>
     <button class="act" id="btn-sync" onclick="sincronizarGithub(true)">🔄 Sincronizar</button>
     <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
   </div>
   <div class="topbar-sub" id="topbar-sub-status">🕓 Mais recentes primeiro</div>
+  <div class="selecao-bar" id="selecao-bar">
+    <span id="selecao-contagem">0 selecionada(s)</span>
+    <div class="selecao-bar-acoes">
+      <button class="selecao-btn cancelar" onclick="alternarModoSelecao()">Cancelar</button>
+      <button class="selecao-btn apagar" onclick="apagarSelecionadas()">🗑️ Apagar selecionadas</button>
+    </div>
+  </div>
   <input type="file" id="f-import" accept=".json" multiple style="display:none">
   <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
   <div id="lista-encomendas"></div>
@@ -569,9 +591,47 @@ function atualizarBotaoEncomendas(){
     }
   }
 }
+let MODO_SELECAO = false;
+let SELECIONADOS = new Set();
+
+function alternarModoSelecao(){
+  MODO_SELECAO = !MODO_SELECAO;
+  SELECIONADOS.clear();
+  document.getElementById('btn-selecionar').textContent = MODO_SELECAO ? '✕ Fechar seleção' : '☑️ Selecionar';
+  document.getElementById('btn-sync').style.display = MODO_SELECAO ? 'none' : '';
+  document.getElementById('selecao-bar').classList.toggle('show', MODO_SELECAO);
+  renderLista();
+}
+
+function alternarSelecaoEncomenda(id){
+  if(SELECIONADOS.has(id)) SELECIONADOS.delete(id); else SELECIONADOS.add(id);
+  atualizarContagemSelecao();
+  const card = document.querySelector(`.enc-card[data-id="${id}"]`);
+  if(card) card.classList.toggle('selecionado', SELECIONADOS.has(id));
+}
+
+function atualizarContagemSelecao(){
+  document.getElementById('selecao-contagem').textContent = SELECIONADOS.size + ' selecionada(s)';
+}
+
+function apagarSelecionadas(){
+  if(!SELECIONADOS.size){ alert('Não selecionaste nenhuma encomenda.'); return; }
+  if(!confirm('Remover ' + SELECIONADOS.size + ' encomenda(s) selecionada(s) do tablet de separação?')) return;
+  const idsRemover = new Set(SELECIONADOS);
+  savePedidos(getPedidos().filter(p => !idsRemover.has(p.id)));
+  idsRemover.forEach(id => localStorage.removeItem(LS_SEP(id)));
+  SELECIONADOS.clear();
+  MODO_SELECAO = false;
+  document.getElementById('btn-selecionar').textContent = '☑️ Selecionar';
+  document.getElementById('btn-sync').style.display = '';
+  document.getElementById('selecao-bar').classList.remove('show');
+  renderLista();
+  atualizarBotaoEncomendas();
+}
+
 function renderLista(){
   const pedidos = getPedidos().slice().sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
-  document.getElementById('btn-importar-grande').style.display = pedidos.length ? 'none' : 'block';
+  document.getElementById('btn-importar-grande').style.display = (pedidos.length || MODO_SELECAO) ? 'none' : 'block';
   document.getElementById('count-chip').textContent = pedidos.length;
   const cont = document.getElementById('lista-encomendas');
   if(!pedidos.length){
@@ -591,7 +651,12 @@ function renderLista(){
     const statusChip = estado
       ? `<span class="enc-status" style="background:${cor}1A;color:${cor}">${labelsEstado[estado]}</span>`
       : `<span class="enc-status" style="background:#F0F0F0;color:#888">Por separar</span>`;
-    return `<div class="enc-card" onclick="abrirM3(${JSON.stringify(p.id)})">
+    const selecionado = SELECIONADOS.has(p.id);
+    const onclickCard = MODO_SELECAO
+      ? `alternarSelecaoEncomenda(${JSON.stringify(p.id)})`
+      : `abrirM3(${JSON.stringify(p.id)})`;
+    return `<div class="enc-card ${MODO_SELECAO ? 'modo-selecao' : ''} ${selecionado ? 'selecionado' : ''}" data-id="${p.id}" onclick="${onclickCard}">
+      <div class="enc-checkbox">${selecionado ? '✓' : ''}</div>
       <div class="enc-avatar" style="background:${avatarCor}">${iniciaisCliente(nome)}</div>
       <div class="enc-info">
         <b>${nome}</b>
@@ -603,17 +668,18 @@ function renderLista(){
         </div>
       </div>
       <div class="enc-side">
-        <button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button>
-        <span class="chevron">›</span>
+        ${MODO_SELECAO ? '' : `<button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button><span class="chevron">›</span>`}
       </div>
     </div>`;
   }).join('');
+  if(MODO_SELECAO) atualizarContagemSelecao();
 }
 function apagarEncomenda(id){
   if(!confirm('Remover esta encomenda do tablet de separação?')) return;
   savePedidos(getPedidos().filter(p=>p.id!==id));
   localStorage.removeItem(LS_SEP(id));
   renderLista();
+  atualizarBotaoEncomendas();
 }
 
 /* ══════════════════════════════════════════════════════════════
