@@ -32,19 +32,28 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 /* ---------- M1 : MENU PRINCIPAL ---------- */
 #m1{background:#FFFFFF; min-height:100%;
   display:flex !important; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 20px 30px;}
-#m1 img#logo{width:225px;height:225px;object-fit:contain;margin:0 auto;display:block;}
+#m1 img#logo{width:203px;height:203px;object-fit:contain;margin:0 auto;display:block;}
 #m1 img#logo.hidden{display:none;}
 .m1-sub{font-size:14px;font-weight:700;text-align:center;margin-top:6px;letter-spacing:1.2px;text-transform:uppercase;}
 .m1-sub .azul{color:#025EC6;}
 .m1-sub .verde{color:#05BB74;}
 .m1-quadrados{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap;justify-content:center;}
-.m1-mini-stack{position:absolute;left:10px;top:22px;display:flex;flex-direction:column;gap:12px;z-index:6;}
-.m1-mini-btn{width:76px;aspect-ratio:6/10;border-radius:10px;border:none;padding:0;overflow:hidden;
+
+/* ---------- MENU HAMBÚRGUER (Gaspar / Promoções / Pro-Venda) ---------- */
+.m1-hamb-btn{position:absolute;left:10px;top:22px;z-index:7;width:42px;height:42px;border-radius:10px;
+  border:none;cursor:pointer;background:rgba(120,120,120,0.35);backdrop-filter:blur(2px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:background .15s, transform .12s;}
+.m1-hamb-btn:active{transform:scale(0.92);}
+.m1-hamb-btn span{display:block;width:20px;height:2.5px;background:#fff;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.4);}
+.m1-mini-stack{position:absolute;left:10px;top:70px;display:none;flex-direction:column;gap:10px;z-index:6;
+  background:rgba(120,120,120,0.22);backdrop-filter:blur(3px);padding:10px;border-radius:14px;}
+.m1-mini-stack.show{display:flex;}
+.m1-mini-btn{width:64px;aspect-ratio:6/10;border-radius:10px;border:1px solid #444;padding:0;overflow:hidden;
   cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.35);background:#333;transition:transform .12s;}
 .m1-mini-btn:active{transform:scale(0.92);}
 .m1-mini-btn img{width:100%;height:100%;object-fit:cover;display:block;}
 
-.m1-quadrado{width:189px;aspect-ratio:6/10;border-radius:18px;border:none;cursor:pointer;
+.m1-quadrado{width:208px;aspect-ratio:6/10;border-radius:18px;border:none;cursor:pointer;
   position:relative;overflow:hidden;padding:0;
   display:flex;align-items:flex-end;justify-content:center;
   box-shadow:0 8px 24px rgba(0,0,0,0.28); transition:transform .12s;}
@@ -56,7 +65,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .m1-quadrado .quad-label{position:relative;z-index:2;width:100%;font-size:13px;font-weight:800;color:#fff;
   letter-spacing:0.6px;text-align:center;padding:20px 8px 8px;
   background:linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));}
-.q-encomendas{background:linear-gradient(145deg,var(--primary),var(--primary-d));}
+.q-encomendas{background:linear-gradient(145deg,var(--primary),var(--primary-d));border:1px solid #444;}
 .q-pagamentos{background:linear-gradient(145deg,#2b2b2b,#111);border:1px solid #444;}
 .m1-footer{margin-top:26px;font-size:10px;color:#000;letter-spacing:1px;text-align:center;}
 
@@ -273,7 +282,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 
 <!-- ================= M1 — MENU PRINCIPAL ================= -->
 <div id="m1" class="screen active">
-  <div class="m1-mini-stack">
+  <button class="m1-hamb-btn" onclick="toggleMenuHamburguer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="m1-mini-stack" id="m1-mini-stack">
     <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/gaspar-fragancias/index.html','_blank')">
       <img src="./gaspar.jpg" alt="Gaspar" onerror="this.style.display='none'">
     </button>
@@ -282,6 +294,9 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
     </button>
     <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/MARINHA-APP/index.html','_blank')">
       <img src="./promocoes.jpg" alt="Promoções" onerror="this.style.display='none'">
+    </button>
+    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/DUMELHOR/DUMELHOR/DUMELHOR_PRO-VENDA.html','_blank')">
+      <img src="./logo.png" alt="Pro-Venda" onerror="this.style.display='none'">
     </button>
   </div>
   <img id="logo" src="./logo.png" onerror="this.classList.add('hidden')">
@@ -1024,14 +1039,16 @@ if('serviceWorker' in navigator){
    funcionar corretamente desde o primeiro ecrã. */
 /* Alinha o topo dos botões pequenos (esquerda) com o início da linha
    Encomendas/Pagamentos, medindo a posição real em vez de valores fixos. */
-function alinharMiniStack(){
-  const quad = document.querySelector('.m1-quadrados');
-  const stack = document.querySelector('.m1-mini-stack');
-  if(quad && stack) stack.style.top = quad.offsetTop + 'px';
+function toggleMenuHamburguer(){
+  const stack = document.getElementById('m1-mini-stack');
+  if(stack) stack.classList.toggle('show');
 }
-window.addEventListener('load', alinharMiniStack);
-window.addEventListener('resize', alinharMiniStack);
-alinharMiniStack();
+document.addEventListener('click', function(e){
+  const stack = document.getElementById('m1-mini-stack');
+  const btn = document.querySelector('.m1-hamb-btn');
+  if(!stack || !stack.classList.contains('show')) return;
+  if(!stack.contains(e.target) && !btn.contains(e.target)) stack.classList.remove('show');
+});
 
 history.replaceState({tela:'m1'}, '', location.href);
 
