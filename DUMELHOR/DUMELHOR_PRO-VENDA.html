@@ -168,7 +168,6 @@
         .fam-content-catalogo.hidden { display: none !important; }
         
         /* Otimizações performance */
-        .card-catalogo-vendas { contain: layout style paint; }
         .card-pro { contain: layout style paint; }
         
         @media (orientation: landscape) and (min-width: 768px) {
@@ -753,6 +752,11 @@
             <div class="icon-emoji">💾</div>
             <div class="icon-text" style="background:#FF8C00; color:white; font-size:7px;">BACKUP<br>COMPLETO</div>
         </button>
+        <button class="menu-btn-icon" onclick="exportarBackupFotos(); toggleMenu()">
+            <img class="btn-img" data-nome="backup.jpg" src="" onerror="this.style.display='none'">
+            <div class="icon-emoji">📸</div>
+            <div class="icon-text" style="background:#00A651; color:white; font-size:7px;">BACKUP<br>FOTOS</div>
+        </button>
         <button class="menu-btn-icon" onclick="document.getElementById('f-backup').click(); toggleMenu()">
             <img class="btn-img" data-nome="importar.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">📥</div>
@@ -934,10 +938,6 @@
 
 <!-- BARRA INFERIOR M2 -->
 <div class="bottom-bar" id="bbar-m2" style="display:none;">
-    <button class="bbar-btn" onclick="toggleFullScreen()" title="Ecrã completo">
-        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-        <span>ECRÃ</span>
-    </button>
     <button class="bbar-btn active" id="bbar-familias" onclick="toggleTodasFamiliasBtn()" title="Abrir/Fechar famílias">
         <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
         <span>FAMÍLIAS</span>
@@ -946,14 +946,6 @@
         <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
         <span>RESET</span>
     </button>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- CATÁLOGO DE VENDAS - Foto Grande Coluna L -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div id="m-catalogo-vendas" class="screen" style="background:#ffffff;">
-    <!-- Container de produtos -->
-    <div id="catalogo-vendas-container" style="padding:6px;"></div>
 </div>
 
 <div id="m3" class="screen">
@@ -1011,28 +1003,23 @@
     </button>
 </div>
 
-<!-- BARRA INFERIOR CATÁLOGO VENDAS -->
-<div class="bottom-bar" id="bbar-catalogo-vendas" style="display:none;">
-    <button class="bbar-btn col-green" onclick="fecharCatalogoVendas()" title="Voltar aos Produtos">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        <span>PRODUTOS</span>
-    </button>
-    <button class="bbar-btn active" id="bbar-familias-catalogo" onclick="toggleTodasFamiliasBtn()" title="Abrir/Fechar famílias">
-        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-        <span>FAMÍLIAS</span>
-    </button>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════ -->
 <!-- GESTOR DE FOTOS - Ver e Apagar Fotos Específicas -->
 <!-- ═══════════════════════════════════════════════════════════ -->
 <div id="m-gestor-fotos" class="screen" style="background:#f8fafc; padding-bottom:80px;">
-    <div id="info-fotos" style="background:white; padding:10px 15px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
-        <div style="font-size:14px; font-weight:700; color:#E60000;">📸 <span id="total-fotos-count">0</span> fotos &nbsp;💾 <span id="espaco-fotos-mb">0</span> MB</div>
+    <div id="info-fotos" style="background:white; padding:10px 15px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+        <div style="font-size:13px; font-weight:700; color:#E60000;">📸 <span id="total-fotos-count">0</span>/<span id="total-fotos-geral">0</span> fotos &nbsp;💾 <span id="espaco-fotos-mb">0</span> MB</div>
         <div style="display:flex; gap:6px; flex-shrink:0;">
             <button id="btn-ord-nome" onclick="setOrdemFotos('nome')" style="padding:5px 10px; border-radius:8px; border:1.5px solid #E60000; background:#E60000; color:white; font-size:11px; font-weight:700; cursor:pointer;">A→Z</button>
             <button id="btn-ord-tam" onclick="setOrdemFotos('tamanho')" style="padding:5px 10px; border-radius:8px; border:2px solid #ccc; background:white; color:#555; font-size:11px; font-weight:700; cursor:pointer;">KB↓</button>
         </div>
+    </div>
+    <div id="info-fotos-filtro" style="background:white; padding:8px 15px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+        <label style="font-size:12px; font-weight:600; color:#333; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="chk-fotos-grandes" checked onchange="renderGestorFotos()" style="width:16px; height:16px; cursor:pointer;">
+            Só fotos grandes (&gt;250KB)
+        </label>
     </div>
     <div id="lista-fotos-gestor" style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;"></div>
 </div>
@@ -1042,6 +1029,10 @@
     <button class="bbar-btn" onclick="fecharGestorFotos()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         <span>VOLTAR</span>
+    </button>
+    <button class="bbar-btn col-green" onclick="exportarBackupFotos()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>BACKUP FOTOS</span>
     </button>
     <button class="bbar-btn col-red" onclick="limparFotosMemoria()">
         <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -1595,15 +1586,6 @@ function entrarApp(segmento) {
     }
 }
 
-function abrirSegmentoPicker() {
-    const p = document.getElementById('seg-picker');
-    if(!p) return;
-    const visivel = p.style.display === 'flex';
-    p.style.display = visivel ? 'none' : 'flex';
-}
-
-
-
 function setSplash(texto, pct, counter) {
     const bar  = document.getElementById('splash-bar');
     const txt  = document.getElementById('splash-text');
@@ -1638,18 +1620,6 @@ function mostrarBarraProgresso(texto, pct) {
             setTimeout(() => { wrap.style.display = 'none'; if(bar) bar.style.width = '0%'; }, 900);
         }, 300);
     }
-}
-
-function iniciarBarraProgresso(texto) {
-    mostrarBarraProgresso(texto, 15);
-    // Animação de progresso fake enquanto carrega
-    let pct = 15;
-    const iv = setInterval(() => {
-        pct += Math.random() * 18;
-        if(pct >= 90) { clearInterval(iv); pct = 90; }
-        mostrarBarraProgresso(texto, pct);
-    }, 200);
-    return iv;
 }
 
 function nav(id) {
@@ -1777,21 +1747,13 @@ function limparPesquisaProduto() {
 function debounceRender() { 
     clearTimeout(renderTimeout); 
     renderTimeout = setTimeout(() => {
-        const catalogoAtivo = document.getElementById('m-catalogo-vendas').classList.contains('active');
-        
-        if(catalogoAtivo) {
-            CATALOGO_RENDERIZADO = false;
-            renderCatalogoVendas();
-            CATALOGO_RENDERIZADO = true;
-        } else {
-            if(LOJA_RENDERIZADA) aplicarFiltroDOM();
-            else renderLoja();
-            
-            // Ao pesquisar, scroll sempre para o topo para não ficar atrás da barra
-            const busca = document.getElementById('in-busca').value.trim();
-            if(busca) {
-                window.scrollTo({ top: 0, behavior: 'instant' });
-            }
+        if(LOJA_RENDERIZADA) aplicarFiltroDOM();
+        else renderLoja();
+
+        // Ao pesquisar, scroll sempre para o topo para não ficar atrás da barra
+        const busca = document.getElementById('in-busca').value.trim();
+        if(busca) {
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
     }, 100); 
 }
@@ -1806,12 +1768,7 @@ function toggleMarcasHorizontal() {
         atualizarBotaoDumelhor();
         renderMarcas();
 
-        const catalogoAtivo = document.getElementById('m-catalogo-vendas').classList.contains('active');
-        if(catalogoAtivo) {
-            CATALOGO_RENDERIZADO = false;
-            renderCatalogoVendas();
-            CATALOGO_RENDERIZADO = true;
-        } else if(LOJA_RENDERIZADA) {
+        if(LOJA_RENDERIZADA) {
             aplicarFiltroDOM();
         } else {
             renderLoja();
@@ -1890,22 +1847,12 @@ function toggleMarca(marca) {
     document.getElementById('in-busca').value = '';
     atualizarBotaoDumelhor();
     renderMarcas();
-    
-    // Verificar se está no catálogo
-    const catalogoAtivo = document.getElementById('m-catalogo-vendas').classList.contains('active');
-    
-    if(catalogoAtivo) {
-        // Invalidar cache e re-renderizar catálogo com filtro de marca
-        CATALOGO_RENDERIZADO = false;
-        renderCatalogoVendas();
-        CATALOGO_RENDERIZADO = true;
+
+    // Filtro via DOM - SEM reconstruir HTML (instantâneo!)
+    if(LOJA_RENDERIZADA) {
+        aplicarFiltroDOM();
     } else {
-        // Filtro via DOM - SEM reconstruir HTML (instantâneo!)
-        if(LOJA_RENDERIZADA) {
-            aplicarFiltroDOM();
-        } else {
-            renderLoja();
-        }
+        renderLoja();
     }
 }
 
@@ -2270,11 +2217,6 @@ function setModoBarcode(modo) {
         btnC.style.background = 'rgba(255,255,255,0.15)'; btnC.style.color = '#FFFFFF';
         label.textContent = 'MODO: ENCOMENDA — adiciona produto ao carrinho';
     }
-}
-
-function mostrarBotaoBarcode() {
-    const btn = document.getElementById('btn-barcode');
-    if(btn) btn.style.display = 'flex';
 }
 
 function abrirLeitorBarras() {
@@ -2675,10 +2617,6 @@ function atualizarTotalCarrinhoTopo() {
     el.textContent = total.toFixed(2).replace('.', ',') + '€';
 }
 
-function editarNomeResumo(id) {
-    abrirMenuEditarNome(id);
-}
-
 // Realça a palavra "sortido" (onde quer que apareça no nome) com letra ligeiramente maior
 function destacarSortido(nome) {
     if(!nome) return nome;
@@ -3052,29 +2990,6 @@ function gravarPagamentoMulti() {
     aplicarFiltros();
 }
 
-function gravarPagamento() {
-    let nome = document.getElementById('pag-cliente').value;
-    let valor = parseFloat(document.getElementById('pag-valor').value);
-    if(!nome || isNaN(valor)) return alert("Preencha o cliente e o valor!");
-    PAGAMENTOS_DB.push({
-        id: Date.now(),
-        data: document.getElementById('pag-data').value,
-        cliente: nome,
-        tipo: document.getElementById('pag-tipo').value,
-        doc: document.getElementById('pag-num-doc').value,
-        valor: valor,
-        nota: document.getElementById('pag-nota').value || "",
-        anulado: false
-    });
-    dbSave('DM_PAGAMENTOS_V2', PAGAMENTOS_DB);
-    alert("Pagamento Registado!");
-    document.getElementById('pag-cliente').value = "";
-    document.getElementById('pag-valor').value = "";
-    document.getElementById('pag-num-doc').value = "";
-    document.getElementById('pag-nota').value = "";
-    aplicarFiltros();
-}
-
 function atualizarLabelDataPag() {
     const el = document.getElementById('pag-data-label');
     const dataEl = document.getElementById('pag-data');
@@ -3416,28 +3331,20 @@ function toggleFam(cat) {
 
 let FAM_TODAS_FECHADAS = false;
 function toggleTodasFamiliasBtn() {
-    // Verificar se está no catálogo ou no M2
-    const catalogoAtivo = document.getElementById('m-catalogo-vendas').classList.contains('active');
-    
-    if(catalogoAtivo) {
-        // Está no CATÁLOGO - usar função do catálogo
-        toggleTodasFamiliasCatalogo();
+    FAM_TODAS_FECHADAS = !FAM_TODAS_FECHADAS;
+    const contents = Array.from(document.querySelectorAll('#loja-dinamica .fam-content'));
+    const arrows = Array.from(document.querySelectorAll('#loja-dinamica .fam-arrow'));
+
+    if(FAM_TODAS_FECHADAS) {
+        // FECHAR: instantâneo (esconder é barato)
+        contents.forEach(c => c.classList.add('hidden'));
+        arrows.forEach(a => a.textContent = '▶');
+        for(let cat in FAM_ESTADOS) FAM_ESTADOS[cat] = true;
     } else {
-        // Está no M2 - lógica original
-        FAM_TODAS_FECHADAS = !FAM_TODAS_FECHADAS;
-        const contents = Array.from(document.querySelectorAll('#loja-dinamica .fam-content'));
-        const arrows = Array.from(document.querySelectorAll('#loja-dinamica .fam-arrow'));
-        
-        if(FAM_TODAS_FECHADAS) {
-            // FECHAR: instantâneo (esconder é barato)
-            contents.forEach(c => c.classList.add('hidden'));
-            arrows.forEach(a => a.textContent = '▶');
-            for(let cat in FAM_ESTADOS) FAM_ESTADOS[cat] = true;
-        } else {
-        // ABRIR: escalonado por chunks para não bloquear o thread
-        for(let cat in FAM_ESTADOS) FAM_ESTADOS[cat] = false;
-        arrows.forEach(a => a.textContent = '▼');
-        // Abrir 3 famílias por frame (suficiente para parecer instantâneo)
+    // ABRIR: escalonado por chunks para não bloquear o thread
+    for(let cat in FAM_ESTADOS) FAM_ESTADOS[cat] = false;
+    arrows.forEach(a => a.textContent = '▼');
+    // Abrir 3 famílias por frame (suficiente para parecer instantâneo)
         const CHUNK = 3;
         let i = 0;
         function abrirChunk() {
@@ -3448,21 +3355,12 @@ function toggleTodasFamiliasBtn() {
             if(i < contents.length) requestAnimationFrame(abrirChunk);
         }
         requestAnimationFrame(abrirChunk);
-        }
     }
     
     const btn = document.getElementById('bbar-familias');
     if(btn) btn.classList.toggle('active', !FAM_TODAS_FECHADAS);
 }
 
-function toggleTodasFamilias() { 
-    let todasFechadas = Object.values(FAM_ESTADOS).every(v => v === true); 
-    for(let cat in FAM_ESTADOS) { FAM_ESTADOS[cat] = !todasFechadas; }
-    const contents = document.querySelectorAll('#loja-dinamica .fam-content');
-    const arrows = document.querySelectorAll('#loja-dinamica .fam-arrow');
-    contents.forEach(c => { if(!todasFechadas) c.classList.add('hidden'); else c.classList.remove('hidden'); });
-    arrows.forEach(a => a.textContent = !todasFechadas ? '▶' : '▼');
-}
 function toggleFamCardex(cat) {
     FAM_CARDEX[cat] = !FAM_CARDEX[cat];
     const fechado = FAM_CARDEX[cat];
@@ -3478,129 +3376,6 @@ function toggleFamCardex(cat) {
     container.querySelectorAll(`.cart-list-item[data-cat="${cat}"]`).forEach(card => {
         card.style.display = fechado ? 'none' : '';
     });
-}
-
-// ════════════════════════════════════════════════════════════
-// MODO EDIÇÃO CARDEX - Long press 2s para selecionar produtos
-// ════════════════════════════════════════════════════════════
-let cardexEditMode = false;
-let cardexLongPressTimer = null;
-let cardexSelectedProducts = new Set();
-
-function iniciarLongPressCardex(produtoId, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Clearar timer anterior
-    if(cardexLongPressTimer) {
-        clearTimeout(cardexLongPressTimer);
-    }
-    
-    // Iniciar contagem de 2 segundos
-    cardexLongPressTimer = setTimeout(() => {
-        ativarModoEdicaoCardex();
-    }, 2000);
-}
-
-function cancelarLongPressCardex() {
-    if(cardexLongPressTimer) {
-        clearTimeout(cardexLongPressTimer);
-        cardexLongPressTimer = null;
-    }
-}
-
-function ativarModoEdicaoCardex() {
-    cardexEditMode = true;
-    cardexSelectedProducts.clear();
-    
-    // Mostrar TODAS as bolinhas checkbox
-    document.querySelectorAll('.cardex-checkbox').forEach(cb => {
-        cb.style.display = 'flex';
-        cb.style.alignItems = 'center';
-        cb.style.justifyContent = 'center';
-    });
-    
-    // Mostrar botão eliminar na barra inferior
-    mostrarBotaoEliminarCardex();
-}
-
-function toggleCheckboxCardex(produtoId, event) {
-    event.stopPropagation();
-    
-    if(!cardexEditMode) return;
-    
-    const checkbox = document.getElementById(`checkbox-${produtoId}`);
-    const check = document.getElementById(`check-${produtoId}`);
-    
-    if(cardexSelectedProducts.has(produtoId)) {
-        // Desmarcar
-        cardexSelectedProducts.delete(produtoId);
-        check.style.display = 'none';
-        checkbox.style.borderColor = '#ccc';
-        checkbox.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-    } else {
-        // Marcar
-        cardexSelectedProducts.add(produtoId);
-        check.style.display = 'block';
-        checkbox.style.borderColor = '#00ff41';
-        checkbox.style.boxShadow = '0 0 12px rgba(0,255,65,0.6)';
-    }
-    
-    // Atualizar contador
-    atualizarContadorSelecaoCardex();
-}
-
-function atualizarContadorSelecaoCardex() {
-    const contador = document.getElementById('count-selected-cardex');
-    if(contador) {
-        contador.textContent = cardexSelectedProducts.size;
-    }
-}
-
-function mostrarBotaoEliminarCardex() {
-    const bbar = document.getElementById('bbar-m3');
-    if(!bbar) return;
-    
-    // Esconder botões normais e mostrar botão eliminar
-    bbar.innerHTML = `
-        <button class="bbar-btn" onclick="desativarModoEdicaoCardex()" style="flex:1;">
-            <span style="font-size:16px;">✕</span>
-            <span>CANCELAR</span>
-        </button>
-        <button class="bbar-btn col-red" onclick="eliminarProdutosSelecionados()" style="flex:2;">
-            <span style="font-size:16px;">🗑️</span>
-            <span>ELIMINAR (<span id="count-selected-cardex">0</span>)</span>
-        </button>
-    `;
-}
-
-function eliminarProdutosSelecionados() {
-    if(cardexSelectedProducts.size === 0) {
-        alert('Nenhum produto selecionado!');
-        return;
-    }
-    
-    if(!confirm(`Eliminar ${cardexSelectedProducts.size} produto(s) do cardex de ${CLI_ATUAL.nome}?`)) {
-        return;
-    }
-    
-    // Remover do cardex persistente (type-safe)
-    const chaveNum = String(CLI_ATUAL.num);
-    const chaveReal = CARDEX_CLIENTES[chaveNum] ? chaveNum :
-                      CARDEX_CLIENTES[CLI_ATUAL.num] ? CLI_ATUAL.num : null;
-    if(chaveReal !== null) {
-        const idsRemover = Array.from(cardexSelectedProducts).map(Number);
-        CARDEX_CLIENTES[chaveReal] = (CARDEX_CLIENTES[chaveReal] || []).filter(id => !idsRemover.includes(Number(id)));
-        dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
-    }
-    
-    // Sair modo edição
-    desativarModoEdicaoCardex();
-    
-    // Re-renderizar
-    renderCardexTotal();
-    
-    alert(`✓ ${cardexSelectedProducts.size} produto(s) eliminado(s) do cardex!`);
 }
 
 function apagarDoCardex(produtoId) {
@@ -3632,41 +3407,6 @@ function apagarDoCardex(produtoId) {
     renderCardexTotal();
 }
 
-function desativarModoEdicaoCardex() {
-    cardexEditMode = false;
-    cardexSelectedProducts.clear();
-    
-    // Esconder todas as bolinhas
-    document.querySelectorAll('.cardex-checkbox').forEach(cb => {
-        cb.style.display = 'none';
-    });
-    
-    // Restaurar barra inferior normal
-    restaurarBarraM3();
-    
-    // Re-renderizar para limpar checkboxes
-    renderCardexTotal();
-}
-
-function restaurarBarraM3() {
-    const bbar = document.getElementById('bbar-m3');
-    if(!bbar) return;
-    
-    bbar.innerHTML = `
-        <button class="bbar-btn" onclick="limparTudo()" title="Limpar pedido">
-            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            <span>LIMPAR</span>
-        </button>
-        <button class="bbar-btn col-blue" onclick="nav('m2')" title="Adicionar mais produtos">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>ADICIONAR</span>
-        </button>
-        <button class="bbar-btn col-green" onclick="nav('m4')" title="Finalizar pedido">
-            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-            <span>GRAVAR</span>
-        </button>
-    `;
-}
 function toggleTodasFamiliasCardex() {
     const todasFechadas = Object.values(FAM_CARDEX).every(v => v === true);
     const novoEstado = !todasFechadas; // true=fechar todas, false=abrir todas
@@ -3721,7 +3461,6 @@ function limparTudo() {
         nav('m2');
     } 
 }
-function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 function sairApp() {
     if (confirm("Queres resetar a aplicação?")) window.location.reload(); }
 
@@ -3872,19 +3611,28 @@ async function renderGestorFotos() {
             };
         });
 
-        document.getElementById('total-fotos-count').textContent = listaFotos.length;
+        document.getElementById('total-fotos-geral').textContent = listaFotos.length;
         document.getElementById('espaco-fotos-mb').textContent = espacoMB;
-        
+
+        // Filtro: por omissão só mostra fotos grandes (>250KB), para não sobrecarregar o ecrã
+        const soGrandes = document.getElementById('chk-fotos-grandes')?.checked;
+        const listaFiltrada = soGrandes ? listaFotos.filter(f => f.kb > 250) : listaFotos;
+        document.getElementById('total-fotos-count').textContent = listaFiltrada.length;
+
         if(listaFotos.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding:40px; color:#666; grid-column:1/-1;">📸 Nenhuma foto carregada</div>';
             return;
         }
-        
+        if(listaFiltrada.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#666; grid-column:1/-1;">✅ Nenhuma foto acima de 250KB</div>';
+            return;
+        }
+
         // Ordenar conforme opção selecionada
         if(FOTOS_ORDEM === 'tamanho') {
-            listaFotos.sort((a, b) => b.kb - a.kb);
+            listaFiltrada.sort((a, b) => b.kb - a.kb);
         } else {
-            listaFotos.sort((a, b) => a.nome.localeCompare(b.nome));
+            listaFiltrada.sort((a, b) => a.nome.localeCompare(b.nome));
         }
         
         // Atualizar botões de ordenação
@@ -3901,7 +3649,7 @@ async function renderGestorFotos() {
         }
 
         let html = '';
-        listaFotos.forEach(foto => {
+        listaFiltrada.forEach(foto => {
             const nomeDisplay = foto.nome.length > 16 ? foto.nome.substring(0, 13) + '…' : foto.nome;
             const kbDisplay = foto.kb >= 1024 ? (foto.kb/1024).toFixed(1)+' MB' : foto.kb+' KB';
             html += `
@@ -4063,9 +3811,6 @@ function sincronizarBadgesCart() {
     const badge = document.getElementById('cart-badge');
     if(badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
 }
-function reimprimir(id) { id = parseInt(id); let p = PEDIDOS_DB.find(x => parseInt(x.id) === id); CLI_ATUAL = p.cliente; CART = p.itens; document.getElementById('obs-pedido-final').value = p.obs || ""; PRINT_SOURCE = 'm5'; irParaPrintCompacto(); }
-function reimprimirCompacto(id) { id = parseInt(id); let p = PEDIDOS_DB.find(x => parseInt(x.id) === id); CLI_ATUAL = p.cliente; CART = p.itens; document.getElementById('obs-pedido-final').value = p.obs || ""; PRINT_SOURCE = 'm5'; irParaPrintCompacto(); }
-
 // Imprime o pedido diretamente a partir da Gestão de Pedidos, sem passar pela pré-visualização manual (mínimo de cliques).
 // Imprime HTML isolado num iframe escondido — nunca imprime o resto da app,
 // o que evita por completo o problema de páginas em branco.
@@ -4367,18 +4112,6 @@ function irParaPrintCompacto() {
     document.getElementById('ticket-area').innerHTML = h;
     PRINT_SOURCE = PRINT_SOURCE || 'm3';
     nav('m4');
-}
-
-function resetarPreco(id) {
-    if(!CART[id]) return;
-    const precoOriginal = DADOS.find(p => p.id === id)?.preco;
-    if(precoOriginal != null) {
-        CART[id].preco = precoOriginal;
-        delete CART[id].precoCustom;
-    }
-    // Se qty=0 e sem customizações, limpar entrada
-    if(CART[id] && CART[id].q === 0 && CART[id].nomeCustom == null) delete CART[id];
-    renderCardexTotal();
 }
 
 function buscarClientePorNumero(num) { let cli = CLIENTES_DB.find(c => c.num == num); if(cli) { ['num','nome','morada','localidade','contato','pessoa','obs'].forEach(f => document.getElementById('cli-'+f).value = cli[f] || ''); document.getElementById('cli-dia-visita').value = cli.diaVisita || ''; document.getElementById('cli-frequencia').value = getClienteFrequencia(cli); updateFrequenciaCliButtons(); } }
@@ -4988,229 +4721,6 @@ if('serviceWorker' in navigator) {
     });
 }
 
-
-
-// ═══════════════════════════════════════════════════════════
-// CATÁLOGO DE VENDAS - Foto Grande Coluna L
-// ═══════════════════════════════════════════════════════════
-
-let FAM_ESTADOS_CATALOGO = {};
-let CATALOGO_RENDERIZADO = false; // Flag de cache
-
-function abrirCatalogoVendas() {
-    // Mudar screen IMEDIATAMENTE
-    document.getElementById('m-catalogo-vendas').classList.add('active');
-    document.querySelectorAll('.screen').forEach(s => {
-        if(s.id !== 'm-catalogo-vendas') s.classList.remove('active');
-    });
-    
-    // Mostrar barra IMEDIATAMENTE
-    document.getElementById('bbar-catalogo-vendas').style.display = 'flex';
-    document.getElementById('bbar-m2').style.display = 'none';
-    document.getElementById('bbar-m3').style.display = 'none';
-    
-    // SÓ renderiza se ainda não foi renderizado OU se filtros mudaram
-    if(!CATALOGO_RENDERIZADO) {
-        requestAnimationFrame(() => {
-            renderCatalogoVendas();
-            CATALOGO_RENDERIZADO = true;
-        });
-    } else {
-        // JÁ ESTÁ RENDERIZADO - apenas atualiza quantidades
-        atualizarQuantidadesCatalogo();
-    }
-}
-
-function abrirCatalogoVendasNoProduto(produtoId) {
-    // Mudar screen IMEDIATAMENTE
-    document.getElementById('m-catalogo-vendas').classList.add('active');
-    document.querySelectorAll('.screen').forEach(s => {
-        if(s.id !== 'm-catalogo-vendas') s.classList.remove('active');
-    });
-    
-    // Mostrar barra IMEDIATAMENTE
-    document.getElementById('bbar-catalogo-vendas').style.display = 'flex';
-    document.getElementById('bbar-m2').style.display = 'none';
-    document.getElementById('bbar-m3').style.display = 'none';
-    
-    // Renderizar se necessário
-    if(!CATALOGO_RENDERIZADO) {
-        requestAnimationFrame(() => {
-            renderCatalogoVendas();
-            CATALOGO_RENDERIZADO = true;
-            
-            // Scroll até produto
-            setTimeout(() => {
-                const card = document.querySelector(`.card-catalogo-vendas img[onclick*="change(${produtoId}"]`);
-                if(card) {
-                }
-            }, 100);
-        });
-    } else {
-        atualizarQuantidadesCatalogo();
-        // Scroll imediato já que está renderizado
-        setTimeout(() => {
-            const card = document.querySelector(`.card-catalogo-vendas img[onclick*="change(${produtoId}"]`);
-            if(card) {
-            }
-        }, 50);
-    }
-}
-
-function fecharCatalogoVendas() {
-    document.getElementById('m-catalogo-vendas').classList.remove('active');
-    document.getElementById('bbar-catalogo-vendas').style.display = 'none';
-    nav('m2'); // Volta para PRODUTOS (M2), não carrinho
-}
-
-function atualizarQuantidadesCatalogo() {
-    // Atualizar APENAS as bolinhas de quantidade (SUPER RÁPIDO)
-    DADOS.forEach(p => {
-        const bolinha = document.getElementById(`qty-cat-${p.id}`);
-        if(bolinha) {
-            const q = CART[p.id]?.q || 0;
-            bolinha.textContent = q;
-            bolinha.style.display = q > 0 ? 'flex' : 'none';
-        }
-    });
-}
-
-function renderCatalogoVendas() {
-    const container = document.getElementById('catalogo-vendas-container');
-    
-    if(!DADOS.length) {
-        container.innerHTML = "<div style='text-align:center; padding:50px;'><h3>Carrega o Excel primeiro</h3></div>";
-        return;
-    }
-    
-    // Filtrar só produtos com foto (coluna L)
-    let produtosComFoto = DADOS.filter(p => p.foto && p.foto.trim() !== '');
-    
-    // Aplicar filtro de MARCA (se ativo)
-    if(MARCA_ATIVA) {
-        produtosComFoto = produtosComFoto.filter(p => 
-            p.nome.toUpperCase().includes(MARCA_ATIVA.toUpperCase())
-        );
-    }
-    
-    // Aplicar filtro de BUSCA (se ativo)
-    const busca = document.getElementById('in-busca').value.toLowerCase().trim();
-    if(busca) {
-        produtosComFoto = produtosComFoto.filter(p => 
-            p.nome.toLowerCase().includes(busca)
-        );
-    }
-    
-    if(!produtosComFoto.length) {
-        container.innerHTML = "<div style='text-align:center; padding:50px;'><h3>Nenhum produto encontrado</h3><p>Verifica os filtros ou a coluna L do Excel</p></div>";
-        return;
-    }
-    
-    // Agrupar por categoria
-    const cats = [...new Set(produtosComFoto.map(p => p.cat))].sort();
-    
-    // USAR FRAGMENT PARA SER MAIS RÁPIDO
-    const fragment = document.createDocumentFragment();
-    
-    cats.forEach(cat => {
-        let prods = produtosComFoto.filter(p => p.cat === cat);
-        if(!prods.length) return;
-        
-        if(FAM_ESTADOS_CATALOGO[cat] === undefined) FAM_ESTADOS_CATALOGO[cat] = false;
-        
-        // Criar header
-        const header = document.createElement('div');
-        header.className = 'fam-header';
-        header.setAttribute('data-cat', cat);
-        header.onclick = () => toggleFamCatalogo(cat);
-        header.innerHTML = `${cat} <span class="fam-arrow">${FAM_ESTADOS_CATALOGO[cat]?'▶':'▼'}</span>`;
-        
-        // Criar container conteúdo
-        const content = document.createElement('div');
-        content.className = 'fam-content-catalogo';
-        content.setAttribute('data-cat', cat);
-        content.style.cssText = 'display:grid; grid-template-columns:1fr; gap:8px; padding:6px;';
-        if(FAM_ESTADOS_CATALOGO[cat]) content.classList.add('hidden');
-        
-        // Renderizar produtos
-        prods.forEach(p => {
-            const q = CART[p.id]?.q || 0;
-            const nomeFoto = String(p.foto).toLowerCase();
-            const imgUrl = IMGS.get(nomeFoto) || IMGS.get(p.foto) || "";
-            
-            const card = document.createElement('div');
-            card.className = 'card-catalogo-vendas';
-            card.style.cssText = 'background:#fff; border-radius:12px; padding:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08); position:relative; margin-bottom:6px;';
-            card.innerHTML = `
-                <div style="position:relative;">
-                    <div class="b-qty" id="qty-cat-${p.id}" style="${q>0?'display:flex':'display:none'}; position:absolute; top:8px; right:8px; z-index:1000; cursor:pointer; background:#e63946; color:white; width:38px; height:38px; border-radius:50%; align-items:center; justify-content:center; font-weight:900; border:2.5px solid white; font-size:17px; box-shadow:0 2px 10px rgba(230,57,70,0.5);" onclick="change(${p.id},-1)">${q}</div>
-                    <img src="${imgUrl}" onclick="change(${p.id},1)" style="width:100%; height:70vh; object-fit:contain; cursor:pointer; border-radius:8px; background:#ffffff;" onerror="this.src='https://via.placeholder.com/400x600?text=Sem+Foto'">
-                </div>
-                <div style="margin-top:12px; text-align:center;">
-                    <div style="font-size:24px; font-weight:900; color:#333333; margin-bottom:10px;" onclick="change(${p.id},1)">${p.nome}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0 10px;">
-                        <div style="font-size:32px; font-weight:900; color:#E60000;" onclick="change(${p.id},1)">${p.preco.toFixed(2)}€</div>
-                        <div style="background:#E60000; color:white; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:700; font-size:18px;" onclick="change(${p.id}, ${p.unidades})">
-                            CX ${p.unidades}
-                        </div>
-                    </div>
-                </div>
-            `;
-            content.appendChild(card);
-        });
-        
-        fragment.appendChild(header);
-        fragment.appendChild(content);
-    });
-    
-    // INSERIR TUDO DE UMA VEZ (MUITO MAIS RÁPIDO)
-    container.innerHTML = '';
-    container.appendChild(fragment);
-}
-
-function toggleFamCatalogo(cat) {
-    FAM_ESTADOS_CATALOGO[cat] = !FAM_ESTADOS_CATALOGO[cat];
-    
-    // Atualizar DOM diretamente (SEM re-render completo)
-    const header = document.querySelector(`.fam-header[data-cat="${cat}"]`);
-    const content = document.querySelector(`.fam-content-catalogo[data-cat="${cat}"]`);
-    const arrow = header?.querySelector('.fam-arrow');
-    
-    if(FAM_ESTADOS_CATALOGO[cat]) {
-        // FECHAR
-        content?.classList.add('hidden');
-        if(arrow) arrow.textContent = '▶';
-    } else {
-        // ABRIR
-        content?.classList.remove('hidden');
-        if(arrow) arrow.textContent = '▼';
-    }
-}
-
-// Função para o botão FAMÍLIAS abrir/fechar todas no catálogo
-function toggleTodasFamiliasCatalogo() {
-    const todasFechadas = Object.values(FAM_ESTADOS_CATALOGO).every(v => v === true);
-    
-    // Atualizar estados
-    for(let cat in FAM_ESTADOS_CATALOGO) {
-        FAM_ESTADOS_CATALOGO[cat] = !todasFechadas;
-    }
-    
-    // Atualizar DOM diretamente (SEM re-render)
-    const contents = document.querySelectorAll('.fam-content-catalogo');
-    const arrows = document.querySelectorAll('.fam-header .fam-arrow');
-    
-    if(!todasFechadas) {
-        // FECHAR TODAS
-        contents.forEach(c => c.classList.add('hidden'));
-        arrows.forEach(a => a.textContent = '▶');
-    } else {
-        // ABRIR TODAS
-        contents.forEach(c => c.classList.remove('hidden'));
-        arrows.forEach(a => a.textContent = '▼');
-    }
-}
-
 // ═══════════════════════════════════════════════════════════
 // PINCH ZOOM - Aumentar/Diminuir colunas no M2
 // ═══════════════════════════════════════════════════════════
@@ -5767,33 +5277,6 @@ function imprimirPlanoSemanal() {
     nav('m4');
 }
 
-
-function exportarProdutosExcel() {
-    if (typeof DADOS === 'undefined' || DADOS.length === 0) {
-        alert('Não há produtos carregados para exportar.');
-        return;
-    }
-    try {
-        const data = DADOS.map(p => ({
-            'Código': p.id || '',
-            'Nome': p.nome || '',
-            'Preço': p.preco || 0,
-            'Unidade': p.un || '',
-            'Família': p.familia || '',
-            'Marca': p.marca || '',
-            'Segmento L': p.colL || '',
-            'Segmento M': p.colM || '',
-            'Segmento N': p.colN || ''
-        }));
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Produtos');
-        XLSX.writeFile(wb, 'DUMELHOR_PRODUTOS.xlsx');
-    } catch (err) {
-        console.error(err);
-        alert('Erro ao exportar Excel.');
-    }
-}
 </script>
 
 <script>
@@ -5903,6 +5386,64 @@ async function exportarBackup() {
     } catch(e) {
         console.error('❌ Erro ao exportar backup:', e);
         alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.');
+    }
+}
+
+// ── Exporta SÓ as fotos (sem pedidos/clientes/produtos) — para levar as fotos ──
+// para outro tablet rapidamente, sem mexer nos dados desse tablet. O ficheiro
+// resultante importa-se pelo mesmo botão IMPORTAR (usa o mesmo formato de backup).
+async function exportarBackupFotos() {
+    try {
+        console.log('📸 A iniciar exportação de fotos...');
+        const fotos = {};
+        const listaFotos = await new Promise((resolve) => {
+            if(!db) { resolve([]); return; }
+            const store = db.transaction("fotos","readonly").objectStore("fotos");
+            const reqKeys = store.getAllKeys();
+            const reqValues = store.getAll();
+            let keys = null, values = null;
+            const tentarResolver = () => {
+                if(keys === null || values === null) return;
+                resolve(keys.map((k, i) => ({ key: k, blob: values[i] })));
+            };
+            reqKeys.onsuccess = () => { keys = reqKeys.result; tentarResolver(); };
+            reqValues.onsuccess = () => { values = reqValues.result; tentarResolver(); };
+            reqKeys.onerror = () => resolve([]);
+            reqValues.onerror = () => resolve([]);
+        });
+
+        for(const { key, blob } of listaFotos) {
+            const dataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = ev => resolve(ev.target.result);
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(blob);
+            });
+            if(dataUrl) fotos[key] = dataUrl;
+        }
+
+        const numFotos = Object.keys(fotos).length;
+        if(numFotos === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
+
+        const backup = { versao: 3, data: new Date().toISOString(), fotos: fotos };
+        const json = JSON.stringify(backup);
+        const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
+        const nomeFicheiro = 'dumelhor-fotos-' + dataStr + '.json';
+        const blob = new Blob([json], { type: 'application/json' });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nomeFicheiro;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+        alert('✅ Backup de fotos exportado!\n\n📸 ' + numFotos + ' foto(s)\n\nUsa o botão IMPORTAR no outro tablet para as carregar (só as fotos são alteradas).');
+    } catch(e) {
+        console.error('❌ Erro ao exportar fotos:', e);
+        alert('❌ Erro ao exportar fotos: ' + e.message);
     }
 }
 
