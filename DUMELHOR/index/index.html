@@ -121,6 +121,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .btn-importar-grande{display:block;margin:16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
   color:#fff;border:none;border-radius:14px;padding:17px;font-size:14px;font-weight:800;text-align:center;
   cursor:pointer;box-shadow:0 4px 14px rgba(230,0,0,0.32);letter-spacing:0.3px;}
+.btn-resumo-geral{display:block;margin:10px 14px 0;background:linear-gradient(135deg,#1f1f1f,#0e0e0e);
+  color:#fff;border:none;border-radius:12px;padding:12px 14px;font-size:12px;font-weight:800;text-align:center;
+  cursor:pointer;letter-spacing:0.3px;transition:transform .1s;}
+.btn-resumo-geral:active{transform:scale(0.97);}
 
 /* ══════════════════════════════════════════════════════════════
    M3 — CATÁLOGO DENTRO DO CARRINHO (réplica exata do original)
@@ -325,6 +329,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
     <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
   </div>
   <div class="topbar-sub" id="topbar-sub-status">🕓 Mais recentes primeiro</div>
+  <button class="btn-resumo-geral" onclick="imprimirResumoGeral()">📊 Resumo Geral — Faltas &amp; Incompletos (todas as encomendas)</button>
   <div class="selecao-bar" id="selecao-bar">
     <span id="selecao-contagem">0 selecionada(s)</span>
     <div class="selecao-bar-acoes">
@@ -466,7 +471,7 @@ async function sincronizarGithub(mostrarFeedback){
         const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
         if(!rawResp.ok) continue;
         const dados = await rawResp.json();
-        const res = await importarPacote(dados);
+        const res = await importarPacote(dados, true); // só encomendas de hoje
         totalNovas += res.novas;
         totalFotos += res.fotos;
       }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
@@ -475,7 +480,7 @@ async function sincronizarGithub(mostrarFeedback){
     renderLista();
     atualizarBotaoEncomendas();
     if(status) status.textContent = '✅ Sincronizado agora mesmo';
-    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s) de hoje\n📸 ' + totalFotos + ' foto(s)');
   }catch(e){
     console.error(e);
     if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
@@ -541,8 +546,24 @@ document.getElementById('f-import').addEventListener('change', function(e){
   e.target.value = '';
 });
 
+// Verifica se a encomenda tem data de hoje (usa dataISO ou, em alternativa, o campo data já formatado)
+function ehDeHoje(pedido){
+  if(pedido && pedido.dataISO){
+    const d = new Date(pedido.dataISO);
+    if(!isNaN(d.getTime())){
+      const hoje = new Date();
+      return d.getFullYear() === hoje.getFullYear() && d.getMonth() === hoje.getMonth() && d.getDate() === hoje.getDate();
+    }
+  }
+  if(pedido && pedido.data){
+    return String(pedido.data).trim() === new Date().toLocaleDateString('pt-PT');
+  }
+  return false;
+}
+
 // Aceita tanto o pacote leve (tipo: dumelhor_encomendas) como um backup completo (tem .pedidos)
-async function importarPacote(dados){
+// apenasHoje=true filtra para só aceitar encomendas cuja data seja a de hoje (usado na sincronização automática)
+async function importarPacote(dados, apenasHoje){
   let novasEncomendas = [];
   let fotosObj = (dados && dados.fotos) || {};
   if(dados && dados.tipo === 'dumelhor_encomendas' && Array.isArray(dados.encomendas)){
@@ -557,13 +578,17 @@ async function importarPacote(dados){
     return {novas:0, fotos:0};
   }
 
-  const atuais = getPedidos();
-  novasEncomendas.forEach(nova => {
-    const idx = atuais.findIndex(p => p.id === nova.id);
-    if(idx >= 0) atuais[idx] = nova; else atuais.push(nova);
-  });
-  atuais.sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
-  savePedidos(atuais);
+  if(apenasHoje) novasEncomendas = novasEncomendas.filter(ehDeHoje);
+
+  if(novasEncomendas.length){
+    const atuais = getPedidos();
+    novasEncomendas.forEach(nova => {
+      const idx = atuais.findIndex(p => p.id === nova.id);
+      if(idx >= 0) atuais[idx] = nova; else atuais.push(nova);
+    });
+    atuais.sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
+    savePedidos(atuais);
+  }
 
   await guardarFotos(fotosObj);
   return {novas: novasEncomendas.length, fotos: Object.keys(fotosObj).length};
@@ -1021,6 +1046,87 @@ function imprimirResumo(){
     </table>`;
   }
   html += '</div>';
+
+  document.getElementById('print-area').innerHTML = html;
+  document.body.classList.add('print-resumo');
+  window.print();
+  setTimeout(()=> document.body.classList.remove('print-resumo'), 500);
+}
+
+/* =========================================================
+   RESUMO GERAL — soma, produto a produto, as quantidades em
+   falta e incompletas de TODAS as encomendas (não só uma)
+   ========================================================= */
+function imprimirResumoGeral(){
+  const pedidos = getPedidos();
+  if(!pedidos.length){ alert('Não há encomendas carregadas para gerar o resumo geral.'); return; }
+
+  const mapa = {}; // chave (ean ou nome) -> totais agregados
+
+  pedidos.forEach(p=>{
+    let sep;
+    try{ sep = JSON.parse(localStorage.getItem(LS_SEP(p.id)) || '{"status":{},"qtd":{}}'); }
+    catch(e){ sep = {status:{}, qtd:{}}; }
+    const status = sep.status || {};
+    const qtdSep = sep.qtd || {};
+    (p.itens || []).forEach(it=>{
+      const est = status[it.id];
+      if(est !== 'vermelho' && est !== 'laranja') return;
+      const chave = (it.ean && String(it.ean).trim()) ? String(it.ean).trim() : ('nome:' + String(it.nome||'').trim().toLowerCase());
+      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', faltaQtd:0, incQtd:0, pedidosAfetados:new Set()};
+      if(est === 'vermelho'){
+        mapa[chave].faltaQtd += Number(it.q) || 0;
+        mapa[chave].pedidosAfetados.add(p.id);
+      } else {
+        const sepQ = Number(qtdSep[it.id]);
+        const falta = Math.max((Number(it.q) || 0) - (isNaN(sepQ) ? 0 : sepQ), 0);
+        if(falta > 0){
+          mapa[chave].incQtd += falta;
+          mapa[chave].pedidosAfetados.add(p.id);
+        }
+      }
+    });
+  });
+
+  const linhas = Object.values(mapa).filter(l => l.faltaQtd > 0 || l.incQtd > 0);
+  if(!linhas.length){ alert('Não há produtos em falta ou incompletos em nenhuma encomenda.'); return; }
+  linhas.sort((a,b) => (b.faltaQtd + b.incQtd) - (a.faltaQtd + a.incQtd));
+
+  let totalFalta = 0, totalInc = 0;
+  linhas.forEach(l => { totalFalta += l.faltaQtd; totalInc += l.incQtd; });
+
+  const linha = l => `<tr>
+      <td style="padding:6px;border:1px solid #ccc;">${l.ean || '-'}</td>
+      <td style="padding:6px;border:1px solid #ccc;">${l.nome}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.faltaQtd || '-'}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.incQtd || '-'}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:700;">${l.faltaQtd + l.incQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidosAfetados.size}</td>
+    </tr>`;
+
+  const hoje = new Date().toLocaleDateString('pt-PT');
+  let html = `<div style="font-family:Arial,sans-serif;padding:10px;">
+    <h2 style="margin:0 0 2px;">DUMELHOR — Resumo Geral de Separação</h2>
+    <div style="font-size:13px;color:#555;margin-bottom:10px;">Encomendas consideradas: <b>${pedidos.length}</b> &nbsp;|&nbsp; Data: ${hoje}</div>
+    <table style="border-collapse:collapse;width:100%;font-size:12px;">
+      <tr style="background:#f2f2f2;">
+        <th style="padding:6px;border:1px solid #ccc;">Código</th>
+        <th style="padding:6px;border:1px solid #ccc;">Produto</th>
+        <th style="padding:6px;border:1px solid #ccc;">Qtd. em Falta</th>
+        <th style="padding:6px;border:1px solid #ccc;">Qtd. Incompleta</th>
+        <th style="padding:6px;border:1px solid #ccc;">Total</th>
+        <th style="padding:6px;border:1px solid #ccc;">Nº Encomendas</th>
+      </tr>
+      ${linhas.map(linha).join('')}
+      <tr style="font-weight:800;background:#f4f4f4;">
+        <td style="padding:6px;border:1px solid #ccc;" colspan="2">TOTAL GERAL</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalFalta}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalInc}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalFalta + totalInc}</td>
+        <td style="padding:6px;border:1px solid #ccc;"></td>
+      </tr>
+    </table>
+  </div>`;
 
   document.getElementById('print-area').innerHTML = html;
   document.body.classList.add('print-resumo');
