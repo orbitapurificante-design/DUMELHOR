@@ -1013,10 +1013,32 @@ document.addEventListener('touchend', function(){
 /* =========================================================
    IMPRESSÃO — resumo de produtos em falta (✕) e incompletos (!)
    ========================================================= */
+// Agrupa uma lista de itens/produtos por família (campo .cat), ordenando
+// as famílias e, dentro de cada uma, os produtos por ordem alfabética.
+function ordenarPorFamiliaENome(lista){
+  return [...lista].sort((a,b) => (a.cat||'zzz_sem_familia').localeCompare(b.cat||'zzz_sem_familia', 'pt') || (a.nome||'').localeCompare(b.nome||'', 'pt'));
+}
+// Constrói uma tabela HTML com cabeçalhos de família intercalados entre os produtos.
+function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:14px;">
+    <tr style="background:#f2f2f2;">${colunas.map(c=>`<th style="padding:6px;border:1px solid #ccc;">${c}</th>`).join('')}</tr>`;
+  let catAtual = null;
+  itensOrdenados.forEach(it=>{
+    const cat = it.cat || 'Sem família';
+    if(cat !== catAtual){
+      catAtual = cat;
+      html += `<tr><td colspan="${colunas.length}" style="padding:5px 6px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;">${cat}</td></tr>`;
+    }
+    html += linhaFn(it);
+  });
+  html += '</table>';
+  return html;
+}
+
 function imprimirResumo(){
   if(!PEDIDO_ATUAL) return;
-  const faltam = (PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='vermelho');
-  const incompletos = (PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='laranja');
+  const faltam = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='vermelho'));
+  const incompletos = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='laranja'));
   if(!faltam.length && !incompletos.length){ alert('Não há produtos em falta ou incompletos para imprimir.'); return; }
 
   const linha = (it, sep) => `<tr>
@@ -1033,17 +1055,11 @@ function imprimirResumo(){
 
   if(faltam.length){
     html += `<h3 style="color:#E60000;margin:14px 0 6px;">✕ EM FALTA (${faltam.length})</h3>
-    <table style="border-collapse:collapse;width:100%;font-size:12px;">
-      <tr style="background:#f2f2f2;"><th style="padding:6px;border:1px solid #ccc;">Código</th><th style="padding:6px;border:1px solid #ccc;">Produto</th><th style="padding:6px;border:1px solid #ccc;">Qtd. Pedida</th><th style="padding:6px;border:1px solid #ccc;">Qtd. Separada</th></tr>
-      ${faltam.map(it=>linha(it, 0)).join('')}
-    </table>`;
+    ${tabelaComFamilias(faltam, ['Código','Produto','Qtd. Pedida','Qtd. Separada'], it=>linha(it, 0))}`;
   }
   if(incompletos.length){
     html += `<h3 style="color:#FF8C00;margin:18px 0 6px;">! INCOMPLETOS (${incompletos.length})</h3>
-    <table style="border-collapse:collapse;width:100%;font-size:12px;">
-      <tr style="background:#f2f2f2;"><th style="padding:6px;border:1px solid #ccc;">Código</th><th style="padding:6px;border:1px solid #ccc;">Produto</th><th style="padding:6px;border:1px solid #ccc;">Qtd. Pedida</th><th style="padding:6px;border:1px solid #ccc;">Qtd. Separada</th></tr>
-      ${incompletos.map(it=>linha(it, SEPARACAO_QTD[it.id])).join('')}
-    </table>`;
+    ${tabelaComFamilias(incompletos, ['Código','Produto','Qtd. Pedida','Qtd. Separada'], it=>linha(it, SEPARACAO_QTD[it.id]))}`;
   }
   html += '</div>';
 
@@ -1083,7 +1099,7 @@ function imprimirResumoGeral(){
       if(falta <= 0) return; // nada em falta neste item, não entra no resumo
 
       const chave = (it.ean && String(it.ean).trim()) ? String(it.ean).trim() : ('nome:' + String(it.nome||'').trim().toLowerCase());
-      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', pedidaQtd:0, separadaQtd:0, faltaQtd:0, pedidosAfetados:new Set()};
+      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', cat: it.cat || '', pedidaQtd:0, separadaQtd:0, faltaQtd:0, pedidosAfetados:new Set()};
       mapa[chave].pedidaQtd += pedida;
       mapa[chave].separadaQtd += separada;
       mapa[chave].faltaQtd += falta;
@@ -1091,9 +1107,9 @@ function imprimirResumoGeral(){
     });
   });
 
-  const linhas = Object.values(mapa).filter(l => l.faltaQtd > 0);
+  let linhas = Object.values(mapa).filter(l => l.faltaQtd > 0);
   if(!linhas.length){ alert('Não há produtos em falta ou incompletos em nenhuma encomenda.'); return; }
-  linhas.sort((a,b) => b.faltaQtd - a.faltaQtd);
+  linhas = ordenarPorFamiliaENome(linhas);
 
   let totalPedida = 0, totalSeparada = 0, totalFalta = 0;
   linhas.forEach(l => { totalPedida += l.pedidaQtd; totalSeparada += l.separadaQtd; totalFalta += l.faltaQtd; });
@@ -1107,22 +1123,15 @@ function imprimirResumoGeral(){
       <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidosAfetados.size}</td>
     </tr>`;
 
+  const colunas = ['Código','Produto','Qtd. Pedida','Qtd. Separada','Qtd. em Falta','Nº Encomendas'];
   const hoje = new Date().toLocaleDateString('pt-PT');
   let html = `<div style="font-family:Arial,sans-serif;padding:10px;">
     <h2 style="margin:0 0 2px;">DUMELHOR — Resumo Geral de Separação</h2>
     <div style="font-size:13px;color:#555;margin-bottom:10px;">Encomendas consideradas: <b>${pedidos.length}</b> &nbsp;|&nbsp; Data: ${hoje}</div>
+    ${tabelaComFamilias(linhas, colunas, linha)}
     <table style="border-collapse:collapse;width:100%;font-size:12px;">
-      <tr style="background:#f2f2f2;">
-        <th style="padding:6px;border:1px solid #ccc;">Código</th>
-        <th style="padding:6px;border:1px solid #ccc;">Produto</th>
-        <th style="padding:6px;border:1px solid #ccc;">Qtd. Pedida</th>
-        <th style="padding:6px;border:1px solid #ccc;">Qtd. Separada</th>
-        <th style="padding:6px;border:1px solid #ccc;">Qtd. em Falta</th>
-        <th style="padding:6px;border:1px solid #ccc;">Nº Encomendas</th>
-      </tr>
-      ${linhas.map(linha).join('')}
       <tr style="font-weight:800;background:#f4f4f4;">
-        <td style="padding:6px;border:1px solid #ccc;" colspan="2">TOTAL GERAL</td>
+        <td style="padding:6px;border:1px solid #ccc;width:50%;" colspan="2">TOTAL GERAL</td>
         <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalPedida}</td>
         <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalSeparada}</td>
         <td style="padding:6px;border:1px solid #ccc;text-align:center;color:#E60000;">${totalFalta}</td>
