@@ -1072,35 +1072,38 @@ function imprimirResumoGeral(){
     (p.itens || []).forEach(it=>{
       const est = status[it.id];
       if(est !== 'vermelho' && est !== 'laranja') return;
-      const chave = (it.ean && String(it.ean).trim()) ? String(it.ean).trim() : ('nome:' + String(it.nome||'').trim().toLowerCase());
-      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', faltaQtd:0, incQtd:0, pedidosAfetados:new Set()};
-      if(est === 'vermelho'){
-        mapa[chave].faltaQtd += Number(it.q) || 0;
-        mapa[chave].pedidosAfetados.add(p.id);
-      } else {
+      const pedida = Number(it.q) || 0;
+      // Vermelho = nada separado (0). Laranja = a qtd que o utilizador introduziu.
+      let separada = 0;
+      if(est === 'laranja'){
         const sepQ = Number(qtdSep[it.id]);
-        const falta = Math.max((Number(it.q) || 0) - (isNaN(sepQ) ? 0 : sepQ), 0);
-        if(falta > 0){
-          mapa[chave].incQtd += falta;
-          mapa[chave].pedidosAfetados.add(p.id);
-        }
+        separada = isNaN(sepQ) ? 0 : sepQ;
       }
+      const falta = Math.max(pedida - separada, 0);
+      if(falta <= 0) return; // nada em falta neste item, não entra no resumo
+
+      const chave = (it.ean && String(it.ean).trim()) ? String(it.ean).trim() : ('nome:' + String(it.nome||'').trim().toLowerCase());
+      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', pedidaQtd:0, separadaQtd:0, faltaQtd:0, pedidosAfetados:new Set()};
+      mapa[chave].pedidaQtd += pedida;
+      mapa[chave].separadaQtd += separada;
+      mapa[chave].faltaQtd += falta;
+      mapa[chave].pedidosAfetados.add(p.id);
     });
   });
 
-  const linhas = Object.values(mapa).filter(l => l.faltaQtd > 0 || l.incQtd > 0);
+  const linhas = Object.values(mapa).filter(l => l.faltaQtd > 0);
   if(!linhas.length){ alert('Não há produtos em falta ou incompletos em nenhuma encomenda.'); return; }
-  linhas.sort((a,b) => (b.faltaQtd + b.incQtd) - (a.faltaQtd + a.incQtd));
+  linhas.sort((a,b) => b.faltaQtd - a.faltaQtd);
 
-  let totalFalta = 0, totalInc = 0;
-  linhas.forEach(l => { totalFalta += l.faltaQtd; totalInc += l.incQtd; });
+  let totalPedida = 0, totalSeparada = 0, totalFalta = 0;
+  linhas.forEach(l => { totalPedida += l.pedidaQtd; totalSeparada += l.separadaQtd; totalFalta += l.faltaQtd; });
 
   const linha = l => `<tr>
       <td style="padding:6px;border:1px solid #ccc;">${l.ean || '-'}</td>
       <td style="padding:6px;border:1px solid #ccc;">${l.nome}</td>
-      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.faltaQtd || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.incQtd || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:700;">${l.faltaQtd + l.incQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidaQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.separadaQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:700;color:#E60000;">${l.faltaQtd}</td>
       <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidosAfetados.size}</td>
     </tr>`;
 
@@ -1112,17 +1115,17 @@ function imprimirResumoGeral(){
       <tr style="background:#f2f2f2;">
         <th style="padding:6px;border:1px solid #ccc;">Código</th>
         <th style="padding:6px;border:1px solid #ccc;">Produto</th>
+        <th style="padding:6px;border:1px solid #ccc;">Qtd. Pedida</th>
+        <th style="padding:6px;border:1px solid #ccc;">Qtd. Separada</th>
         <th style="padding:6px;border:1px solid #ccc;">Qtd. em Falta</th>
-        <th style="padding:6px;border:1px solid #ccc;">Qtd. Incompleta</th>
-        <th style="padding:6px;border:1px solid #ccc;">Total</th>
         <th style="padding:6px;border:1px solid #ccc;">Nº Encomendas</th>
       </tr>
       ${linhas.map(linha).join('')}
       <tr style="font-weight:800;background:#f4f4f4;">
         <td style="padding:6px;border:1px solid #ccc;" colspan="2">TOTAL GERAL</td>
-        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalFalta}</td>
-        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalInc}</td>
-        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalFalta + totalInc}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalPedida}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalSeparada}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;color:#E60000;">${totalFalta}</td>
         <td style="padding:6px;border:1px solid #ccc;"></td>
       </tr>
     </table>
