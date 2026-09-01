@@ -70,7 +70,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .m1-footer{margin-top:26px;font-size:10px;color:#000;letter-spacing:1px;text-align:center;}
 
 /* ---------- BARRA SUPERIOR (M2) ---------- */
-#m2{background:var(--greige);}
+#m2{background:var(--greige); padding-bottom:74px;}
 .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#1f1f1f,#0e0e0e);color:#fff;
   display:flex;align-items:center;gap:10px;padding:14px 14px;box-shadow:0 3px 12px rgba(0,0,0,0.28);}
 .topbar .voltar{background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;
@@ -121,10 +121,6 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .btn-importar-grande{display:block;margin:16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
   color:#fff;border:none;border-radius:14px;padding:17px;font-size:14px;font-weight:800;text-align:center;
   cursor:pointer;box-shadow:0 4px 14px rgba(230,0,0,0.32);letter-spacing:0.3px;}
-.btn-resumo-geral{display:block;margin:10px 14px 0;background:linear-gradient(135deg,#1f1f1f,#0e0e0e);
-  color:#fff;border:none;border-radius:12px;padding:12px 14px;font-size:12px;font-weight:800;text-align:center;
-  cursor:pointer;letter-spacing:0.3px;transition:transform .1s;}
-.btn-resumo-geral:active{transform:scale(0.97);}
 
 /* ══════════════════════════════════════════════════════════════
    M3 — CATÁLOGO DENTRO DO CARRINHO (réplica exata do original)
@@ -243,33 +239,38 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 /* ---------- BOTTOM BAR (M3) — igual à do catálogo original ---------- */
 .bottom-bar {
     position: fixed; bottom: 0; left: 0; width: 100%;
-    background: #FFFFFF;
-    padding: 4px 0 6px;
+    background: rgba(255,255,255,0.86);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    padding: 6px 8px 8px;
     display: none; align-items: stretch; justify-content: space-around;
-    z-index: 2500; box-sizing: border-box; height: 58px;
-    border-top: 1px solid #E0E0E0;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    z-index: 2500; box-sizing: border-box; height: 62px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.08);
 }
 .bottom-bar.show{display:flex;}
 .bbar-btn {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 2px; border: none; background: transparent;
-    padding: 0 2px; cursor: pointer;
-    color: #B0B0B0;
+    gap: 3px; border: none; background: transparent;
+    padding: 6px 2px; margin:0 2px; border-radius:14px;
+    cursor: pointer;
+    color: #9a9a9a;
     font-size: 9px !important; font-weight: 700; letter-spacing: 0.2px;
     text-transform: uppercase; flex: 1;
-    transition: color 0.15s;
+    transition: color 0.15s, background-color 0.15s, transform .12s;
     -webkit-tap-highlight-color: transparent;
     position: relative;
 }
 .bbar-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.bbar-btn:active{opacity:0.6;}
+.bbar-btn:active{transform:scale(0.92); background:rgba(0,0,0,0.06);}
 .bbar-btn.col-green{color:#00A651;}
-.bbar-btn.ativo{color:var(--primary);}
-.bbar-btn.ativo::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2.5px;background:var(--primary);border-radius:0 0 3px 3px;}
+.bbar-btn.ativo{color:var(--primary); background:rgba(230,0,0,0.08);}
+.bbar-btn.ativo::after{content:'';position:absolute;top:-6px;left:26%;right:26%;height:2.5px;background:var(--primary);border-radius:0 0 3px 3px;}
 
 /* ---------- IMPRESSÃO ---------- */
 @media print{
+  html, body{height:auto !important; overflow:visible !important;}
+  .screen{position:static !important; overflow:visible !important; height:auto !important; inset:auto !important;}
   body *{visibility:hidden;}
   #ticket-area, #ticket-area *{visibility:visible;}
   #ticket-area{position:absolute;left:0;top:0;width:100%;}
@@ -324,12 +325,8 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="topbar">
     <button class="voltar" onclick="history.back()">←</button>
     <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
-    <button class="act" id="btn-selecionar" onclick="alternarModoSelecao()">☑️ Selecionar</button>
-    <button class="act" id="btn-sync" onclick="sincronizarGithub(true)">🔄 Sincronizar</button>
-    <button class="act" onclick="document.getElementById('f-import').click()">📥 Importar</button>
   </div>
   <div class="topbar-sub" id="topbar-sub-status">🕓 Mais recentes primeiro</div>
-  <button class="btn-resumo-geral" onclick="imprimirResumoGeral()">📊 Resumo Geral — Faltas &amp; Incompletos (todas as encomendas)</button>
   <div class="selecao-bar" id="selecao-bar">
     <span id="selecao-contagem">0 selecionada(s)</span>
     <div class="selecao-bar-acoes">
@@ -340,6 +337,28 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <input type="file" id="f-import" accept=".json" multiple style="display:none">
   <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
   <div id="lista-encomendas"></div>
+</div>
+<div class="bottom-bar" id="bbar-m2">
+    <button class="bbar-btn" onclick="imprimirResumoGeral()" title="Resumo geral de faltas e incompletos">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>RESUMO TOTAL</span>
+    </button>
+    <button class="bbar-btn" onclick="history.back()" title="Voltar ao menu anterior">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>VOLTAR</span>
+    </button>
+    <button class="bbar-btn" id="btn-selecionar" onclick="alternarModoSelecao()" title="Selecionar encomendas">
+        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span id="btn-selecionar-label">SELECIONAR</span>
+    </button>
+    <button class="bbar-btn" id="btn-sync" onclick="sincronizarGithub(true)" title="Sincronizar encomendas de hoje">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>SINCRONIZAR</span>
+    </button>
+    <button class="bbar-btn" onclick="document.getElementById('f-import').click()" title="Importar ficheiro(s)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>IMPORTAR</span>
+    </button>
 </div>
 
 <!-- ================= M3 — CATÁLOGO / SEPARAÇÃO (réplica exata) ================= -->
@@ -423,6 +442,7 @@ async function obterFotoParaProduto(nomeFoto){
    ========================================================= */
 const LS_PEDIDOS = 'DM_RESIDUAL_PEDIDOS';
 const LS_SEP = id => 'DM_RESIDUAL_SEP_' + id;
+const LS_NOTAS = id => 'DM_RESIDUAL_NOTAS_' + id;
 
 function getPedidos(){ try{ return JSON.parse(localStorage.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
 function savePedidos(lista){ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
@@ -498,6 +518,7 @@ function mostrarTela(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.getElementById('bbar-m3').classList.toggle('show', id === 'm3');
+  document.getElementById('bbar-m2').classList.toggle('show', id === 'm2');
   window.scrollTo(0,0);
 }
 function irM1(){ history.pushState({tela:'m1'}, '', location.href); mostrarM1(); }
@@ -637,7 +658,8 @@ let SELECIONADOS = new Set();
 function alternarModoSelecao(){
   MODO_SELECAO = !MODO_SELECAO;
   SELECIONADOS.clear();
-  document.getElementById('btn-selecionar').textContent = MODO_SELECAO ? '✕ Fechar seleção' : '☑️ Selecionar';
+  document.getElementById('btn-selecionar-label').textContent = MODO_SELECAO ? 'FECHAR' : 'SELECIONAR';
+  document.getElementById('btn-selecionar').classList.toggle('ativo', MODO_SELECAO);
   document.getElementById('btn-sync').style.display = MODO_SELECAO ? 'none' : '';
   document.getElementById('selecao-bar').classList.toggle('show', MODO_SELECAO);
   renderLista();
@@ -731,6 +753,7 @@ let IMGS_LOCAL = new Map();
 let FAM_ESTADOS_TICKET = {};
 let SEPARACAO_STATUS = {};
 let SEPARACAO_QTD = {};
+let NOTAS_ESTADO = {};
 let _cliqueTimerSeparacao = {};
 let FILTRO_SEPARACAO_TICKET = 'todos';
 let CAT_COLUNAS = parseInt(localStorage.getItem('DM_RESIDUAL_CAT_COLUNAS')) || 5;
@@ -748,6 +771,7 @@ async function mostrarM3(id){
   const guardado = JSON.parse(localStorage.getItem(LS_SEP(id)) || '{"status":{},"qtd":{}}');
   SEPARACAO_STATUS = guardado.status || {};
   SEPARACAO_QTD = guardado.qtd || {};
+  NOTAS_ESTADO = JSON.parse(localStorage.getItem(LS_NOTAS(id)) || '{}');
   FAM_ESTADOS_TICKET = {};
   FILTRO_SEPARACAO_TICKET = 'todos';
 
@@ -823,6 +847,30 @@ function definirEstadoSeparacao(id, estado){
 function guardarQtdSeparada(id, valor){
   SEPARACAO_QTD[id] = valor === '' ? '' : Number(valor);
   guardarSeparacaoAtual();
+}
+
+// Estado das notas do pedido: normal (por marcar) -> visto (✓) -> atenção (!) -> pendente (✕) -> normal
+const NOTA_ICONE = {normal:'○', visto:'✓', atencao:'!', pendente:'✕'};
+const NOTA_COR   = {normal:'#cfcfcf', visto:'#16a34a', atencao:'#f97316', pendente:'#dc2626'};
+const NOTA_SEQ   = ['normal','visto','atencao','pendente'];
+
+function guardarNotasAtual(){
+  if(!PEDIDO_ATUAL) return;
+  localStorage.setItem(LS_NOTAS(PEDIDO_ATUAL.id), JSON.stringify(NOTAS_ESTADO));
+}
+
+function ciclarNota(idx){
+  const atual = NOTAS_ESTADO[idx] || 'normal';
+  const proximo = NOTA_SEQ[(NOTA_SEQ.indexOf(atual) + 1) % NOTA_SEQ.length];
+  NOTAS_ESTADO[idx] = proximo;
+  guardarNotasAtual();
+  const badge = document.getElementById(`nota-badge-${idx}`);
+  if(badge){
+    badge.textContent = NOTA_ICONE[proximo];
+    badge.style.borderColor = NOTA_COR[proximo];
+    badge.style.background = proximo === 'normal' ? '#fff' : NOTA_COR[proximo];
+    badge.style.color = proximo === 'normal' ? NOTA_COR.normal : '#fff';
+  }
 }
 
 // Abrir/fechar UMA família
@@ -966,10 +1014,20 @@ function renderCatalogoM3(){
   html += `</div></div></div>`;
 
   if(PEDIDO_ATUAL.obs && PEDIDO_ATUAL.obs.trim()){
+    const linhasNota = PEDIDO_ATUAL.obs.split('\n').map(l=>l.trim()).filter(l=>l.length);
     html += `<div class="cat-page" style="page-break-before:always;">
       <div style="border:1px solid #000; border-radius:8px; padding:12px 16px; margin-top:10px;">
-          <div style="font-size:13px; font-weight:900; letter-spacing:0.5px; margin-bottom:8px; color:#1A1A1A;">📝 NOTAS DO PEDIDO</div>
-          <div style="font-size:12px; line-height:1.6; color:#333;">${PEDIDO_ATUAL.obs.replace(/\n/g,'<br>')}</div>
+          <div style="font-size:13px; font-weight:900; letter-spacing:0.5px; margin-bottom:10px; color:#1A1A1A;">📝 NOTAS DO PEDIDO</div>
+          ${linhasNota.map((linhaTxt, idx) => {
+            const est = NOTAS_ESTADO[idx] || 'normal';
+            return `<div class="nota-linha" style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #e2e2e2;">
+              <button class="nota-badge" id="nota-badge-${idx}" onclick="ciclarNota(${idx})"
+                style="flex-shrink:0; width:28px; height:28px; border-radius:50%; border:2px solid ${NOTA_COR[est]};
+                background:${est==='normal' ? '#fff' : NOTA_COR[est]}; color:${est==='normal' ? NOTA_COR.normal : '#fff'};
+                font-weight:900; font-size:14px; display:flex; align-items:center; justify-content:center; cursor:pointer;">${NOTA_ICONE[est]}</button>
+              <div style="font-size:15px; line-height:1.6; color:#333;">${linhaTxt}</div>
+            </div>`;
+          }).join('')}
       </div>
     </div>`;
   }
@@ -1039,7 +1097,11 @@ function imprimirResumo(){
   if(!PEDIDO_ATUAL) return;
   const faltam = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='vermelho'));
   const incompletos = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='laranja'));
-  if(!faltam.length && !incompletos.length){ alert('Não há produtos em falta ou incompletos para imprimir.'); return; }
+  const notasPendentes = (PEDIDO_ATUAL.obs||'').split('\n').map(l=>l.trim()).filter(l=>l.length)
+    .map((texto, idx) => ({texto, estado: NOTAS_ESTADO[idx] || 'normal'}))
+    .filter(n => n.estado === 'atencao' || n.estado === 'pendente');
+
+  if(!faltam.length && !incompletos.length && !notasPendentes.length){ alert('Não há produtos em falta/incompletos nem notas pendentes para imprimir.'); return; }
 
   const linha = (it, sep) => `<tr>
       <td style="padding:6px;border:1px solid #ccc;">${it.ean||''}</td>
@@ -1060,6 +1122,15 @@ function imprimirResumo(){
   if(incompletos.length){
     html += `<h3 style="color:#FF8C00;margin:18px 0 6px;">! INCOMPLETOS (${incompletos.length})</h3>
     ${tabelaComFamilias(incompletos, ['Código','Produto','Qtd. Pedida','Qtd. Separada'], it=>linha(it, SEPARACAO_QTD[it.id]))}`;
+  }
+  if(notasPendentes.length){
+    html += `<h3 style="color:#1A1A1A;margin:18px 0 6px;">📝 NOTAS PENDENTES (${notasPendentes.length})</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:15px;">
+      ${notasPendentes.map(n=>`<tr>
+        <td style="padding:7px;border:1px solid #ccc;width:36px;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
+      </tr>`).join('')}
+    </table>`;
   }
   html += '</div>';
 
@@ -1108,8 +1179,24 @@ function imprimirResumoGeral(){
   });
 
   let linhas = Object.values(mapa).filter(l => l.faltaQtd > 0);
-  if(!linhas.length){ alert('Não há produtos em falta ou incompletos em nenhuma encomenda.'); return; }
   linhas = ordenarPorFamiliaENome(linhas);
+
+  // Notas pendentes (marcadas com ! ou ✕) de todas as encomendas
+  const notasPendentesGeral = [];
+  pedidos.forEach(p=>{
+    let notasEstado;
+    try{ notasEstado = JSON.parse(localStorage.getItem(LS_NOTAS(p.id)) || '{}'); }
+    catch(e){ notasEstado = {}; }
+    (p.obs || '').split('\n').map(l=>l.trim()).filter(l=>l.length).forEach((texto, idx)=>{
+      const est = notasEstado[idx] || 'normal';
+      if(est === 'atencao' || est === 'pendente'){
+        notasPendentesGeral.push({cliente: (p.cliente && p.cliente.nome) || p.cliente || '(sem nome)', texto, estado: est});
+      }
+    });
+  });
+  notasPendentesGeral.sort((a,b) => String(a.cliente).localeCompare(String(b.cliente), 'pt'));
+
+  if(!linhas.length && !notasPendentesGeral.length){ alert('Não há produtos em falta/incompletos nem notas pendentes em nenhuma encomenda.'); return; }
 
   let totalPedida = 0, totalSeparada = 0, totalFalta = 0;
   linhas.forEach(l => { totalPedida += l.pedidaQtd; totalSeparada += l.separadaQtd; totalFalta += l.faltaQtd; });
@@ -1127,9 +1214,11 @@ function imprimirResumoGeral(){
   const hoje = new Date().toLocaleDateString('pt-PT');
   let html = `<div style="font-family:Arial,sans-serif;padding:10px;">
     <h2 style="margin:0 0 2px;">DUMELHOR — Resumo Geral de Separação</h2>
-    <div style="font-size:13px;color:#555;margin-bottom:10px;">Encomendas consideradas: <b>${pedidos.length}</b> &nbsp;|&nbsp; Data: ${hoje}</div>
-    ${tabelaComFamilias(linhas, colunas, linha)}
-    <table style="border-collapse:collapse;width:100%;font-size:12px;">
+    <div style="font-size:13px;color:#555;margin-bottom:10px;">Encomendas consideradas: <b>${pedidos.length}</b> &nbsp;|&nbsp; Data: ${hoje}</div>`;
+
+  if(linhas.length){
+    html += `${tabelaComFamilias(linhas, colunas, linha)}
+    <table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:14px;">
       <tr style="font-weight:800;background:#f4f4f4;">
         <td style="padding:6px;border:1px solid #ccc;width:50%;" colspan="2">TOTAL GERAL</td>
         <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalPedida}</td>
@@ -1137,8 +1226,25 @@ function imprimirResumoGeral(){
         <td style="padding:6px;border:1px solid #ccc;text-align:center;color:#E60000;">${totalFalta}</td>
         <td style="padding:6px;border:1px solid #ccc;"></td>
       </tr>
-    </table>
-  </div>`;
+    </table>`;
+  }
+
+  if(notasPendentesGeral.length){
+    html += `<h3 style="color:#1A1A1A;margin:18px 0 6px;">📝 NOTAS PENDENTES (${notasPendentesGeral.length})</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:15px;">
+      <tr style="background:#f2f2f2;">
+        <th style="padding:7px;border:1px solid #ccc;width:36px;"></th>
+        <th style="padding:7px;border:1px solid #ccc;">Cliente</th>
+        <th style="padding:7px;border:1px solid #ccc;">Nota</th>
+      </tr>
+      ${notasPendentesGeral.map(n=>`<tr>
+        <td style="padding:7px;border:1px solid #ccc;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-weight:700;">${n.cliente}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
+      </tr>`).join('')}
+    </table>`;
+  }
+  html += '</div>';
 
   document.getElementById('print-area').innerHTML = html;
   document.body.classList.add('print-resumo');
