@@ -93,8 +93,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .selecao-bar-acoes{display:flex;gap:8px;}
 .selecao-btn{border:none;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;}
 .selecao-btn.cancelar{background:rgba(255,255,255,0.14);color:#fff;}
+.selecao-btn.tudo{background:rgba(255,255,255,0.14);color:#fff;}
+.selecao-btn.tudo.ativo{background:var(--primary);color:#fff;}
 .selecao-btn.apagar{background:var(--primary);color:#fff;}
-.selecao-btn.apagar:active, .selecao-btn.cancelar:active{opacity:0.7;}
+.selecao-btn.apagar:active, .selecao-btn.cancelar:active, .selecao-btn.tudo:active{opacity:0.7;}
 .enc-checkbox{width:22px;height:22px;border-radius:50%;border:2px solid #C9C1B2;flex-shrink:0;
   display:none;align-items:center;justify-content:center;background:#fff;font-size:13px;color:#fff;font-weight:900;}
 .enc-card.modo-selecao .enc-checkbox{display:flex;}
@@ -330,6 +332,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   <div class="selecao-bar" id="selecao-bar">
     <span id="selecao-contagem">0 selecionada(s)</span>
     <div class="selecao-bar-acoes">
+      <button class="selecao-btn tudo" id="btn-selecionar-tudo" onclick="alternarSelecaoTudo()">☑️ Selecionar tudo</button>
       <button class="selecao-btn cancelar" onclick="alternarModoSelecao()">Cancelar</button>
       <button class="selecao-btn apagar" onclick="apagarSelecionadas()">🗑️ Apagar selecionadas</button>
     </div>
@@ -672,8 +675,26 @@ function alternarSelecaoEncomenda(id){
   if(card) card.classList.toggle('selecionado', SELECIONADOS.has(id));
 }
 
+function alternarSelecaoTudo(){
+  const pedidos = getPedidos();
+  if(!pedidos.length) return;
+  if(SELECIONADOS.size >= pedidos.length){
+    SELECIONADOS.clear();
+  } else {
+    pedidos.forEach(p => SELECIONADOS.add(p.id));
+  }
+  renderLista();
+}
+
 function atualizarContagemSelecao(){
   document.getElementById('selecao-contagem').textContent = SELECIONADOS.size + ' selecionada(s)';
+  const total = getPedidos().length;
+  const btnTudo = document.getElementById('btn-selecionar-tudo');
+  if(btnTudo){
+    const tudoSelecionado = total > 0 && SELECIONADOS.size >= total;
+    btnTudo.textContent = tudoSelecionado ? '☐ Desmarcar tudo' : '☑️ Selecionar tudo';
+    btnTudo.classList.toggle('ativo', tudoSelecionado);
+  }
 }
 
 function apagarSelecionadas(){
@@ -870,7 +891,10 @@ function ciclarNota(idx){
     badge.style.borderColor = NOTA_COR[proximo];
     badge.style.background = proximo === 'normal' ? '#fff' : NOTA_COR[proximo];
     badge.style.color = proximo === 'normal' ? NOTA_COR.normal : '#fff';
+    const linha = badge.closest('.nota-linha');
+    if(linha) linha.setAttribute('data-estado', proximo);
   }
+  aplicarFiltroSeparacaoTicket();
 }
 
 // Abrir/fechar UMA família
@@ -923,6 +947,15 @@ function aplicarFiltroSeparacaoTicket(){
     grids.forEach(g => g.style.display = temVisivel ? '' : 'none');
     headers.forEach(h => h.style.display = temVisivel ? '' : 'none');
   });
+
+  // O mesmo filtro aplica-se às notas do pedido: verde=visto, vermelho=pendente, laranja=atenção.
+  // Em "todos" mostram-se todas; nos restantes escondem-se as já vistas e as que não correspondem.
+  const mapaFiltroNota = {verde:'visto', vermelho:'pendente', laranja:'atencao'};
+  document.querySelectorAll('#ticket-area .nota-linha').forEach(linha=>{
+    const est = linha.getAttribute('data-estado') || 'normal';
+    linha.style.display = (filtro === 'todos' || est === mapaFiltroNota[filtro]) ? 'flex' : 'none';
+  });
+
   const btn = document.getElementById('btn-filtro-separacao');
   if(btn){
     const cores = {todos:'#B0B0B0', verde:'#16a34a', vermelho:'#dc2626', laranja:'#f97316'};
@@ -1020,7 +1053,7 @@ function renderCatalogoM3(){
           <div style="font-size:13px; font-weight:900; letter-spacing:0.5px; margin-bottom:10px; color:#1A1A1A;">📝 NOTAS DO PEDIDO</div>
           ${linhasNota.map((linhaTxt, idx) => {
             const est = NOTAS_ESTADO[idx] || 'normal';
-            return `<div class="nota-linha" style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #e2e2e2;">
+            return `<div class="nota-linha" data-estado="${est}" style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #e2e2e2;">
               <button class="nota-badge" id="nota-badge-${idx}" onclick="ciclarNota(${idx})"
                 style="flex-shrink:0; width:28px; height:28px; border-radius:50%; border:2px solid ${NOTA_COR[est]};
                 background:${est==='normal' ? '#fff' : NOTA_COR[est]}; color:${est==='normal' ? NOTA_COR.normal : '#fff'};
@@ -1085,7 +1118,7 @@ function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
     const cat = it.cat || 'Sem família';
     if(cat !== catAtual){
       catAtual = cat;
-      html += `<tr><td colspan="${colunas.length}" style="padding:5px 6px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;">${cat}</td></tr>`;
+      html += `<tr><td colspan="${colunas.length}" style="padding:6px 6px 6px 20px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;">${cat}</td></tr>`;
     }
     html += linhaFn(it);
   });
@@ -1230,6 +1263,16 @@ function imprimirResumoGeral(){
   }
 
   if(notasPendentesGeral.length){
+    let clienteAnterior = null;
+    const linhasNotas = notasPendentesGeral.map(n=>{
+      const mostrarCliente = n.cliente !== clienteAnterior;
+      clienteAnterior = n.cliente;
+      return `<tr>
+        <td style="padding:7px;border:1px solid #ccc;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-weight:700;">${mostrarCliente ? n.cliente : ''}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
+      </tr>`;
+    }).join('');
     html += `<h3 style="color:#1A1A1A;margin:18px 0 6px;">📝 NOTAS PENDENTES (${notasPendentesGeral.length})</h3>
     <table style="border-collapse:collapse;width:100%;font-size:15px;">
       <tr style="background:#f2f2f2;">
@@ -1237,11 +1280,7 @@ function imprimirResumoGeral(){
         <th style="padding:7px;border:1px solid #ccc;">Cliente</th>
         <th style="padding:7px;border:1px solid #ccc;">Nota</th>
       </tr>
-      ${notasPendentesGeral.map(n=>`<tr>
-        <td style="padding:7px;border:1px solid #ccc;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
-        <td style="padding:7px;border:1px solid #ccc;font-weight:700;">${n.cliente}</td>
-        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
-      </tr>`).join('')}
+      ${linhasNotas}
     </table>`;
   }
   html += '</div>';
