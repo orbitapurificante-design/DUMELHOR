@@ -381,6 +381,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
         <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
         <span>FILTRO</span>
     </button>
+    <button class="bbar-btn" id="btn-tudo-separado" onclick="alternarTudoSeparado()" title="Marcar/desmarcar todos os produtos">
+        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span id="btn-tudo-separado-label">TUDO</span>
+    </button>
     <button class="bbar-btn col-green" onclick="window.print()">
         <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         <span>IMPRIMIR</span>
@@ -818,6 +822,34 @@ function guardarSeparacaoAtual(){
   localStorage.setItem(LS_SEP(PEDIDO_ATUAL.id), JSON.stringify({status:SEPARACAO_STATUS, qtd:SEPARACAO_QTD}));
 }
 
+// Marca todos os produtos da encomenda como separados (verde) de uma só vez,
+// ou desmarca-os todos de volta ao estado normal (funciona como alternância).
+function alternarTudoSeparado(){
+  if(!PEDIDO_ATUAL) return;
+  const itens = PEDIDO_ATUAL.itens || [];
+  if(!itens.length) return;
+  const todosVerdes = itens.every(it => SEPARACAO_STATUS[it.id] === 'verde');
+  if(todosVerdes){
+    if(!confirm('Desmarcar todos os produtos desta encomenda?')) return;
+    itens.forEach(it => { delete SEPARACAO_STATUS[it.id]; delete SEPARACAO_QTD[it.id]; });
+  } else {
+    if(!confirm('Marcar todos os produtos desta encomenda como separados?')) return;
+    itens.forEach(it => { SEPARACAO_STATUS[it.id] = 'verde'; delete SEPARACAO_QTD[it.id]; });
+  }
+  guardarSeparacaoAtual();
+  renderCatalogoM3();
+}
+
+function atualizarBotaoTudoSeparado(){
+  const btn = document.getElementById('btn-tudo-separado');
+  const label = document.getElementById('btn-tudo-separado-label');
+  if(!btn || !label || !PEDIDO_ATUAL) return;
+  const itens = PEDIDO_ATUAL.itens || [];
+  const todosVerdes = itens.length > 0 && itens.every(it => SEPARACAO_STATUS[it.id] === 'verde');
+  label.textContent = todosVerdes ? 'DESMARCAR' : 'TUDO';
+  btn.classList.toggle('ativo', todosVerdes);
+}
+
 // Clique único vs. duplo clique na foto do produto — igual à app original
 function handleCliqueSeparacao(id){
   if(_cliqueTimerSeparacao[id]){
@@ -863,6 +895,7 @@ function definirEstadoSeparacao(id, estado){
   }
 
   // Atualiza também a bolinha de estado na lista (M2), quando lá voltarmos
+  atualizarBotaoTudoSeparado();
 }
 
 function guardarQtdSeparada(id, valor){
@@ -1067,6 +1100,7 @@ function renderCatalogoM3(){
 
   document.getElementById('ticket-area').innerHTML = html;
   aplicarFiltroSeparacaoTicket();
+  atualizarBotaoTudoSeparado();
 }
 
 /* =========================================================
@@ -1110,15 +1144,19 @@ function ordenarPorFamiliaENome(lista){
   return [...lista].sort((a,b) => (a.cat||'zzz_sem_familia').localeCompare(b.cat||'zzz_sem_familia', 'pt') || (a.nome||'').localeCompare(b.nome||'', 'pt'));
 }
 // Constrói uma tabela HTML com cabeçalhos de família intercalados entre os produtos.
+// A tabela em si fica deslocada um pouco para a direita; a barra da família não
+// acompanha esse deslocamento (perde a borda esquerda), ficando "recuada" para
+// trás em relação ao início da coluna do código de barras — cria destaque.
 function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
-  let html = `<table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:14px;">
+  const RECUO = 14;
+  let html = `<table style="border-collapse:collapse;width:calc(100% - ${RECUO}px);margin:0 0 14px ${RECUO}px;font-size:12px;">
     <tr style="background:#f2f2f2;">${colunas.map(c=>`<th style="padding:6px;border:1px solid #ccc;">${c}</th>`).join('')}</tr>`;
   let catAtual = null;
   itensOrdenados.forEach(it=>{
     const cat = it.cat || 'Sem família';
     if(cat !== catAtual){
       catAtual = cat;
-      html += `<tr><td colspan="${colunas.length}" style="padding:6px 6px 6px 20px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;">${cat}</td></tr>`;
+      html += `<tr><td colspan="${colunas.length}" style="position:relative;left:-${RECUO}px;width:calc(100% + ${RECUO}px);padding:6px 6px 6px 8px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;border-left:none;">${cat}</td></tr>`;
     }
     html += linhaFn(it);
   });
