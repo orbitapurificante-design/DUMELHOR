@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="theme-color" content="#E60000">
+    <meta name="theme-color" content="#E60000" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#E60000" media="(prefers-color-scheme: dark)">
     <link rel="manifest" href="./manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
     <link rel="apple-touch-icon" href="./icon-192.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DUMELHOR PRO V33 IDB</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -47,7 +49,15 @@
         
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        html { scroll-padding-top: 70px; }
+        html { scroll-padding-top: 70px; background: var(--primary); }
+        /* Pinta a faixa por baixo da barra de estado do Android (hora/bateria) quando a app
+           é aberta a partir do ícone (instalada / standalone) — em separador normal do Chrome
+           quem trata disso é o theme-color acima. */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; right: 0;
+            height: env(safe-area-inset-top, 0px); background: var(--primary);
+            z-index: 3100; pointer-events: none;
+        }
         body { font-family: 'Montserrat', 'DM Sans', sans-serif; margin: 0; background: var(--bg-light); color: var(--text-main); -webkit-tap-highlight-color: transparent; font-size: 14px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         /* Android mobile optimizations */
         input, button, select, textarea { font-family: 'Montserrat', sans-serif; font-size: 13px !important; }
@@ -63,6 +73,10 @@
             width: 100%; overflow: hidden;
         }
         header.hidden { transform: translateY(-100%); }
+        @media (display-mode: standalone), (display-mode: fullscreen) {
+            header { height: calc(48px + env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+            .screen { padding-top: calc(48px + env(safe-area-inset-top, 0px)); }
+        }
         header button[onclick="toggleMenu()"] { 
             font-size: 26px !important; background: transparent !important; border: none !important; cursor: pointer; 
             color: white; border-radius: 0; width: 36px; height: 36px; min-width:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1; padding:0;
@@ -228,21 +242,21 @@
             font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; 
         }
 
-        /* ── BOTTOM BAR — white bg, grey inactive, red active ── */
+        /* ── BOTTOM BAR — invertida: fundo vermelho, ícones/texto brancos ── */
         .bottom-bar, .cart-bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #FFFFFF;
+            background: var(--primary);
             padding: 4px 0 6px;
             display: flex; align-items: stretch; justify-content: space-around;
             z-index: 2500; box-sizing: border-box; height: 56px;
-            border-top: 1px solid #E0E0E0;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
         }
         .bbar-btn {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             gap: 2px; border: none; background: transparent;
             padding: 0 2px; cursor: pointer;
-            color: #B0B0B0;
+            color: rgba(255,255,255,0.65);
             font-size: 8px !important; font-weight: 600; letter-spacing: 0.2px;
             text-transform: uppercase; flex: 1;
             transition: color 0.15s;
@@ -254,20 +268,20 @@
             stroke: currentColor; fill: none;
             stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
         }
-        .bbar-btn.active { color: var(--primary); }
+        .bbar-btn.active { color: #FFFFFF; }
         .bbar-btn.active::after {
             content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 2.5px;
-            background: var(--primary); border-radius: 0 0 3px 3px;
+            background: #FFFFFF; border-radius: 0 0 3px 3px;
         }
         .bbar-btn:active { opacity: 0.6; }
-        .bbar-btn.col-green  { color: #00A651; }
-        .bbar-btn.col-green:active  { color: #00883e; }
-        .bbar-btn.col-blue   { color: var(--primary); }
-        .bbar-btn.col-blue:active   { color: var(--primary-d); }
-        .bbar-btn.col-amber  { color: var(--primary); }
-        .bbar-btn.col-amber:active  { color: var(--primary-d); }
-        .bbar-btn.col-red    { color: var(--primary); }
-        .bbar-btn.col-red:active    { color: var(--primary-d); }
+        .bbar-btn.col-green  { color: #6EF0A8; }
+        .bbar-btn.col-green:active  { color: #43d383; }
+        .bbar-btn.col-blue   { color: #FFFFFF; }
+        .bbar-btn.col-blue:active   { color: rgba(255,255,255,0.7); }
+        .bbar-btn.col-amber  { color: #FFFFFF; }
+        .bbar-btn.col-amber:active  { color: rgba(255,255,255,0.7); }
+        .bbar-btn.col-red    { color: #FFD9D9; }
+        .bbar-btn.col-red:active    { color: rgba(255,255,255,0.7); }
 
         /* ── TABLE ── */
         .table-doc { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 5px; background: white; border-radius: 10px; overflow: hidden; }
@@ -358,7 +372,44 @@
             color: var(--text-sub);
             font-weight: 500;
         }
-        
+
+        /* Colunas de preço e total — alinhadas antes do nome do produto */
+        .cart-list-item-price,
+        .cart-list-item-total {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            line-height: 1.15;
+        }
+        .cart-list-item-price {
+            width: 52px;
+        }
+        .cart-list-item-total {
+            width: 58px;
+        }
+        .cart-list-item-price .v,
+        .cart-list-item-total .v {
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .cart-list-item-price .v { color: var(--primary); }
+        .cart-list-item-total .v { color: #333333; }
+        .cart-list-item-price .lbl,
+        .cart-list-item-total .lbl {
+            font-size: 8px;
+            font-weight: 700;
+            color: #B0B0B0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .cart-list-item-price .edit-preco {
+            background: none; border: none; color: #999; font-size: 10px;
+            cursor: pointer; padding: 1px 0 0; line-height: 1;
+        }
+
         .cart-list-item-controls {
             display: flex;
             align-items: center;
@@ -683,11 +734,6 @@
         <div style="font-family:'Montserrat',sans-serif; font-size:14px; font-weight:800; color:#FFFFFF; letter-spacing:0.5px;">DUMELHOR PRO</div>
     </div>
     
-    <!-- AVISO BACKUP -->
-    <div style="background:rgba(255,165,0,0.15); border:1px solid rgba(255,165,0,0.4); border-radius:8px; padding:8px 10px; margin-bottom:10px; font-size:10px; color:rgba(255,200,100,0.95); font-weight:600; line-height:1.5; text-align:center;">
-        ⚠️ <b>IMPORTANTE:</b> Antes de limpar dados do Chrome, faz sempre <b>EXPORTAR</b> para guardar tudo (dados + fotos).
-    </div>
-
     <!-- BOTÕES PRINCIPAIS EM GRID -->
     <div class="menu-grid">
         <button class="menu-btn-icon" id="btn-clientes" onclick="nav('m2'); abrirModalCli(); toggleMenu()">
@@ -2537,13 +2583,16 @@ function renderCardexTotal() {
 
         row.innerHTML = `
             ${imgHtml}
+            <div class="cart-list-item-price">
+                <span class="lbl">Preço</span>
+                <span class="v">${precoVal.toFixed(2)}€</span>
+                <button class="edit-preco" onclick="event.stopPropagation(); editarPrecoResumo(${it.id})" title="Editar preço">✎</button>
+            </div>
             <div class="cart-list-item-body">
                 <div class="cart-list-item-nome" title="${nomeVal}">${destacarSortido(nomeVal)}<button onclick="event.stopPropagation(); abrirMenuEditarNome(${it.id})" style="background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:0 0 0 4px;" title="Editar nome do produto">✎</button></div>
-                <div class="cart-list-item-info">
-                    <span style="color:#E60000;font-weight:700;">${precoVal.toFixed(2)}€</span>
-                    <button onclick="editarPrecoResumo(${it.id})" style="background:none;border:none;color:#888;font-size:11px;cursor:pointer;padding:0 2px 0 4px;" title="Editar preço">✎</button>
-                    ${qAt > 0 ? `<span style="color:#888;"> · Total: <b style="color:#333333">${subTotal}€</b></span>` : ''}
-                </div>
+            </div>
+            <div class="cart-list-item-total" id="total-card-${it.id}">
+                ${qAt > 0 ? `<span class="lbl">Total</span><span class="v">${subTotal}€</span>` : ''}
             </div>
             <div class="cart-list-item-controls">
                 <button class="cart-list-btn cart-list-btn-minus" data-id="${it.id}" data-v="-1">−</button>
@@ -2562,8 +2611,8 @@ function renderCardexTotal() {
                 const pNew = CART[pid]?.precoCustom ?? CART[pid]?.preco ?? it.preco;
                 const qtyEl = row.querySelector(`#qty-card-${pid}`);
                 if(qtyEl) qtyEl.textContent = qNew;
-                const infoEl = row.querySelector('.cart-list-item-info');
-                if(infoEl) infoEl.innerHTML = `<span style="color:#E60000;font-weight:700;">${pNew.toFixed(2)}€</span><button onclick="editarPrecoResumo(${pid})" style="background:none;border:none;color:#888;font-size:11px;cursor:pointer;padding:0 2px 0 4px;" title="Editar preço">✎</button>${qNew > 0 ? `<span style="color:#888;"> · Total: <b style="color:#333333">${(qNew*pNew).toFixed(2)}€</b></span>` : ''}`;
+                const totalEl = row.querySelector(`#total-card-${pid}`);
+                if(totalEl) totalEl.innerHTML = qNew > 0 ? `<span class="lbl">Total</span><span class="v">${(qNew*pNew).toFixed(2)}€</span>` : '';
             });
         });
 
