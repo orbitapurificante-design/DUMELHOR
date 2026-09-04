@@ -2574,12 +2574,12 @@ function renderCardexTotal() {
 
         row.innerHTML = `
             ${imgHtml}
+            <div class="cart-list-item-body">
+                <div class="cart-list-item-nome" title="${nomeVal}">${destacarSortido(nomeVal)}<button onclick="event.stopPropagation(); abrirMenuEditarNome(${it.id})" style="background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:0 0 0 4px;" title="Editar nome do produto">✎</button></div>
+            </div>
             <div class="cart-list-item-price">
                 <span class="v">${precoVal.toFixed(2)}€</span>
                 <button class="edit-preco" onclick="event.stopPropagation(); editarPrecoResumo(${it.id})" title="Editar preço">✎</button>
-            </div>
-            <div class="cart-list-item-body">
-                <div class="cart-list-item-nome" title="${nomeVal}">${destacarSortido(nomeVal)}<button onclick="event.stopPropagation(); abrirMenuEditarNome(${it.id})" style="background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:0 0 0 4px;" title="Editar nome do produto">✎</button></div>
             </div>
             <div class="cart-list-item-total" id="total-card-${it.id}">
                 ${qAt > 0 ? `<span class="v">${subTotal}€</span>` : ''}
