@@ -49,7 +49,7 @@
         
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        html { scroll-padding-top: 70px; background: var(--primary); }
+        html { scroll-padding-top: 70px; background: var(--bg-light); }
         /* Pinta a faixa por baixo da barra de estado do Android (hora/bateria) quando a app
            é aberta a partir do ícone (instalada / standalone) — em separador normal do Chrome
            quem trata disso é o theme-color acima. */
@@ -378,36 +378,27 @@
         .cart-list-item-total {
             flex-shrink: 0;
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-            line-height: 1.15;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
         }
         .cart-list-item-price {
-            width: 52px;
+            width: 56px;
         }
         .cart-list-item-total {
-            width: 58px;
+            width: 60px;
         }
         .cart-list-item-price .v,
         .cart-list-item-total .v {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             white-space: nowrap;
         }
         .cart-list-item-price .v { color: var(--primary); }
         .cart-list-item-total .v { color: #333333; }
-        .cart-list-item-price .lbl,
-        .cart-list-item-total .lbl {
-            font-size: 8px;
-            font-weight: 700;
-            color: #B0B0B0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
         .cart-list-item-price .edit-preco {
             background: none; border: none; color: #999; font-size: 10px;
-            cursor: pointer; padding: 1px 0 0; line-height: 1;
+            cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0;
         }
 
         .cart-list-item-controls {
@@ -2584,7 +2575,6 @@ function renderCardexTotal() {
         row.innerHTML = `
             ${imgHtml}
             <div class="cart-list-item-price">
-                <span class="lbl">Preço</span>
                 <span class="v">${precoVal.toFixed(2)}€</span>
                 <button class="edit-preco" onclick="event.stopPropagation(); editarPrecoResumo(${it.id})" title="Editar preço">✎</button>
             </div>
@@ -2592,7 +2582,7 @@ function renderCardexTotal() {
                 <div class="cart-list-item-nome" title="${nomeVal}">${destacarSortido(nomeVal)}<button onclick="event.stopPropagation(); abrirMenuEditarNome(${it.id})" style="background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:0 0 0 4px;" title="Editar nome do produto">✎</button></div>
             </div>
             <div class="cart-list-item-total" id="total-card-${it.id}">
-                ${qAt > 0 ? `<span class="lbl">Total</span><span class="v">${subTotal}€</span>` : ''}
+                ${qAt > 0 ? `<span class="v">${subTotal}€</span>` : ''}
             </div>
             <div class="cart-list-item-controls">
                 <button class="cart-list-btn cart-list-btn-minus" data-id="${it.id}" data-v="-1">−</button>
@@ -2612,7 +2602,7 @@ function renderCardexTotal() {
                 const qtyEl = row.querySelector(`#qty-card-${pid}`);
                 if(qtyEl) qtyEl.textContent = qNew;
                 const totalEl = row.querySelector(`#total-card-${pid}`);
-                if(totalEl) totalEl.innerHTML = qNew > 0 ? `<span class="lbl">Total</span><span class="v">${(qNew*pNew).toFixed(2)}€</span>` : '';
+                if(totalEl) totalEl.innerHTML = qNew > 0 ? `<span class="v">${(qNew*pNew).toFixed(2)}€</span>` : '';
             });
         });
 
