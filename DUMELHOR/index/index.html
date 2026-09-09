@@ -1329,11 +1329,37 @@ function imprimirResumoGeral(){
   setTimeout(()=> document.body.classList.remove('print-resumo'), 500);
 }
 
-/* Registar service worker (necessário para o Chrome/Android oferecer
-   "Instalar aplicação" em ecrã inteiro, sem barra do navegador) */
+/* Registar service worker — necessário tanto para o Chrome/Android oferecer
+   "Instalar aplicação" em ecrã inteiro, como para a app funcionar OFFLINE
+   (guarda o "shell" da app em cache e serve-o quando não há rede). */
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    // Assim que houver uma versão nova do sw.js publicada no GitHub Pages,
+    // ativa-a de imediato (o próprio sw.js chama skipWaiting()).
+    reg.update().catch(()=>{});
+  }).catch(()=>{});
+
+  // Quando o service worker novo assume o controlo da página, recarrega
+  // automaticamente para que a app fique sempre atualizada sem intervenção.
+  let jaRecarregou = false;
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    if(jaRecarregou) return;
+    jaRecarregou = true;
+    window.location.reload();
+  });
 }
+
+/* Sincronização automática assim que a ligação à internet voltar
+   (ex.: entrou em zona sem rede, saiu de novo — não precisa de tocar em nada). */
+window.addEventListener('online', function(){
+  const status = document.getElementById('topbar-sub-status');
+  if(status) status.textContent = '🌐 Ligação recuperada — a sincronizar…';
+  sincronizarGithub(false);
+});
+window.addEventListener('offline', function(){
+  const status = document.getElementById('topbar-sub-status');
+  if(status) status.textContent = '📴 Sem ligação — a trabalhar offline';
+});
 
 /* Init */
 /* Estado inicial do histórico — necessário para o botão "Retroceder" do tablet
