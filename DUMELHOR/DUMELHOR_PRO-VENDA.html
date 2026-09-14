@@ -5341,12 +5341,7 @@ async function exportarBackup() {
         const [vendedor, empresa, morada, nif, segmento] = await dbGetAll(
             ['DM_VENDEDOR','DM_EMPRESA','DM_MORADA','DM_NIF','DM_SEGMENTO']);
 
-        // ── Carregar fotos do IndexedDB como base64 ──
-        // Importante: primeiro lemos TUDO da base de dados de uma vez (getAllKeys/getAll),
-        // e só DEPOIS de a transação terminar é que convertemos cada foto com o FileReader.
-        // (Manter a transação aberta enquanto se espera pelo FileReader fazia o IndexedDB
-        // fechar a ligação a meio e travava a exportação em silêncio.)
-        const fotos = {};
+        // ── Carregar lista de fotos do IndexedDB (só metadados, ainda sem converter) ──
         const listaFotos = await new Promise((resolve) => {
             if(!db) { resolve([]); return; }
             const store = db.transaction("fotos","readonly").objectStore("fotos");
@@ -5364,19 +5359,8 @@ async function exportarBackup() {
             reqValues.onerror = () => resolve([]);
         });
 
-        for(const { key, blob } of listaFotos) {
-            const dataUrl = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = ev => resolve(ev.target.result);
-                reader.onerror = () => resolve(null);
-                reader.readAsDataURL(blob);
-            });
-            if(dataUrl) fotos[key] = dataUrl;
-        }
-
-        const numFotos = Object.keys(fotos).length;
-
-        const backup = {
+        // ── Cabeçalho do JSON: tudo menos as fotos (isto é pequeno, sem problema) ──
+        const cabecalho = {
             versao: 3,
             data: new Date().toISOString(),
             pedidos: PEDIDOS_DB,
@@ -5387,7 +5371,6 @@ async function exportarBackup() {
             cardexEx: CARDEX_EXCLUIDOS,
             ultimosPedidos: ULTIMOS_PEDIDOS,
             marcasConfig: MARCAS_CONFIG,
-            fotos: fotos,
             config: {
                 vendedor: vendedor || '',
                 empresa: empresa || '',
@@ -5396,17 +5379,46 @@ async function exportarBackup() {
                 segmento: segmento || '',
             }
         };
+        // Remove a chave "config" do fim do JSON do cabeçalho para podermos continuar
+        // o objeto manualmente com "fotos" a seguir, sem duplicar tudo numa única string gigante.
+        let cabecalhoJson = JSON.stringify(cabecalho);
+        cabecalhoJson = cabecalhoJson.slice(0, -1); // tira o "}" final
 
-        const json = JSON.stringify(backup);
+        // ── Monta o ficheiro em vários pedaços (Blob parts) em vez de 1 string enorme ──
+        // Cada foto em base64 é convertida e imediatamente colocada num pedaço do Blob;
+        // isto evita ter ao mesmo tempo o objeto completo + a string JSON gigante do
+        // JSON.stringify (que era o que esgotava a memória em tablets mais fracos).
+        const partes = [cabecalhoJson, ',"fotos":{'];
+        let numFotos = 0;
+        let primeira = true;
+        for(const { key, blob } of listaFotos) {
+            const dataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = ev => resolve(ev.target.result);
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(blob);
+            });
+            if(dataUrl) {
+                if(!primeira) partes.push(',');
+                primeira = false;
+                partes.push(JSON.stringify(key) + ':' + JSON.stringify(dataUrl));
+                numFotos++;
+            }
+            // A cada 25 fotos, larga a thread principal um instante para o browser
+            // conseguir libertar memória entretanto (reduz o pico de RAM em tablets fracos).
+            if(numFotos % 25 === 0) await new Promise(r => setTimeout(r, 0));
+        }
+        partes.push('}}');
+
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
         const nomeFicheiro = 'dumelhor-backup-COMPLETO-' + dataStr + '.json';
-        const blob = new Blob([json], { type: 'application/json' });
+        const blob = new Blob(partes, { type: 'application/json' });
 
         const resumo = '✅ Backup COMPLETO exportado!\n\n' +
-              '📦 Pedidos: ' + backup.pedidos.length + '\n' +
-              '💰 Pagamentos: ' + backup.pagamentos.length + '\n' +
-              '👥 Clientes: ' + backup.clientes.length + '\n' +
-              '🛒 Produtos: ' + backup.produtos.length + '\n' +
+              '📦 Pedidos: ' + cabecalho.pedidos.length + '\n' +
+              '💰 Pagamentos: ' + cabecalho.pagamentos.length + '\n' +
+              '👥 Clientes: ' + cabecalho.clientes.length + '\n' +
+              '🛒 Produtos: ' + cabecalho.produtos.length + '\n' +
               '📸 Fotos: ' + numFotos + '\n\n' +
               '⚠️ GUARDA ESTE FICHEIRO EM LOCAL SEGURO!\n' +
               'Contém tudo — dados + fotos + produtos.';
@@ -5424,7 +5436,7 @@ async function exportarBackup() {
         alert(resumo);
     } catch(e) {
         console.error('❌ Erro ao exportar backup:', e);
-        alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.');
+        alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.\n\nSe o separador tiver fechado/recarregado sozinho sem esta mensagem aparecer, foi provavelmente falta de memória do tablet — tenta exportar só as FOTOS separadamente (menu ☰ → Exportar fotos), em vez do backup completo de uma vez.');
     }
 }
 
@@ -5434,7 +5446,6 @@ async function exportarBackup() {
 async function exportarBackupFotos() {
     try {
         console.log('📸 A iniciar exportação de fotos...');
-        const fotos = {};
         const listaFotos = await new Promise((resolve) => {
             if(!db) { resolve([]); return; }
             const store = db.transaction("fotos","readonly").objectStore("fotos");
@@ -5451,6 +5462,14 @@ async function exportarBackupFotos() {
             reqValues.onerror = () => resolve([]);
         });
 
+        if(listaFotos.length === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
+
+        // Monta o ficheiro em pedaços (Blob parts), convertendo e escrevendo foto a foto,
+        // em vez de guardar tudo num objeto e só depois fazer um JSON.stringify gigante
+        // — isto é o que rebentava a memória em tablets mais fracos.
+        const partes = ['{"versao":3,"data":' + JSON.stringify(new Date().toISOString()) + ',"fotos":{'];
+        let numFotos = 0;
+        let primeira = true;
         for(const { key, blob } of listaFotos) {
             const dataUrl = await new Promise((resolve) => {
                 const reader = new FileReader();
@@ -5458,17 +5477,21 @@ async function exportarBackupFotos() {
                 reader.onerror = () => resolve(null);
                 reader.readAsDataURL(blob);
             });
-            if(dataUrl) fotos[key] = dataUrl;
+            if(dataUrl) {
+                if(!primeira) partes.push(',');
+                primeira = false;
+                partes.push(JSON.stringify(key) + ':' + JSON.stringify(dataUrl));
+                numFotos++;
+            }
+            if(numFotos % 25 === 0) await new Promise(r => setTimeout(r, 0));
         }
+        partes.push('}}');
 
-        const numFotos = Object.keys(fotos).length;
         if(numFotos === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
 
-        const backup = { versao: 3, data: new Date().toISOString(), fotos: fotos };
-        const json = JSON.stringify(backup);
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
         const nomeFicheiro = 'dumelhor-fotos-' + dataStr + '.json';
-        const blob = new Blob([json], { type: 'application/json' });
+        const blob = new Blob(partes, { type: 'application/json' });
 
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
