@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A1A1A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DUMELHOR">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png">
+<title>DUMELHOR — Separação de Encomendas</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#E60000; --primary-d:#B30000; --deep:#1A1A1A; --grey:#333333;
+  --muted:#666666; --bg:#F5F5F5; --border:#E0E0E0; --verde:#16a34a; --vermelho:#E60000; --laranja:#FF8C00;
+  --greige:#C9C1B2; --greige-d:#B8AE9C;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--grey);
+  -webkit-tap-highlight-color:transparent; touch-action:manipulation; overflow-x:hidden;
+  height:100%; overflow:hidden;}
+
+/* ── Navegação estrita: só o .screen com .active é mostrado; todos os outros ficam
+   completamente fora do fluxo (display:none), sem ocupar espaço nem provocar scroll. ── */
+.screen{display:none !important; position:fixed; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+.screen.active{display:block !important;}
+
+/* ---------- M1 : MENU PRINCIPAL ---------- */
+#m1{background:#FFFFFF; min-height:100%;
+  display:flex !important; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 20px 30px;}
+#m1 img#logo{width:203px;height:203px;object-fit:contain;margin:0 auto;display:block;}
+#m1 img#logo.hidden{display:none;}
+.m1-sub{font-size:14px;font-weight:700;text-align:center;margin-top:6px;letter-spacing:1.2px;text-transform:uppercase;}
+.m1-sub .azul{color:#025EC6;}
+.m1-sub .verde{color:#05BB74;}
+.m1-quadrados{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap;justify-content:center;}
+
+.m1-quadrado{width:208px;aspect-ratio:6/10;border-radius:18px;border:none;cursor:pointer;
+  position:relative;overflow:hidden;padding:0;
+  display:flex;align-items:flex-end;justify-content:center;
+  box-shadow:0 8px 24px rgba(0,0,0,0.28); transition:transform .12s;}
+.m1-quadrado:active{transform:scale(0.96);}
+.m1-quadrado img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.badge-contador{position:absolute;top:8px;right:8px;z-index:5;background:#E60000;color:#fff;
+  min-width:30px;height:30px;border-radius:50%;display:none;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.45);padding:0 4px;}
+.m1-quadrado .quad-label{position:relative;z-index:2;width:100%;font-size:13px;font-weight:800;color:#fff;
+  letter-spacing:0.6px;text-align:center;padding:20px 8px 8px;
+  background:linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));}
+.q-encomendas{background:linear-gradient(145deg,var(--primary),var(--primary-d));border:1px solid #444;}
+.m1-footer{margin-top:26px;font-size:10px;color:#000;letter-spacing:1px;text-align:center;}
+
+/* ---------- BARRA SUPERIOR (M2) ---------- */
+#m2{background:var(--greige); padding-bottom:74px;}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#1f1f1f,#0e0e0e);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:14px 14px;box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.topbar .voltar{background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;
+  padding:8px 12px;border-radius:10px;line-height:1;transition:background .15s;}
+.topbar .voltar:active{background:rgba(255,255,255,0.25);}
+.topbar h2{margin:0;font-size:15px;font-weight:800;flex:1;letter-spacing:0.3px;}
+.topbar .count-chip{background:rgba(255,255,255,0.14);color:#fff;font-size:10px;font-weight:800;
+  padding:3px 8px;border-radius:20px;margin-left:6px;}
+.topbar button.act{background:rgba(255,255,255,0.12);border:none;color:#fff;padding:9px 13px;border-radius:10px;
+  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s, transform .1s;}
+.topbar button.act:active{transform:scale(0.95);}
+.topbar-sub{background:#fff;padding:8px 14px;font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+
+/* ---------- LISTA DE ENCOMENDAS (M2) ---------- */
+#lista-encomendas{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.selecao-bar{display:none;align-items:center;justify-content:space-between;gap:10px;
+  background:#1A1A1A;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;}
+.selecao-bar.show{display:flex;}
+.selecao-bar-acoes{display:flex;gap:8px;}
+.selecao-btn{border:none;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;}
+.selecao-btn.cancelar{background:rgba(255,255,255,0.14);color:#fff;}
+.selecao-btn.tudo{background:rgba(255,255,255,0.14);color:#fff;}
+.selecao-btn.tudo.ativo{background:var(--primary);color:#fff;}
+.selecao-btn.apagar{background:var(--primary);color:#fff;}
+.selecao-btn.apagar:active, .selecao-btn.cancelar:active, .selecao-btn.tudo:active{opacity:0.7;}
+.enc-checkbox{width:22px;height:22px;border-radius:50%;border:2px solid #C9C1B2;flex-shrink:0;
+  display:none;align-items:center;justify-content:center;background:#fff;font-size:13px;color:#fff;font-weight:900;}
+.enc-card.modo-selecao .enc-checkbox{display:flex;}
+.enc-card.selecionado{outline:2px solid var(--primary);background:#FFF3F3;}
+.enc-card.selecionado .enc-checkbox{background:var(--primary);border-color:var(--primary);}
+
+.enc-card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);
+  border:1px solid #EFEFEF; display:flex; align-items:center; gap:12px; cursor:pointer;
+  transition:transform .1s, box-shadow .15s;}
+.enc-card:active{transform:scale(0.985); box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.enc-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:15px;color:#fff;letter-spacing:0.5px;}
+.enc-info{flex:1;min-width:0;}
+.enc-info b{font-size:14.5px;color:var(--deep);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.enc-info .meta{font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.enc-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 9px;
+  border-radius:20px;letter-spacing:0.3px;white-space:nowrap;}
+.enc-side{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.enc-card .chevron{color:#C6C6C6;font-size:18px;}
+.enc-card .apagar{background:none;border:none;color:#ccc;font-size:17px;cursor:pointer;padding:6px;border-radius:8px;}
+.enc-card .apagar:active{background:#fdeaea;color:#c00;}
+.vazio-msg{text-align:center;color:var(--muted);font-size:13px;padding:70px 24px;line-height:1.6;}
+.vazio-msg .vic{font-size:44px;display:block;margin-bottom:12px;}
+.btn-importar-grande{display:block;margin:16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
+  color:#fff;border:none;border-radius:14px;padding:17px;font-size:14px;font-weight:800;text-align:center;
+  cursor:pointer;box-shadow:0 4px 14px rgba(230,0,0,0.32);letter-spacing:0.3px;}
+
+/* ══════════════════════════════════════════════════════════════
+   M3 — CATÁLOGO DENTRO DO CARRINHO (réplica exata do original)
+   ══════════════════════════════════════════════════════════════ */
+#m3{background:#fff; padding-bottom:70px;}
+.cat-wrap { font-family: 'Montserrat', sans-serif; background: #fff; color: #111; }
+.cat-page {
+    width: 100%; box-sizing: border-box;
+    padding: 10px 12px 6px;
+    display: flex; flex-direction: column;
+}
+.cat-header {
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid #E60000; padding-bottom: 6px; margin-bottom: 6px;
+    flex-shrink: 0; gap: 8px;
+}
+.cat-logo { height: 30px; width: auto; object-fit: contain; max-width: 90px; }
+.cat-cliente-bloco { text-align: center; flex: 1; padding: 0 8px; }
+.cat-cliente-label { font-size: 8px; color: #B0B0B0; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.cat-cliente-nome { font-size: 13px; font-weight: 900; color: #1A1A1A; line-height: 1.2; word-break: break-word; }
+.cat-cliente-data { font-size: 9px; color: #666666; font-weight: 600; }
+.cat-titulo-bloco { text-align: right; min-width: 90px; }
+.cat-titulo {
+    font-size: 14px; font-weight: 900; letter-spacing: 0.5px;
+    color: #E60000; text-transform: uppercase; margin: 0; line-height: 1.1;
+}
+.cat-subtitulo {
+    font-size: 8px; color: #666666; font-weight: 700;
+    letter-spacing: 0.3px; margin: 1px 0 0; text-transform: uppercase;
+}
+.cat-body { display: flex; flex: 1; gap: 5px; min-height: 0; }
+.cat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    flex: 1;
+    align-content: start;
+}
+.cat-fam-header {
+    grid-column: 1 / -1;
+    background: #1A1A1A;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none;
+}
+.cat-fam-arrow { font-size:10px; transition:transform 0.15s ease; }
+.cat-fam-content.fechada { display:none !important; }
+.cat-card {
+    border: 1px solid #e2e8f0; border-radius: 12px;
+    overflow: visible; display: flex; flex-direction: column;
+    background: #fff; transition:border-color .15s;
+}
+.cat-card-img-wrap {
+    background: #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    padding: 4px; aspect-ratio: 5/4; overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    flex-shrink: 0; position:relative; cursor:pointer; touch-action:manipulation;
+}
+.cat-card-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.cat-card-img-placeholder {
+    width: 100%; aspect-ratio: 5/4; background: linear-gradient(135deg, #e8f0f8, #c8d8ec);
+    border-radius: 12px 12px 0 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: #B0B0B0; position:relative; cursor:pointer; touch-action:manipulation;
+}
+.cat-card-body {
+    padding: 6px 6px 8px; border-top: 1px solid #e8f0f8;
+    display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
+    text-align: center;
+}
+.cat-card-nome {
+    font-size: 11px; font-weight: 700; color: #333333;
+    line-height: 1.25; overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    min-height: 27px;
+}
+.cat-card-preco-wrap {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; flex-shrink: 0; min-height: 16px;
+    margin-top: 2px; padding-top: 3px; border-top: 1px dashed #e2e8f0;
+}
+.cat-card-preco { font-size: 14px; font-weight: 900; color: #c0392b; line-height: 1; }
+.cat-card[data-status="verde"] { border:3px solid #16a34a; }
+.cat-card[data-status="vermelho"] { border:3px solid #dc2626; }
+.cat-card[data-status="laranja"] { border:3px solid #f97316; }
+.cat-qtd-encomenda {
+    position:absolute; top:4px; right:4px; width:28px; height:28px; border-radius:50%;
+    background:#FFFFFF; border:2px solid #1A1A1A; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:900; color:#1A1A1A; z-index:2; line-height:1;
+}
+.cat-sep-badge {
+    position:absolute; top:4px; left:4px; width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px;
+    color:#fff; border:2px solid #fff; z-index:3; line-height:1; box-shadow:0 1px 4px rgba(0,0,0,0.35);
+}
+.cat-sep-badge.verde { background:#16a34a; }
+.cat-sep-badge.vermelho { background:#dc2626; }
+.cat-sep-badge.laranja-alerta { background:#f97316; }
+.cat-sep-qtd-ball {
+    position:absolute; bottom:4px; left:4px; width:26px; height:26px; border-radius:50%;
+    background:#f97316; border:2px solid #fff; z-index:3; display:flex; align-items:center; justify-content:center;
+}
+.cat-sep-qtd-ball input {
+    width:22px; height:22px; border:none; background:transparent; color:#fff; font-weight:900;
+    font-size:12px; text-align:center; padding:0;
+}
+.cat-sep-qtd-ball input::-webkit-outer-spin-button, .cat-sep-qtd-ball input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+
+/* ---------- BOTTOM BAR (M3) — igual à do catálogo original ---------- */
+.bottom-bar {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(255,255,255,0.86);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    padding: 6px 8px 8px;
+    display: none; align-items: stretch; justify-content: space-around;
+    z-index: 2500; box-sizing: border-box; height: 62px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.08);
+}
+.bottom-bar.show{display:flex;}
+.bbar-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; border: none; background: transparent;
+    padding: 6px 2px; margin:0 2px; border-radius:14px;
+    cursor: pointer;
+    color: #9a9a9a;
+    font-size: 9px !important; font-weight: 700; letter-spacing: 0.2px;
+    text-transform: uppercase; flex: 1;
+    transition: color 0.15s, background-color 0.15s, transform .12s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+.bbar-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bbar-btn:active{transform:scale(0.92); background:rgba(0,0,0,0.06);}
+.bbar-btn.col-green{color:#00A651;}
+.bbar-btn.ativo{color:var(--primary); background:rgba(230,0,0,0.08);}
+.bbar-btn.ativo::after{content:'';position:absolute;top:-6px;left:26%;right:26%;height:2.5px;background:var(--primary);border-radius:0 0 3px 3px;}
+
+/* ---------- IMPRESSÃO ---------- */
+@media print{
+  html, body{height:auto !important; overflow:visible !important;}
+  .screen{position:static !important; overflow:visible !important; height:auto !important; inset:auto !important;}
+  body *{visibility:hidden;}
+  #ticket-area, #ticket-area *{visibility:visible;}
+  #ticket-area{position:absolute;left:0;top:0;width:100%;}
+  .cat-page{page-break-after:always;}
+  .cat-page:last-child{page-break-after:avoid;}
+  body.print-resumo #ticket-area, body.print-resumo #ticket-area *{visibility:hidden;}
+  body.print-resumo #print-area, body.print-resumo #print-area *{visibility:visible;}
+  body.print-resumo #print-area{display:block !important;position:absolute;top:0;left:0;width:100%;padding:10px;}
+}
+#print-area{display:none;}
+</style>
+</head>
+<body>
+
+<!-- ================= M1 — MENU PRINCIPAL ================= -->
+<div id="m1" class="screen active">
+  <img id="logo" src="./logo.png" onerror="this.classList.add('hidden')">
+  <div class="m1-sub"><span class="azul">Separação de</span> <span class="verde">Encomendas</span></div>
+  <div class="m1-quadrados">
+    <button class="m1-quadrado q-encomendas" onclick="irM2()">
+      <div class="badge-contador" id="badge-encomendas"></div>
+      <img id="img-encomendas" src="./encomendas0.jpg" alt="Encomendas" onerror="this.style.display='none'">
+      <div class="quad-label">ENCOMENDAS</div>
+    </button>
+  </div>
+  <div class="m1-footer">Tablet de separação · uso interno</div>
+</div>
+
+<!-- ================= M2 — LISTA DE ENCOMENDAS ================= -->
+<div id="m2" class="screen">
+  <div class="topbar">
+    <button class="voltar" onclick="history.back()">←</button>
+    <h2>Encomendas <span class="count-chip" id="count-chip">0</span></h2>
+  </div>
+  <div class="topbar-sub" id="topbar-sub-status">🕓 Mais recentes primeiro</div>
+  <div class="selecao-bar" id="selecao-bar">
+    <span id="selecao-contagem">0 selecionada(s)</span>
+    <div class="selecao-bar-acoes">
+      <button class="selecao-btn tudo" id="btn-selecionar-tudo" onclick="alternarSelecaoTudo()">☑️ Selecionar tudo</button>
+      <button class="selecao-btn cancelar" onclick="alternarModoSelecao()">Cancelar</button>
+      <button class="selecao-btn apagar" onclick="apagarSelecionadas()">🗑️ Apagar selecionadas</button>
+    </div>
+  </div>
+  <input type="file" id="f-import" accept=".json" multiple style="display:none">
+  <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
+  <div id="lista-encomendas"></div>
+</div>
+<div class="bottom-bar" id="bbar-m2">
+    <button class="bbar-btn" onclick="imprimirResumoGeral()" title="Resumo geral de faltas e incompletos">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>RESUMO TOTAL</span>
+    </button>
+    <button class="bbar-btn" onclick="history.back()" title="Voltar ao menu anterior">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>VOLTAR</span>
+    </button>
+    <button class="bbar-btn" id="btn-selecionar" onclick="alternarModoSelecao()" title="Selecionar encomendas">
+        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span id="btn-selecionar-label">SELECIONAR</span>
+    </button>
+    <button class="bbar-btn" id="btn-sync" onclick="sincronizarGithub(true)" title="Sincronizar encomendas de hoje">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>SINCRONIZAR</span>
+    </button>
+    <button class="bbar-btn" onclick="document.getElementById('f-import').click()" title="Importar ficheiro(s)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>IMPORTAR</span>
+    </button>
+</div>
+
+<!-- ================= M3 — CATÁLOGO / SEPARAÇÃO (réplica exata) ================= -->
+<div id="m3" class="screen">
+  <div id="ticket-area"></div>
+</div>
+<div class="bottom-bar" id="bbar-m3">
+    <button class="bbar-btn" onclick="voltarDeM3()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>VOLTAR</span>
+    </button>
+    <button class="bbar-btn" onclick="toggleTodasFamiliasCatalogoTicket()" title="Abrir/Fechar famílias">
+        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+        <span>FAMÍLIAS</span>
+    </button>
+    <button class="bbar-btn" id="btn-filtro-separacao" onclick="ciclarFiltroSeparacaoTicket()" title="Filtrar por estado de separação">
+        <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>FILTRO</span>
+    </button>
+    <button class="bbar-btn" id="btn-tudo-separado" onclick="alternarTudoSeparado()" title="Marcar/desmarcar todos os produtos">
+        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span id="btn-tudo-separado-label">TUDO</span>
+    </button>
+    <button class="bbar-btn col-green" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>IMPRIMIR</span>
+    </button>
+    <button class="bbar-btn" onclick="imprimirResumo()">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>RESUMO</span>
+    </button>
+</div>
+
+<div id="print-area"></div>
+
+<script>
+/* =========================================================
+   FOTOS (IndexedDB próprio deste tablet — mais leve que localStorage)
+   ========================================================= */
+const FOTOS_DB_NOME = 'DM_RESIDUAL_FOTOS_DB';
+let fotosDb = null;
+function abrirFotosDb(){
+  return new Promise((resolve)=>{
+    const req = indexedDB.open(FOTOS_DB_NOME, 1);
+    req.onupgradeneeded = e => { e.target.result.createObjectStore('fotos'); };
+    req.onsuccess = e => { fotosDb = e.target.result; resolve(fotosDb); };
+    req.onerror = () => resolve(null);
+  });
+}
+function guardarFotos(fotosObj){
+  return new Promise((resolve)=>{
+    if(!fotosDb || !fotosObj) return resolve();
+    const entradas = Object.entries(fotosObj);
+    if(!entradas.length) return resolve();
+    const tx = fotosDb.transaction('fotos', 'readwrite');
+    const store = tx.objectStore('fotos');
+    entradas.forEach(([nome, dataUrl]) => store.put(dataUrl, String(nome).toLowerCase()));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => resolve();
+  });
+}
+function obterFotoDb(chave){
+  return new Promise((resolve)=>{
+    if(!fotosDb) return resolve(null);
+    try{
+      const req = fotosDb.transaction('fotos', 'readonly').objectStore('fotos').get(chave);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    }catch(e){ resolve(null); }
+  });
+}
+async function obterFotoParaProduto(nomeFoto){
+  if(!nomeFoto) return null;
+  const nome = String(nomeFoto).toLowerCase();
+  const candidatos = [nome, nome + '.jpg', nome + '.png', nome + '.jpeg'];
+  for(const c of candidatos){
+    const url = await obterFotoDb(c);
+    if(url) return url;
+  }
+  return null;
+}
+
+/* =========================================================
+   ESTADO / PERSISTÊNCIA DE ENCOMENDAS
+   ========================================================= */
+const LS_PEDIDOS = 'DM_RESIDUAL_PEDIDOS';
+const LS_SEP = id => 'DM_RESIDUAL_SEP_' + id;
+const LS_NOTAS = id => 'DM_RESIDUAL_NOTAS_' + id;
+
+function getPedidos(){ try{ return JSON.parse(localStorage.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
+function savePedidos(lista){ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
+
+function chaveOrdenacao(p){
+  const porId = Number(p.id);
+  if(!isNaN(porId) && porId > 0) return porId;
+  return p.dataISO ? new Date(p.dataISO).getTime() : 0;
+}
+
+let PEDIDO_ATUAL = null;
+
+/* =========================================================
+   SINCRONIZAÇÃO AUTOMÁTICA COM O GITHUB
+   (o repositório é público, por isso a leitura não precisa de chave —
+   só o tablet dos vendedores precisa de chave, para poder escrever lá)
+   ========================================================= */
+const GH_OWNER = 'orbitapurificante-design';
+const GH_REPO = 'DUMELHOR';
+const GH_BRANCH = 'dados-encomendas'; // ramo dedicado às encomendas, sem regras de proteção do main
+const GH_PASTA_ENCOMENDAS = 'DUMELHOR/encomendas';
+let A_SINCRONIZAR = false;
+
+async function sincronizarGithub(mostrarFeedback){
+  if(A_SINCRONIZAR) return;
+  A_SINCRONIZAR = true;
+  const status = document.getElementById('topbar-sub-status');
+  const btn = document.getElementById('btn-sync');
+  if(status) status.textContent = '🔄 A sincronizar…';
+  if(btn) btn.style.opacity = '0.5';
+  try{
+    const listUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PASTA_ENCOMENDAS}?ref=${GH_BRANCH}`;
+    const resp = await fetch(listUrl, { cache: 'no-store' });
+    if(resp.status === 404){
+      if(status) status.textContent = '🕓 Mais recentes primeiro';
+      if(mostrarFeedback) alert('Ainda não há nenhuma encomenda enviada pelos vendedores via GitHub.');
+      return;
+    }
+    if(!resp.ok) throw new Error('Erro ao ligar ao GitHub (' + resp.status + ')');
+    const arquivos = await resp.json();
+
+    let totalNovas = 0, totalFotos = 0;
+    for(const f of arquivos){
+      if(f.type !== 'file' || !f.name.toLowerCase().endsWith('.json')) continue;
+      try{
+        const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
+        if(!rawResp.ok) continue;
+        const dados = await rawResp.json();
+        const res = await importarPacote(dados, true); // só encomendas de hoje
+        totalNovas += res.novas;
+        totalFotos += res.fotos;
+      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
+    }
+
+    renderLista();
+    atualizarBotaoEncomendas();
+    if(status) status.textContent = '✅ Sincronizado agora mesmo';
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s) de hoje\n📸 ' + totalFotos + ' foto(s)');
+  }catch(e){
+    console.error(e);
+    if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
+    if(mostrarFeedback) alert('❌ Não foi possível sincronizar: ' + e.message);
+  }finally{
+    A_SINCRONIZAR = false;
+    if(btn) btn.style.opacity = '1';
+  }
+}
+
+/* =========================================================
+   NAVEGAÇÃO — estrita, um ecrã de cada vez
+   ========================================================= */
+function mostrarTela(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('bbar-m3').classList.toggle('show', id === 'm3');
+  document.getElementById('bbar-m2').classList.toggle('show', id === 'm2');
+  window.scrollTo(0,0);
+}
+function irM1(){ history.pushState({tela:'m1'}, '', location.href); mostrarM1(); }
+function irM2(){ history.pushState({tela:'m2'}, '', location.href); mostrarM2(); }
+function voltarDeM3(){ history.back(); }
+
+function mostrarM1(){ atualizarBotaoEncomendas(); mostrarTela('m1'); }
+function mostrarM2(){ renderLista(); mostrarTela('m2'); sincronizarGithub(false); }
+
+// Chamado pelo botão "Retroceder" do tablet/telemóvel (ou o gesto de deslizar) —
+// em vez de sair logo da app, navega para o ecrã anterior (M3→M2→M1).
+window.addEventListener('popstate', function(e){
+  const state = e.state || {tela:'m1'};
+  if(state.tela === 'm3' && state.id != null) mostrarM3(state.id);
+  else if(state.tela === 'm2') mostrarM2();
+  else mostrarM1();
+});
+
+/* =========================================================
+   IMPORTAÇÃO DE FICHEIROS
+   ========================================================= */
+document.getElementById('f-import').addEventListener('change', function(e){
+  const files = Array.from(e.target.files || []);
+  if(!files.length) return;
+  let processados = 0, novas = 0, totalFotos = 0;
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = async ev=>{
+      processados++;
+      try{
+        const dados = JSON.parse(ev.target.result);
+        const res = await importarPacote(dados);
+        novas += res.novas;
+        totalFotos += res.fotos;
+      }catch(err){
+        alert('❌ Ficheiro inválido: ' + file.name);
+      }
+      if(processados === files.length){
+        renderLista();
+        alert('✅ Importação concluída.\n📦 ' + novas + ' encomenda(s) adicionada(s)/atualizada(s)\n📸 ' + totalFotos + ' foto(s) recebida(s)');
+      }
+    };
+    reader.readAsText(file);
+  });
+  e.target.value = '';
+});
+
+// Verifica se a encomenda tem data de hoje (usa dataISO ou, em alternativa, o campo data já formatado)
+function ehDeHoje(pedido){
+  if(pedido && pedido.dataISO){
+    const d = new Date(pedido.dataISO);
+    if(!isNaN(d.getTime())){
+      const hoje = new Date();
+      return d.getFullYear() === hoje.getFullYear() && d.getMonth() === hoje.getMonth() && d.getDate() === hoje.getDate();
+    }
+  }
+  if(pedido && pedido.data){
+    return String(pedido.data).trim() === new Date().toLocaleDateString('pt-PT');
+  }
+  return false;
+}
+
+// Aceita tanto o pacote leve (tipo: dumelhor_encomendas) como um backup completo (tem .pedidos)
+// apenasHoje=true filtra para só aceitar encomendas cuja data seja a de hoje (usado na sincronização automática)
+async function importarPacote(dados, apenasHoje){
+  let novasEncomendas = [];
+  let fotosObj = (dados && dados.fotos) || {};
+  if(dados && dados.tipo === 'dumelhor_encomendas' && Array.isArray(dados.encomendas)){
+    novasEncomendas = dados.encomendas.map(en => ({...en, vendedor: dados.vendedor || ''}));
+  } else if(dados && Array.isArray(dados.pedidos)){
+    novasEncomendas = dados.pedidos.map(p => ({
+      id: p.id, data: p.data, dataISO: p.dataISO, obs: p.obs || '',
+      cliente: p.cliente, vendedor: (dados.config && dados.config.vendedor) || '',
+      itens: Object.values(p.itens || {}).map(it=>({id:it.id, ean:it.ean||'', nome:it.nomeCustom||it.nome, cat:it.cat||'', preco:(it.precoCustom ?? it.preco ?? 0), q:it.q, f:it.f||it.foto||''}))
+    }));
+  } else {
+    return {novas:0, fotos:0};
+  }
+
+  if(apenasHoje) novasEncomendas = novasEncomendas.filter(ehDeHoje);
+
+  if(novasEncomendas.length){
+    const atuais = getPedidos();
+    novasEncomendas.forEach(nova => {
+      const idx = atuais.findIndex(p => p.id === nova.id);
+      if(idx >= 0) atuais[idx] = nova; else atuais.push(nova);
+    });
+    atuais.sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
+    savePedidos(atuais);
+  }
+
+  await guardarFotos(fotosObj);
+  return {novas: novasEncomendas.length, fotos: Object.keys(fotosObj).length};
+}
+
+/* =========================================================
+   M2 — LISTA DE ENCOMENDAS
+   ========================================================= */
+function estadoGeralEncomenda(pedido){
+  const sep = JSON.parse(localStorage.getItem(LS_SEP(pedido.id)) || '{"status":{}}');
+  const vals = Object.values(sep.status || {});
+  if(!vals.length) return null;
+  if(vals.includes('vermelho')) return 'vermelho';
+  if(vals.includes('laranja')) return 'laranja';
+  if(vals.every(v => v === 'verde') && vals.length === pedido.itens.length) return 'verde';
+  return null;
+}
+function iniciaisCliente(nome){
+  if(!nome) return '?';
+  const partes = nome.trim().split(/\s+/);
+  return ((partes[0]?.[0]||'') + (partes[partes.length-1]?.[0]||'')).toUpperCase();
+}
+
+// Troca a foto do quadrado "Encomendas" no M1 e atualiza a bolinha com o nº de
+// encomendas novas/por separar: encomendas1.jpg se houver alguma pendente,
+// encomendas0.jpg caso contrário.
+function atualizarBotaoEncomendas(){
+  const img = document.getElementById('img-encomendas');
+  const badge = document.getElementById('badge-encomendas');
+  if(!img) return;
+  const pedidos = getPedidos();
+  const pendentes = pedidos.filter(p => estadoGeralEncomenda(p) !== 'verde');
+  img.src = pendentes.length ? './encomendas1.jpg' : './encomendas0.jpg';
+  if(badge){
+    if(pendentes.length){
+      badge.textContent = pendentes.length > 99 ? '99+' : pendentes.length;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+let MODO_SELECAO = false;
+let SELECIONADOS = new Set();
+
+function alternarModoSelecao(){
+  MODO_SELECAO = !MODO_SELECAO;
+  SELECIONADOS.clear();
+  document.getElementById('btn-selecionar-label').textContent = MODO_SELECAO ? 'FECHAR' : 'SELECIONAR';
+  document.getElementById('btn-selecionar').classList.toggle('ativo', MODO_SELECAO);
+  document.getElementById('btn-sync').style.display = MODO_SELECAO ? 'none' : '';
+  document.getElementById('selecao-bar').classList.toggle('show', MODO_SELECAO);
+  renderLista();
+}
+
+function alternarSelecaoEncomenda(id){
+  if(SELECIONADOS.has(id)) SELECIONADOS.delete(id); else SELECIONADOS.add(id);
+  atualizarContagemSelecao();
+  const card = document.querySelector(`.enc-card[data-id="${id}"]`);
+  if(card) card.classList.toggle('selecionado', SELECIONADOS.has(id));
+}
+
+function alternarSelecaoTudo(){
+  const pedidos = getPedidos();
+  if(!pedidos.length) return;
+  if(SELECIONADOS.size >= pedidos.length){
+    SELECIONADOS.clear();
+  } else {
+    pedidos.forEach(p => SELECIONADOS.add(p.id));
+  }
+  renderLista();
+}
+
+function atualizarContagemSelecao(){
+  document.getElementById('selecao-contagem').textContent = SELECIONADOS.size + ' selecionada(s)';
+  const total = getPedidos().length;
+  const btnTudo = document.getElementById('btn-selecionar-tudo');
+  if(btnTudo){
+    const tudoSelecionado = total > 0 && SELECIONADOS.size >= total;
+    btnTudo.textContent = tudoSelecionado ? '☐ Desmarcar tudo' : '☑️ Selecionar tudo';
+    btnTudo.classList.toggle('ativo', tudoSelecionado);
+  }
+}
+
+function apagarSelecionadas(){
+  if(!SELECIONADOS.size){ alert('Não selecionaste nenhuma encomenda.'); return; }
+  if(!confirm('Remover ' + SELECIONADOS.size + ' encomenda(s) selecionada(s) do tablet de separação?')) return;
+  const idsRemover = new Set(SELECIONADOS);
+  savePedidos(getPedidos().filter(p => !idsRemover.has(p.id)));
+  idsRemover.forEach(id => localStorage.removeItem(LS_SEP(id)));
+  SELECIONADOS.clear();
+  MODO_SELECAO = false;
+  document.getElementById('btn-selecionar').textContent = '☑️ Selecionar';
+  document.getElementById('btn-sync').style.display = '';
+  document.getElementById('selecao-bar').classList.remove('show');
+  renderLista();
+  atualizarBotaoEncomendas();
+}
+
+function renderLista(){
+  const pedidos = getPedidos().slice().sort((a,b) => chaveOrdenacao(b) - chaveOrdenacao(a));
+  document.getElementById('btn-importar-grande').style.display = (pedidos.length || MODO_SELECAO) ? 'none' : 'block';
+  document.getElementById('count-chip').textContent = pedidos.length;
+  const cont = document.getElementById('lista-encomendas');
+  if(!pedidos.length){
+    cont.innerHTML = '<div class="vazio-msg"><span class="vic">📭</span>Ainda não há encomendas importadas.<br>Usa "Importar" para carregar os ficheiros enviados pelos vendedores.</div>';
+    return;
+  }
+  const cores = {verde:'#16a34a', vermelho:'#E60000', laranja:'#FF8C00'};
+  const labelsEstado = {verde:'✓ Completo', vermelho:'✕ Em falta', laranja:'! Incompleto'};
+  const avatarCores = ['#0B63C5','#1FA24A','#B30000','#8E44AD','#D68910','#117864'];
+  cont.innerHTML = pedidos.map((p)=>{
+    const estado = estadoGeralEncomenda(p);
+    const cor = estado ? cores[estado] : '#8a8a8a';
+    const nItens = (p.itens||[]).length;
+    const dataTxt = p.data || (p.dataISO ? new Date(p.dataISO).toLocaleDateString('pt-PT') : '');
+    const nome = (p.cliente && p.cliente.nome) || 'Cliente';
+    const avatarCor = avatarCores[iniciaisCliente(nome).charCodeAt(0) % avatarCores.length];
+    const statusChip = estado
+      ? `<span class="enc-status" style="background:${cor}1A;color:${cor}">${labelsEstado[estado]}</span>`
+      : `<span class="enc-status" style="background:#F0F0F0;color:#888">Por separar</span>`;
+    const selecionado = SELECIONADOS.has(p.id);
+    const onclickCard = MODO_SELECAO
+      ? `alternarSelecaoEncomenda(${JSON.stringify(p.id)})`
+      : `abrirM3(${JSON.stringify(p.id)})`;
+    return `<div class="enc-card ${MODO_SELECAO ? 'modo-selecao' : ''} ${selecionado ? 'selecionado' : ''}" data-id="${p.id}" onclick="${onclickCard}">
+      <div class="enc-checkbox">${selecionado ? '✓' : ''}</div>
+      <div class="enc-avatar" style="background:${avatarCor}">${iniciaisCliente(nome)}</div>
+      <div class="enc-info">
+        <b>${nome}</b>
+        <div class="meta">
+          ${statusChip}
+          <span>📅 ${dataTxt}</span>
+          <span>· 📦 ${nItens}</span>
+          ${p.vendedor ? '<span>· 👤 '+p.vendedor+'</span>' : ''}
+        </div>
+      </div>
+      <div class="enc-side">
+        ${MODO_SELECAO ? '' : `<button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button><span class="chevron">›</span>`}
+      </div>
+    </div>`;
+  }).join('');
+  if(MODO_SELECAO) atualizarContagemSelecao();
+}
+function apagarEncomenda(id){
+  if(!confirm('Remover esta encomenda do tablet de separação?')) return;
+  savePedidos(getPedidos().filter(p=>p.id!==id));
+  localStorage.removeItem(LS_SEP(id));
+  renderLista();
+  atualizarBotaoEncomendas();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   M3 — CATÁLOGO (réplica exata da função irParaCatalogo() da app
+   dos vendedores: mesmas classes, mesmo comportamento de separação,
+   famílias colapsáveis e zoom por pinça).
+   ══════════════════════════════════════════════════════════════ */
+let IMGS_LOCAL = new Map();
+let FAM_ESTADOS_TICKET = {};
+let SEPARACAO_STATUS = {};
+let SEPARACAO_QTD = {};
+let NOTAS_ESTADO = {};
+let _cliqueTimerSeparacao = {};
+let FILTRO_SEPARACAO_TICKET = 'todos';
+let CAT_COLUNAS = parseInt(localStorage.getItem('DM_RESIDUAL_CAT_COLUNAS')) || 5;
+
+async function abrirM3(id){
+  history.pushState({tela:'m3', id}, '', location.href);
+  await mostrarM3(id);
+}
+
+async function mostrarM3(id){
+  const p = getPedidos().find(x=>x.id===id);
+  if(!p) return;
+  PEDIDO_ATUAL = p;
+
+  const guardado = JSON.parse(localStorage.getItem(LS_SEP(id)) || '{"status":{},"qtd":{}}');
+  SEPARACAO_STATUS = guardado.status || {};
+  SEPARACAO_QTD = guardado.qtd || {};
+  NOTAS_ESTADO = JSON.parse(localStorage.getItem(LS_NOTAS(id)) || '{}');
+  FAM_ESTADOS_TICKET = {};
+  FILTRO_SEPARACAO_TICKET = 'todos';
+
+  // Pré-carrega as fotos necessárias para um Map em memória (tal como o IMGS da app original)
+  IMGS_LOCAL = new Map();
+  const itens = Object.values(p.itens || {});
+  for(const it of itens){
+    if(it.f){
+      const key = String(it.f).toLowerCase();
+      if(!IMGS_LOCAL.has(key)){
+        const url = await obterFotoParaProduto(it.f);
+        if(url) IMGS_LOCAL.set(key, url);
+      }
+    }
+  }
+
+  mostrarTela('m3');
+  renderCatalogoM3();
+}
+
+function guardarSeparacaoAtual(){
+  if(!PEDIDO_ATUAL) return;
+  localStorage.setItem(LS_SEP(PEDIDO_ATUAL.id), JSON.stringify({status:SEPARACAO_STATUS, qtd:SEPARACAO_QTD}));
+}
+
+// Marca todos os produtos da encomenda como separados (verde) de uma só vez,
+// ou desmarca-os todos de volta ao estado normal (funciona como alternância).
+function alternarTudoSeparado(){
+  if(!PEDIDO_ATUAL) return;
+  const itens = PEDIDO_ATUAL.itens || [];
+  if(!itens.length) return;
+  const todosVerdes = itens.every(it => SEPARACAO_STATUS[it.id] === 'verde');
+  if(todosVerdes){
+    if(!confirm('Desmarcar todos os produtos desta encomenda?')) return;
+    itens.forEach(it => { delete SEPARACAO_STATUS[it.id]; delete SEPARACAO_QTD[it.id]; });
+  } else {
+    if(!confirm('Marcar todos os produtos desta encomenda como separados?')) return;
+    itens.forEach(it => { SEPARACAO_STATUS[it.id] = 'verde'; delete SEPARACAO_QTD[it.id]; });
+  }
+  guardarSeparacaoAtual();
+  renderCatalogoM3();
+}
+
+function atualizarBotaoTudoSeparado(){
+  const btn = document.getElementById('btn-tudo-separado');
+  const label = document.getElementById('btn-tudo-separado-label');
+  if(!btn || !label || !PEDIDO_ATUAL) return;
+  const itens = PEDIDO_ATUAL.itens || [];
+  const todosVerdes = itens.length > 0 && itens.every(it => SEPARACAO_STATUS[it.id] === 'verde');
+  label.textContent = todosVerdes ? 'DESMARCAR' : 'TUDO';
+  btn.classList.toggle('ativo', todosVerdes);
+}
+
+// Clique único vs. duplo clique na foto do produto — igual à app original
+function handleCliqueSeparacao(id){
+  if(_cliqueTimerSeparacao[id]){
+    clearTimeout(_cliqueTimerSeparacao[id]);
+    _cliqueTimerSeparacao[id] = null;
+    definirEstadoSeparacao(id, 'laranja');
+  } else {
+    _cliqueTimerSeparacao[id] = setTimeout(()=>{
+      _cliqueTimerSeparacao[id] = null;
+      const atual = SEPARACAO_STATUS[id] || 'normal';
+      const proximo = atual === 'normal' ? 'verde' : (atual === 'verde' ? 'vermelho' : 'normal');
+      definirEstadoSeparacao(id, proximo);
+    }, 280);
+  }
+}
+
+function definirEstadoSeparacao(id, estado){
+  SEPARACAO_STATUS[id] = estado;
+  guardarSeparacaoAtual();
+
+  const card = document.querySelector(`.cat-card[data-id="${id}"]`);
+  if(card) card.setAttribute('data-status', estado);
+
+  const badge = document.getElementById(`sep-badge-${id}`);
+  if(badge){
+    badge.className = 'cat-sep-badge' + (estado === 'laranja' ? ' laranja-alerta' : (estado !== 'normal' ? ' ' + estado : ''));
+    badge.style.display = estado === 'normal' ? 'none' : 'flex';
+    badge.textContent = estado === 'verde' ? '✓' : estado === 'vermelho' ? '✕' : estado === 'laranja' ? '!' : '';
+  }
+
+  const bola = document.getElementById(`sep-qtd-ball-${id}`);
+  if(bola){
+    if(estado === 'laranja'){
+      bola.style.display = 'flex';
+      if(!document.getElementById(`sep-qtd-input-${id}`)){
+        const item = (PEDIDO_ATUAL.itens||[]).find(i=>i.id===id) || {};
+        bola.innerHTML = `<input type="number" min="0" max="${item.q || 99}" value="${SEPARACAO_QTD[id] ?? ''}" id="sep-qtd-input-${id}" onclick="event.stopPropagation()" onchange="guardarQtdSeparada(${id}, this.value)">`;
+        setTimeout(()=> document.getElementById(`sep-qtd-input-${id}`)?.focus(), 50);
+      }
+    } else {
+      bola.style.display = 'none';
+    }
+  }
+
+  // Atualiza também a bolinha de estado na lista (M2), quando lá voltarmos
+  atualizarBotaoTudoSeparado();
+}
+
+function guardarQtdSeparada(id, valor){
+  SEPARACAO_QTD[id] = valor === '' ? '' : Number(valor);
+  guardarSeparacaoAtual();
+}
+
+// Estado das notas do pedido: normal (por marcar) -> visto (✓) -> atenção (!) -> pendente (✕) -> normal
+const NOTA_ICONE = {normal:'○', visto:'✓', atencao:'!', pendente:'✕'};
+const NOTA_COR   = {normal:'#cfcfcf', visto:'#16a34a', atencao:'#f97316', pendente:'#dc2626'};
+const NOTA_SEQ   = ['normal','visto','atencao','pendente'];
+
+function guardarNotasAtual(){
+  if(!PEDIDO_ATUAL) return;
+  localStorage.setItem(LS_NOTAS(PEDIDO_ATUAL.id), JSON.stringify(NOTAS_ESTADO));
+}
+
+function ciclarNota(idx){
+  const atual = NOTAS_ESTADO[idx] || 'normal';
+  const proximo = NOTA_SEQ[(NOTA_SEQ.indexOf(atual) + 1) % NOTA_SEQ.length];
+  NOTAS_ESTADO[idx] = proximo;
+  guardarNotasAtual();
+  const badge = document.getElementById(`nota-badge-${idx}`);
+  if(badge){
+    badge.textContent = NOTA_ICONE[proximo];
+    badge.style.borderColor = NOTA_COR[proximo];
+    badge.style.background = proximo === 'normal' ? '#fff' : NOTA_COR[proximo];
+    badge.style.color = proximo === 'normal' ? NOTA_COR.normal : '#fff';
+    const linha = badge.closest('.nota-linha');
+    if(linha) linha.setAttribute('data-estado', proximo);
+  }
+  aplicarFiltroSeparacaoTicket();
+}
+
+// Abrir/fechar UMA família
+function toggleFamCatalogoTicket(cat){
+  FAM_ESTADOS_TICKET[cat] = !FAM_ESTADOS_TICKET[cat];
+  document.querySelectorAll(`.cat-fam-content[data-cat="${CSS.escape(cat)}"]`).forEach(el=>{
+    el.classList.toggle('fechada', FAM_ESTADOS_TICKET[cat]);
+  });
+  document.querySelectorAll(`.cat-fam-header[data-cat="${CSS.escape(cat)}"] .cat-fam-arrow`).forEach(arrow=>{
+    arrow.textContent = FAM_ESTADOS_TICKET[cat] ? '▶' : '▼';
+  });
+}
+
+// Abrir/fechar TODAS as famílias de uma vez
+function toggleTodasFamiliasCatalogoTicket(){
+  const cats = Object.keys(FAM_ESTADOS_TICKET);
+  if(!cats.length) return;
+  const todasFechadas = cats.every(c => FAM_ESTADOS_TICKET[c] === true);
+  cats.forEach(c => FAM_ESTADOS_TICKET[c] = !todasFechadas);
+  document.querySelectorAll('.cat-fam-content').forEach(el=>{
+    const cat = el.getAttribute('data-cat');
+    el.classList.toggle('fechada', FAM_ESTADOS_TICKET[cat]);
+  });
+  document.querySelectorAll('.cat-fam-header').forEach(h=>{
+    const cat = h.getAttribute('data-cat');
+    const arrow = h.querySelector('.cat-fam-arrow');
+    if(arrow) arrow.textContent = FAM_ESTADOS_TICKET[cat] ? '▶' : '▼';
+  });
+}
+
+// Filtro por estado de separação
+function ciclarFiltroSeparacaoTicket(){
+  const ordem = ['todos','verde','vermelho','laranja'];
+  const i = ordem.indexOf(FILTRO_SEPARACAO_TICKET);
+  FILTRO_SEPARACAO_TICKET = ordem[(i+1) % ordem.length];
+  aplicarFiltroSeparacaoTicket();
+}
+function aplicarFiltroSeparacaoTicket(){
+  const filtro = FILTRO_SEPARACAO_TICKET;
+  document.querySelectorAll('#ticket-area .cat-card').forEach(card=>{
+    const estado = card.getAttribute('data-status') || 'normal';
+    card.style.display = (filtro === 'todos' || estado === filtro) ? '' : 'none';
+  });
+  const cats = new Set();
+  document.querySelectorAll('#ticket-area .cat-fam-header').forEach(h => cats.add(h.getAttribute('data-cat')));
+  cats.forEach(cat=>{
+    const grids = document.querySelectorAll(`#ticket-area .cat-fam-content[data-cat="${CSS.escape(cat)}"]`);
+    const headers = document.querySelectorAll(`#ticket-area .cat-fam-header[data-cat="${CSS.escape(cat)}"]`);
+    const temVisivel = Array.from(grids).some(g => Array.from(g.querySelectorAll('.cat-card')).some(c => c.style.display !== 'none'));
+    grids.forEach(g => g.style.display = temVisivel ? '' : 'none');
+    headers.forEach(h => h.style.display = temVisivel ? '' : 'none');
+  });
+
+  // O mesmo filtro aplica-se às notas do pedido: verde=visto, vermelho=pendente, laranja=atenção.
+  // Em "todos" mostram-se todas; nos restantes escondem-se as já vistas e as que não correspondem.
+  const mapaFiltroNota = {verde:'visto', vermelho:'pendente', laranja:'atencao'};
+  document.querySelectorAll('#ticket-area .nota-linha').forEach(linha=>{
+    const est = linha.getAttribute('data-estado') || 'normal';
+    linha.style.display = (filtro === 'todos' || est === mapaFiltroNota[filtro]) ? 'flex' : 'none';
+  });
+
+  const btn = document.getElementById('btn-filtro-separacao');
+  if(btn){
+    const cores = {todos:'#B0B0B0', verde:'#16a34a', vermelho:'#dc2626', laranja:'#f97316'};
+    const label = filtro === 'todos' ? 'FILTRO' : filtro === 'verde' ? '✓ SEPARADOS' : filtro === 'vermelho' ? '✕ EM FALTA' : '! INCOMPLETOS';
+    const span = btn.querySelector('span');
+    if(span) span.textContent = label;
+    btn.style.color = cores[filtro];
+    btn.classList.toggle('ativo', filtro !== 'todos');
+  }
+}
+
+// Zoom de colunas por pinça (2 dedos) — igual ao catálogo original
+function aplicarColunasCatalogo(n){
+  CAT_COLUNAS = Math.max(2, Math.min(6, n));
+  localStorage.setItem('DM_RESIDUAL_CAT_COLUNAS', CAT_COLUNAS);
+  document.querySelectorAll('#ticket-area .cat-fam-content').forEach(el=>{
+    el.style.gridTemplateColumns = `repeat(${CAT_COLUNAS}, 1fr)`;
+  });
+}
+
+function renderCatalogoM3(){
+  const itens = [...(PEDIDO_ATUAL.itens||[])].sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || a.nome.localeCompare(b.nome));
+  if(!itens.length){ document.getElementById('ticket-area').innerHTML = '<p style="padding:20px;text-align:center;color:#888;">Encomenda sem produtos.</p>'; return; }
+
+  const clienteNome = (PEDIDO_ATUAL.cliente && PEDIDO_ATUAL.cliente.nome) || 'CLIENTE';
+  const clienteMorada = PEDIDO_ATUAL.cliente ? [(PEDIDO_ATUAL.cliente.morada||''), (PEDIDO_ATUAL.cliente.localidade||'')].filter(Boolean).join(', ') : '';
+  const dataTxt = PEDIDO_ATUAL.data || (PEDIDO_ATUAL.dataISO ? new Date(PEDIDO_ATUAL.dataISO).toLocaleDateString('pt-PT', {day:'2-digit', month:'long', year:'numeric'}) : '');
+  const logoTag = `<img src="./logo.png" class="cat-logo" alt="Logo" onerror="this.outerHTML='<div style=\\'font-size:16px;font-weight:900;color:#1A1A1A;\\'>DUMELHOR</div>'">`;
+
+  let html = `<div class="cat-wrap"><div class="cat-page">
+    <div class="cat-header">
+        ${logoTag}
+        <div class="cat-cliente-bloco">
+            <div class="cat-cliente-label">Preparado para</div>
+            <div class="cat-cliente-nome">${clienteNome}</div>
+            ${clienteMorada ? `<div class="cat-cliente-data">${clienteMorada}</div>` : ''}
+            <div class="cat-cliente-data">${dataTxt}</div>
+        </div>
+        <div class="cat-titulo-bloco">
+            <div class="cat-titulo">ENCOMENDA</div>
+            <div class="cat-subtitulo">Lista de produtos</div>
+        </div>
+    </div>
+    <div class="cat-body">
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:0;">`;
+
+  let lastCat = null;
+  itens.forEach(it=>{
+    const nomeFoto = String(it.f||'').toLowerCase();
+    const imgUrl = IMGS_LOCAL.get(nomeFoto) || IMGS_LOCAL.get(nomeFoto+'.jpg') || IMGS_LOCAL.get(nomeFoto+'.png') || '';
+
+    const qPedida = it.q > 0 ? it.q : '';
+    const qtyBadge = qPedida !== '' ? `<div class="cat-qtd-encomenda">${qPedida}</div>` : '';
+
+    const estadoAtual = SEPARACAO_STATUS[it.id] || 'normal';
+    const qtdSeparadaVal = SEPARACAO_QTD[it.id] ?? '';
+    const iconeEstado = estadoAtual === 'verde' ? '✓' : estadoAtual === 'vermelho' ? '✕' : estadoAtual === 'laranja' ? '!' : '';
+    const classeEstado = estadoAtual === 'laranja' ? 'laranja-alerta' : estadoAtual;
+    const statusBadge = `<div class="cat-sep-badge ${estadoAtual!=='normal' ? classeEstado : ''}" id="sep-badge-${it.id}" style="${estadoAtual==='normal' ? 'display:none;' : ''}">${iconeEstado}</div>`;
+    const qtdBallHtml = `<div class="cat-sep-qtd-ball" id="sep-qtd-ball-${it.id}" style="${estadoAtual==='laranja' ? '' : 'display:none;'}">${estadoAtual==='laranja' ? `<input type="number" min="0" max="${it.q||99}" value="${qtdSeparadaVal}" id="sep-qtd-input-${it.id}" onclick="event.stopPropagation()" onchange="guardarQtdSeparada(${it.id}, this.value)">` : ''}</div>`;
+
+    const imgTag = imgUrl
+      ? `<div class="cat-card-img-wrap" onclick="handleCliqueSeparacao(${it.id})">${qtyBadge}${statusBadge}${qtdBallHtml}<img src="${imgUrl}" class="cat-card-img" alt="${it.nome}"></div>`
+      : `<div class="cat-card-img-placeholder" onclick="handleCliqueSeparacao(${it.id})">${qtyBadge}${statusBadge}${qtdBallHtml}📦</div>`;
+
+    if(it.cat !== lastCat){
+      if(lastCat !== null) html += `</div>`;
+      lastCat = it.cat;
+      if(FAM_ESTADOS_TICKET[it.cat] === undefined) FAM_ESTADOS_TICKET[it.cat] = false;
+      const catEscapado = String(it.cat).replace(/'/g, "\\'");
+      const fechada = FAM_ESTADOS_TICKET[it.cat];
+      html += `<div class="cat-fam-header" data-cat="${it.cat}" onclick="toggleFamCatalogoTicket('${catEscapado}')">${it.cat} <span class="cat-fam-arrow">${fechada ? '▶' : '▼'}</span></div>`;
+      html += `<div class="cat-grid cat-fam-content ${fechada ? 'fechada' : ''}" data-cat="${it.cat}" style="grid-template-columns:repeat(${CAT_COLUNAS},1fr)">`;
+    }
+
+    html += `
+        <div class="cat-card" data-id="${it.id}" data-status="${estadoAtual}">
+            ${imgTag}
+            <div class="cat-card-body">
+                <div class="cat-card-nome">${it.nome}</div>
+                <div class="cat-card-preco-wrap">
+                    <div class="cat-card-preco">${Number(it.preco||0).toFixed(2)}€</div>
+                </div>
+            </div>
+        </div>`;
+  });
+  if(lastCat !== null) html += `</div>`;
+
+  html += `</div></div></div>`;
+
+  if(PEDIDO_ATUAL.obs && PEDIDO_ATUAL.obs.trim()){
+    const linhasNota = PEDIDO_ATUAL.obs.split('\n').map(l=>l.trim()).filter(l=>l.length);
+    html += `<div class="cat-page" style="page-break-before:always;">
+      <div style="border:1px solid #000; border-radius:8px; padding:12px 16px; margin-top:10px;">
+          <div style="font-size:13px; font-weight:900; letter-spacing:0.5px; margin-bottom:10px; color:#1A1A1A;">📝 NOTAS DO PEDIDO</div>
+          ${linhasNota.map((linhaTxt, idx) => {
+            const est = NOTAS_ESTADO[idx] || 'normal';
+            return `<div class="nota-linha" data-estado="${est}" style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #e2e2e2;">
+              <button class="nota-badge" id="nota-badge-${idx}" onclick="ciclarNota(${idx})"
+                style="flex-shrink:0; width:28px; height:28px; border-radius:50%; border:2px solid ${NOTA_COR[est]};
+                background:${est==='normal' ? '#fff' : NOTA_COR[est]}; color:${est==='normal' ? NOTA_COR.normal : '#fff'};
+                font-weight:900; font-size:14px; display:flex; align-items:center; justify-content:center; cursor:pointer;">${NOTA_ICONE[est]}</button>
+              <div style="font-size:15px; line-height:1.6; color:#333;">${linhaTxt}</div>
+            </div>`;
+          }).join('')}
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('ticket-area').innerHTML = html;
+  aplicarFiltroSeparacaoTicket();
+  atualizarBotaoTudoSeparado();
+}
+
+/* =========================================================
+   PINCH ZOOM — 2 dedos, só ativo dentro do M3
+   ========================================================= */
+let pinchStartDistance = 0, isPinching = false, pinchMoved = false;
+function getDistance(t1,t2){ const dx=t2.clientX-t1.clientX, dy=t2.clientY-t1.clientY; return Math.sqrt(dx*dx+dy*dy); }
+
+document.addEventListener('touchstart', function(e){
+  if(e.touches.length === 2 && document.getElementById('m3').classList.contains('active')){
+    isPinching = true; pinchMoved = false;
+    pinchStartDistance = getDistance(e.touches[0], e.touches[1]);
+    e.preventDefault();
+  }
+}, {passive:false});
+
+document.addEventListener('touchmove', function(e){
+  if(!isPinching || e.touches.length !== 2) return;
+  e.preventDefault();
+  const currentDistance = getDistance(e.touches[0], e.touches[1]);
+  const distanceChange = currentDistance - pinchStartDistance;
+  if(!pinchMoved && distanceChange > 50){
+    pinchMoved = true; isPinching = false;
+    aplicarColunasCatalogo(CAT_COLUNAS - 1); // abrir dedos = menos colunas = imagem maior
+  } else if(!pinchMoved && distanceChange < -50){
+    pinchMoved = true; isPinching = false;
+    aplicarColunasCatalogo(CAT_COLUNAS + 1); // fechar dedos = mais colunas = imagem menor
+  }
+}, {passive:false});
+
+document.addEventListener('touchend', function(){
+  isPinching = false; pinchMoved = false; pinchStartDistance = 0;
+});
+
+/* =========================================================
+   IMPRESSÃO — resumo de produtos em falta (✕) e incompletos (!)
+   ========================================================= */
+// Agrupa uma lista de itens/produtos por família (campo .cat), ordenando
+// as famílias e, dentro de cada uma, os produtos por ordem alfabética.
+function ordenarPorFamiliaENome(lista){
+  return [...lista].sort((a,b) => (a.cat||'zzz_sem_familia').localeCompare(b.cat||'zzz_sem_familia', 'pt') || (a.nome||'').localeCompare(b.nome||'', 'pt'));
+}
+// Constrói uma tabela HTML com cabeçalhos de família intercalados entre os produtos.
+// A tabela em si fica deslocada um pouco para a direita; a barra da família não
+// acompanha esse deslocamento (perde a borda esquerda), ficando "recuada" para
+// trás em relação ao início da coluna do código de barras — cria destaque.
+function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
+  const RECUO = 14;
+  let html = `<table style="border-collapse:collapse;width:calc(100% - ${RECUO}px);margin:0 0 14px ${RECUO}px;font-size:12px;">
+    <tr style="background:#f2f2f2;">${colunas.map(c=>`<th style="padding:6px;border:1px solid #ccc;">${c}</th>`).join('')}</tr>`;
+  let catAtual = null;
+  itensOrdenados.forEach(it=>{
+    const cat = it.cat || 'Sem família';
+    if(cat !== catAtual){
+      catAtual = cat;
+      html += `<tr><td colspan="${colunas.length}" style="position:relative;left:-${RECUO}px;width:calc(100% + ${RECUO}px);padding:6px 6px 6px 8px;background:#e2e2e2;font-weight:800;text-transform:uppercase;font-size:11px;border:1px solid #ccc;border-left:none;">${cat}</td></tr>`;
+    }
+    html += linhaFn(it);
+  });
+  html += '</table>';
+  return html;
+}
+
+function imprimirResumo(){
+  if(!PEDIDO_ATUAL) return;
+  const faltam = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='vermelho'));
+  const incompletos = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='laranja'));
+  const notasPendentes = (PEDIDO_ATUAL.obs||'').split('\n').map(l=>l.trim()).filter(l=>l.length)
+    .map((texto, idx) => ({texto, estado: NOTAS_ESTADO[idx] || 'normal'}))
+    .filter(n => n.estado === 'atencao' || n.estado === 'pendente');
+
+  if(!faltam.length && !incompletos.length && !notasPendentes.length){ alert('Não há produtos em falta/incompletos nem notas pendentes para imprimir.'); return; }
+
+  const linha = (it, sep) => `<tr>
+      <td style="padding:6px;border:1px solid #ccc;">${it.ean||''}</td>
+      <td style="padding:6px;border:1px solid #ccc;">${it.nome}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${it.q}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${sep!==undefined && sep!=='' ? sep : '-'}</td>
+    </tr>`;
+
+  const hoje = new Date().toLocaleDateString('pt-PT');
+  let html = `<div style="font-family:Arial,sans-serif;padding:10px;">
+    <h2 style="margin:0 0 2px;">DUMELHOR — Resumo de Separação</h2>
+    <div style="font-size:13px;color:#555;margin-bottom:10px;">Cliente: <b>${(PEDIDO_ATUAL.cliente&&PEDIDO_ATUAL.cliente.nome)||''}</b> &nbsp;|&nbsp; Data: ${hoje}</div>`;
+
+  if(faltam.length){
+    html += `<h3 style="color:#E60000;margin:14px 0 6px;">✕ EM FALTA (${faltam.length})</h3>
+    ${tabelaComFamilias(faltam, ['Código','Produto','Qtd. Pedida','Qtd. Separada'], it=>linha(it, 0))}`;
+  }
+  if(incompletos.length){
+    html += `<h3 style="color:#FF8C00;margin:18px 0 6px;">! INCOMPLETOS (${incompletos.length})</h3>
+    ${tabelaComFamilias(incompletos, ['Código','Produto','Qtd. Pedida','Qtd. Separada'], it=>linha(it, SEPARACAO_QTD[it.id]))}`;
+  }
+  if(notasPendentes.length){
+    html += `<h3 style="color:#1A1A1A;margin:18px 0 6px;">📝 NOTAS PENDENTES (${notasPendentes.length})</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:15px;">
+      ${notasPendentes.map(n=>`<tr>
+        <td style="padding:7px;border:1px solid #ccc;width:36px;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
+      </tr>`).join('')}
+    </table>`;
+  }
+  html += '</div>';
+
+  document.getElementById('print-area').innerHTML = html;
+  document.body.classList.add('print-resumo');
+  window.print();
+  setTimeout(()=> document.body.classList.remove('print-resumo'), 500);
+}
+
+/* =========================================================
+   RESUMO GERAL — soma, produto a produto, as quantidades em
+   falta e incompletas de TODAS as encomendas (não só uma)
+   ========================================================= */
+function imprimirResumoGeral(){
+  const pedidos = getPedidos();
+  if(!pedidos.length){ alert('Não há encomendas carregadas para gerar o resumo geral.'); return; }
+
+  const mapa = {}; // chave (ean ou nome) -> totais agregados
+
+  pedidos.forEach(p=>{
+    let sep;
+    try{ sep = JSON.parse(localStorage.getItem(LS_SEP(p.id)) || '{"status":{},"qtd":{}}'); }
+    catch(e){ sep = {status:{}, qtd:{}}; }
+    const status = sep.status || {};
+    const qtdSep = sep.qtd || {};
+    (p.itens || []).forEach(it=>{
+      const est = status[it.id];
+      if(est !== 'vermelho' && est !== 'laranja') return;
+      const pedida = Number(it.q) || 0;
+      // Vermelho = nada separado (0). Laranja = a qtd que o utilizador introduziu.
+      let separada = 0;
+      if(est === 'laranja'){
+        const sepQ = Number(qtdSep[it.id]);
+        separada = isNaN(sepQ) ? 0 : sepQ;
+      }
+      const falta = Math.max(pedida - separada, 0);
+      if(falta <= 0) return; // nada em falta neste item, não entra no resumo
+
+      const chave = (it.ean && String(it.ean).trim()) ? String(it.ean).trim() : ('nome:' + String(it.nome||'').trim().toLowerCase());
+      if(!mapa[chave]) mapa[chave] = {ean: it.ean || '', nome: it.nome || '(sem nome)', cat: it.cat || '', pedidaQtd:0, separadaQtd:0, faltaQtd:0, pedidosAfetados:new Set()};
+      mapa[chave].pedidaQtd += pedida;
+      mapa[chave].separadaQtd += separada;
+      mapa[chave].faltaQtd += falta;
+      mapa[chave].pedidosAfetados.add(p.id);
+    });
+  });
+
+  let linhas = Object.values(mapa).filter(l => l.faltaQtd > 0);
+  linhas = ordenarPorFamiliaENome(linhas);
+
+  // Notas pendentes (marcadas com ! ou ✕) de todas as encomendas
+  const notasPendentesGeral = [];
+  pedidos.forEach(p=>{
+    let notasEstado;
+    try{ notasEstado = JSON.parse(localStorage.getItem(LS_NOTAS(p.id)) || '{}'); }
+    catch(e){ notasEstado = {}; }
+    (p.obs || '').split('\n').map(l=>l.trim()).filter(l=>l.length).forEach((texto, idx)=>{
+      const est = notasEstado[idx] || 'normal';
+      if(est === 'atencao' || est === 'pendente'){
+        notasPendentesGeral.push({cliente: (p.cliente && p.cliente.nome) || p.cliente || '(sem nome)', texto, estado: est});
+      }
+    });
+  });
+  notasPendentesGeral.sort((a,b) => String(a.cliente).localeCompare(String(b.cliente), 'pt'));
+
+  if(!linhas.length && !notasPendentesGeral.length){ alert('Não há produtos em falta/incompletos nem notas pendentes em nenhuma encomenda.'); return; }
+
+  let totalPedida = 0, totalSeparada = 0, totalFalta = 0;
+  linhas.forEach(l => { totalPedida += l.pedidaQtd; totalSeparada += l.separadaQtd; totalFalta += l.faltaQtd; });
+
+  const linha = l => `<tr>
+      <td style="padding:6px;border:1px solid #ccc;">${l.ean || '-'}</td>
+      <td style="padding:6px;border:1px solid #ccc;">${l.nome}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidaQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.separadaQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:700;color:#E60000;">${l.faltaQtd}</td>
+      <td style="padding:6px;border:1px solid #ccc;text-align:center;">${l.pedidosAfetados.size}</td>
+    </tr>`;
+
+  const colunas = ['Código','Produto','Qtd. Pedida','Qtd. Separada','Qtd. em Falta','Nº Encomendas'];
+  const hoje = new Date().toLocaleDateString('pt-PT');
+  let html = `<div style="font-family:Arial,sans-serif;padding:10px;">
+    <h2 style="margin:0 0 2px;">DUMELHOR — Resumo Geral de Separação</h2>
+    <div style="font-size:13px;color:#555;margin-bottom:10px;">Encomendas consideradas: <b>${pedidos.length}</b> &nbsp;|&nbsp; Data: ${hoje}</div>`;
+
+  if(linhas.length){
+    html += `${tabelaComFamilias(linhas, colunas, linha)}
+    <table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:14px;">
+      <tr style="font-weight:800;background:#f4f4f4;">
+        <td style="padding:6px;border:1px solid #ccc;width:50%;" colspan="2">TOTAL GERAL</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalPedida}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;">${totalSeparada}</td>
+        <td style="padding:6px;border:1px solid #ccc;text-align:center;color:#E60000;">${totalFalta}</td>
+        <td style="padding:6px;border:1px solid #ccc;"></td>
+      </tr>
+    </table>`;
+  }
+
+  if(notasPendentesGeral.length){
+    let clienteAnterior = null;
+    const linhasNotas = notasPendentesGeral.map(n=>{
+      const mostrarCliente = n.cliente !== clienteAnterior;
+      clienteAnterior = n.cliente;
+      return `<tr>
+        <td style="padding:7px;border:1px solid #ccc;text-align:center;font-weight:900;color:${NOTA_COR[n.estado]};">${NOTA_ICONE[n.estado]}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-weight:700;">${mostrarCliente ? n.cliente : ''}</td>
+        <td style="padding:7px;border:1px solid #ccc;font-size:15px;">${n.texto}</td>
+      </tr>`;
+    }).join('');
+    html += `<h3 style="color:#1A1A1A;margin:18px 0 6px;">📝 NOTAS PENDENTES (${notasPendentesGeral.length})</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:15px;">
+      <tr style="background:#f2f2f2;">
+        <th style="padding:7px;border:1px solid #ccc;width:36px;"></th>
+        <th style="padding:7px;border:1px solid #ccc;">Cliente</th>
+        <th style="padding:7px;border:1px solid #ccc;">Nota</th>
+      </tr>
+      ${linhasNotas}
+    </table>`;
+  }
+  html += '</div>';
+
+  document.getElementById('print-area').innerHTML = html;
+  document.body.classList.add('print-resumo');
+  window.print();
+  setTimeout(()=> document.body.classList.remove('print-resumo'), 500);
+}
+
+/* Registar service worker — necessário tanto para o Chrome/Android oferecer
+   "Instalar aplicação" em ecrã inteiro, como para a app funcionar OFFLINE
+   (guarda o "shell" da app em cache e serve-o quando não há rede). */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    // Assim que houver uma versão nova do sw.js publicada no GitHub Pages,
+    // ativa-a de imediato (o próprio sw.js chama skipWaiting()).
+    reg.update().catch(()=>{});
+  }).catch(()=>{});
+
+  // Quando o service worker novo assume o controlo da página, recarrega
+  // automaticamente para que a app fique sempre atualizada sem intervenção.
+  let jaRecarregou = false;
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    if(jaRecarregou) return;
+    jaRecarregou = true;
+    window.location.reload();
+  });
+}
+
+/* Sincronização automática assim que a ligação à internet voltar
+   (ex.: entrou em zona sem rede, saiu de novo — não precisa de tocar em nada). */
+window.addEventListener('online', function(){
+  const status = document.getElementById('topbar-sub-status');
+  if(status) status.textContent = '🌐 Ligação recuperada — a sincronizar…';
+  sincronizarGithub(false);
+});
+window.addEventListener('offline', function(){
+  const status = document.getElementById('topbar-sub-status');
+  if(status) status.textContent = '📴 Sem ligação — a trabalhar offline';
+});
+
+/* Init */
+/* Estado inicial do histórico — necessário para o botão "Retroceder" do tablet
+   funcionar corretamente desde o primeiro ecrã. */
+
+history.replaceState({tela:'m1'}, '', location.href);
+
+abrirFotosDb().then(()=> { renderLista(); atualizarBotaoEncomendas(); sincronizarGithub(false); });
+</script>
+</body>
+</html>

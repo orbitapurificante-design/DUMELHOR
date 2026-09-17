@@ -5335,6 +5335,150 @@ if('serviceWorker' in navigator) {
 // ═══════════════════════════════════════════════════════════
 // EXPORTAR / IMPORTAR BACKUP COMPLETO
 // ═══════════════════════════════════════════════════════════
+// ── Descarrega um Blob só depois de um TOQUE real do utilizador num botão. ──
+// Os browsers (sobretudo no Android) bloqueiam silenciosamente vários downloads
+// automáticos seguidos disparados por JavaScript sem um clique novo entre eles —
+// era isso que fazia "faltar" ficheiros no backup. Ao exigir um toque manual antes
+// de cada download, garantimos que TODOS os ficheiros saem, sem serem bloqueados.
+function _overlayDownload() {
+    let overlay = document.getElementById('overlay-download-partes');
+    if(overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-download-partes';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML = '<div style="background:#fff;border-radius:14px;padding:22px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.4);">' +
+        '<div id="odp-titulo" style="font-size:15px;font-weight:800;color:#222;margin-bottom:8px;">A preparar…</div>' +
+        '<div id="odp-status" style="font-size:12.5px;color:#666;margin-bottom:16px;line-height:1.5;">A converter fotos…</div>' +
+        '<button id="odp-botao-partilhar" style="display:none;width:100%;padding:13px;border:none;border-radius:10px;background:#1A73E8;color:#fff;font-weight:800;font-size:13px;cursor:pointer;margin-bottom:8px;">📤 Partilhar (Bluetooth / Nearby Share)</button>' +
+        '<button id="odp-botao" style="display:none;width:100%;padding:13px;border:none;border-radius:10px;background:#E60000;color:#fff;font-weight:800;font-size:13px;cursor:pointer;">📥 Descarregar</button>' +
+        '</div>';
+    document.body.appendChild(overlay);
+    return overlay;
+}
+function _fecharOverlayDownload() {
+    document.getElementById('overlay-download-partes')?.remove();
+}
+// Espera por um toque num botão e SÓ ENTÃO envia o ficheiro (clique real = nunca bloqueado).
+// Mostra também um botão "Partilhar" quando o telemóvel suporta (Web Share API com ficheiros) —
+// isso abre o menu nativo do Android, onde se pode escolher "Nearby Share"/Bluetooth para
+// enviar o ficheiro diretamente para o outro tablet, sem cabos e sem internet.
+async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
+    const overlay = _overlayDownload();
+    const elTitulo = overlay.querySelector('#odp-titulo');
+    const elStatus = overlay.querySelector('#odp-status');
+    const elBotao = overlay.querySelector('#odp-botao');
+    const elBotaoPartilhar = overlay.querySelector('#odp-botao-partilhar');
+
+    elTitulo.textContent = '📁 Ficheiro pronto';
+    elStatus.textContent = nomeFicheiro + '  (' + (blob.size/1024/1024).toFixed(1) + ' MB)\nToca num dos botões abaixo.';
+    elBotao.textContent = '📥 Descarregar';
+    elBotao.style.display = 'block';
+
+    // Só mostra "Partilhar" se o telemóvel/navegador realmente suportar partilhar ESTE ficheiro
+    // (Web Share API nível 2, precisa de contexto seguro — https). Se não suportar, simplesmente
+    // não aparece, e fica só a opção de Descarregar como já era.
+    let podePartilhar = false;
+    let ficheiroPartilha = null;
+    try {
+        if(navigator.share && navigator.canShare) {
+            ficheiroPartilha = new File([blob], nomeFicheiro, { type: 'application/json' });
+            podePartilhar = navigator.canShare({ files: [ficheiroPartilha] });
+        }
+    } catch(e) { podePartilhar = false; }
+    elBotaoPartilhar.style.display = podePartilhar ? 'block' : 'none';
+
+    await new Promise((resolve) => {
+        let resolvido = false;
+        const concluir = () => {
+            if(resolvido) return;
+            resolvido = true;
+            elBotao.style.display = 'none';
+            elBotaoPartilhar.style.display = 'none';
+            elTitulo.textContent = tituloDepoisDoClique || 'A preparar…';
+            elStatus.textContent = 'Um momento…';
+            resolve();
+        };
+        elBotao.onclick = () => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = nomeFicheiro;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+            concluir();
+        };
+        if(podePartilhar) {
+            elBotaoPartilhar.onclick = async () => {
+                try {
+                    await navigator.share({ files: [ficheiroPartilha], title: nomeFicheiro });
+                    concluir();
+                } catch(e) {
+                    // Utilizador cancelou a partilha, ou falhou — deixa-o tentar Descarregar em vez disso
+                    console.warn('Partilha cancelada ou falhou:', e);
+                }
+            };
+        }
+    });
+}
+
+// ── Descarrega as fotos de listaFotos em vários ficheiros pequenos (em vez de 1 gigante) ──
+// Cada ficheiro fica limitado a ~LIMITE caracteres; assim que atinge o limite, fecha o
+// ficheiro, PEDE UM TOQUE para descarregar (evita bloqueio de downloads múltiplos),
+// larga as referências (para o GC libertar memória) e começa o próximo.
+async function baixarFotosEmPartes(listaFotos, nomeBase) {
+    const LIMITE = 18 * 1024 * 1024; // ~18MB de texto por ficheiro
+    let numFicheiros = 0, numFotosTotal = 0;
+    let partes = null, tamanhoAtual = 0, primeira = true;
+    const falhas = [];
+
+    const overlay = _overlayDownload();
+    const elTitulo = overlay.querySelector('#odp-titulo');
+    const elStatus = overlay.querySelector('#odp-status');
+
+    function iniciarParte() {
+        partes = ['{"versao":3,"data":' + JSON.stringify(new Date().toISOString()) + ',"fotos":{'];
+        tamanhoAtual = partes[0].length;
+        primeira = true;
+    }
+    async function descarregarParte() {
+        if(primeira) return; // parte vazia, nada a fazer
+        partes.push('}}');
+        numFicheiros++;
+        const nomeFicheiro = nomeBase + '-parte' + numFicheiros + '.json';
+        const blob = new Blob(partes, { type: 'application/json' });
+        partes = null; // liberta a referência para o GC poder recuperar a memória
+        await _descarregarComToque(blob, nomeFicheiro, 'A preparar as próximas fotos…');
+    }
+
+    iniciarParte();
+    let processadas = 0;
+    for(const { key, blob } of listaFotos) {
+        processadas++;
+        elTitulo.textContent = 'A preparar fotos…';
+        elStatus.textContent = 'A converter foto ' + processadas + ' de ' + listaFotos.length + '…';
+        const dataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = ev => resolve(ev.target.result);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+        });
+        if(dataUrl) {
+            const trecho = (primeira ? '' : ',') + JSON.stringify(key) + ':' + JSON.stringify(dataUrl);
+            partes.push(trecho);
+            tamanhoAtual += trecho.length;
+            primeira = false;
+            numFotosTotal++;
+        } else {
+            falhas.push(key);
+            console.warn('⚠️ Não foi possível converter esta foto (pode estar corrompida):', key);
+        }
+        if(tamanhoAtual >= LIMITE) { await descarregarParte(); iniciarParte(); }
+    }
+    await descarregarParte(); // última parte, mesmo que fique mais pequena
+
+    _fecharOverlayDownload();
+    return { numFotosTotal, numFicheiros, falhas };
+}
+
 async function exportarBackup() {
     try {
         console.log('📦 A iniciar exportação de backup...');
@@ -5359,8 +5503,8 @@ async function exportarBackup() {
             reqValues.onerror = () => resolve([]);
         });
 
-        // ── Cabeçalho do JSON: tudo menos as fotos (isto é pequeno, sem problema) ──
-        const cabecalho = {
+        // ── 1º ficheiro: só os dados (pedidos/clientes/produtos/etc), sem fotos — é sempre pequeno ──
+        const dados = {
             versao: 3,
             data: new Date().toISOString(),
             pedidos: PEDIDOS_DB,
@@ -5379,70 +5523,38 @@ async function exportarBackup() {
                 segmento: segmento || '',
             }
         };
-        // Remove a chave "config" do fim do JSON do cabeçalho para podermos continuar
-        // o objeto manualmente com "fotos" a seguir, sem duplicar tudo numa única string gigante.
-        let cabecalhoJson = JSON.stringify(cabecalho);
-        cabecalhoJson = cabecalhoJson.slice(0, -1); // tira o "}" final
-
-        // ── Monta o ficheiro em vários pedaços (Blob parts) em vez de 1 string enorme ──
-        // Cada foto em base64 é convertida e imediatamente colocada num pedaço do Blob;
-        // isto evita ter ao mesmo tempo o objeto completo + a string JSON gigante do
-        // JSON.stringify (que era o que esgotava a memória em tablets mais fracos).
-        const partes = [cabecalhoJson, ',"fotos":{'];
-        let numFotos = 0;
-        let primeira = true;
-        for(const { key, blob } of listaFotos) {
-            const dataUrl = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = ev => resolve(ev.target.result);
-                reader.onerror = () => resolve(null);
-                reader.readAsDataURL(blob);
-            });
-            if(dataUrl) {
-                if(!primeira) partes.push(',');
-                primeira = false;
-                partes.push(JSON.stringify(key) + ':' + JSON.stringify(dataUrl));
-                numFotos++;
-            }
-            // A cada 25 fotos, larga a thread principal um instante para o browser
-            // conseguir libertar memória entretanto (reduz o pico de RAM em tablets fracos).
-            if(numFotos % 25 === 0) await new Promise(r => setTimeout(r, 0));
-        }
-        partes.push('}}');
-
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
-        const nomeFicheiro = 'dumelhor-backup-COMPLETO-' + dataStr + '.json';
-        const blob = new Blob(partes, { type: 'application/json' });
+        const blobDados = new Blob([JSON.stringify(dados)], { type: 'application/json' });
+        const nomeFicheiroDados = 'dumelhor-backup-DADOS-' + dataStr + '.json';
+        await _descarregarComToque(blobDados, nomeFicheiroDados, 'A preparar as fotos…');
+
+        // ── 2º(+) ficheiro(s): as fotos, divididas em partes pequenas para não rebentar a memória ──
+        const { numFotosTotal, numFicheiros, falhas } = await baixarFotosEmPartes(
+            listaFotos, 'dumelhor-backup-FOTOS-' + dataStr);
 
         const resumo = '✅ Backup COMPLETO exportado!\n\n' +
-              '📦 Pedidos: ' + cabecalho.pedidos.length + '\n' +
-              '💰 Pagamentos: ' + cabecalho.pagamentos.length + '\n' +
-              '👥 Clientes: ' + cabecalho.clientes.length + '\n' +
-              '🛒 Produtos: ' + cabecalho.produtos.length + '\n' +
-              '📸 Fotos: ' + numFotos + '\n\n' +
-              '⚠️ GUARDA ESTE FICHEIRO EM LOCAL SEGURO!\n' +
-              'Contém tudo — dados + fotos + produtos.';
-
-        // Download direto (funciona em Chrome/Android e Desktop, tal como nos outros ficheiros)
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = nomeFicheiro;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
+              '📦 Pedidos: ' + dados.pedidos.length + '\n' +
+              '💰 Pagamentos: ' + dados.pagamentos.length + '\n' +
+              '👥 Clientes: ' + dados.clientes.length + '\n' +
+              '🛒 Produtos: ' + dados.produtos.length + '\n' +
+              '📸 Fotos: ' + numFotosTotal + (falhas.length ? ' (⚠️ ' + falhas.length + ' não puderam ser lidas — ver consola)' : '') + '\n\n' +
+              '📁 Foram descarregados ' + (1 + numFicheiros) + ' ficheiros:\n' +
+              '   • 1 com os dados (' + nomeFicheiroDados + ')\n' +
+              '   • ' + numFicheiros + ' com as fotos (divididas para não sobrecarregar a memória)\n\n' +
+              '⚠️ GUARDA TODOS ESTES FICHEIROS!\n' +
+              'No outro tablet, usa o botão IMPORTAR uma vez PARA CADA ficheiro (um a seguir ao outro).';
 
         alert(resumo);
     } catch(e) {
         console.error('❌ Erro ao exportar backup:', e);
-        alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.\n\nSe o separador tiver fechado/recarregado sozinho sem esta mensagem aparecer, foi provavelmente falta de memória do tablet — tenta exportar só as FOTOS separadamente (menu ☰ → Exportar fotos), em vez do backup completo de uma vez.');
+        _fecharOverlayDownload();
+        alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.\n\nSe o separador tiver fechado/recarregado sozinho sem esta mensagem aparecer, foi provavelmente falta de memória do tablet.');
     }
 }
 
 // ── Exporta SÓ as fotos (sem pedidos/clientes/produtos) — para levar as fotos ──
-// para outro tablet rapidamente, sem mexer nos dados desse tablet. O ficheiro
-// resultante importa-se pelo mesmo botão IMPORTAR (usa o mesmo formato de backup).
+// para outro tablet rapidamente, sem mexer nos dados desse tablet. O(s) ficheiro(s)
+// resultante(s) importam-se pelo mesmo botão IMPORTAR (usa o mesmo formato de backup).
 async function exportarBackupFotos() {
     try {
         console.log('📸 A iniciar exportação de fotos...');
@@ -5464,47 +5576,23 @@ async function exportarBackupFotos() {
 
         if(listaFotos.length === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
 
-        // Monta o ficheiro em pedaços (Blob parts), convertendo e escrevendo foto a foto,
-        // em vez de guardar tudo num objeto e só depois fazer um JSON.stringify gigante
-        // — isto é o que rebentava a memória em tablets mais fracos.
-        const partes = ['{"versao":3,"data":' + JSON.stringify(new Date().toISOString()) + ',"fotos":{'];
-        let numFotos = 0;
-        let primeira = true;
-        for(const { key, blob } of listaFotos) {
-            const dataUrl = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = ev => resolve(ev.target.result);
-                reader.onerror = () => resolve(null);
-                reader.readAsDataURL(blob);
-            });
-            if(dataUrl) {
-                if(!primeira) partes.push(',');
-                primeira = false;
-                partes.push(JSON.stringify(key) + ':' + JSON.stringify(dataUrl));
-                numFotos++;
-            }
-            if(numFotos % 25 === 0) await new Promise(r => setTimeout(r, 0));
-        }
-        partes.push('}}');
-
-        if(numFotos === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
-
+        // Divide sempre em vários ficheiros pequenos (em vez de 1 gigante) — é isto que
+        // evita rebentar a memória em tablets fracos quando há muitas fotos.
         const dataStr = new Date().toLocaleDateString('pt-PT').replace(/\//g, '-');
-        const nomeFicheiro = 'dumelhor-fotos-' + dataStr + '.json';
-        const blob = new Blob(partes, { type: 'application/json' });
+        const { numFotosTotal, numFicheiros, falhas } = await baixarFotosEmPartes(
+            listaFotos, 'dumelhor-fotos-' + dataStr);
 
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = nomeFicheiro;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        if(numFotosTotal === 0) { alert('⚠️ Não há fotos guardadas para exportar.'); return; }
 
-        alert('✅ Backup de fotos exportado!\n\n📸 ' + numFotos + ' foto(s)\n\nUsa o botão IMPORTAR no outro tablet para as carregar (só as fotos são alteradas).');
+        alert('✅ Backup de fotos exportado!\n\n📸 ' + numFotosTotal + ' foto(s)' +
+            (falhas.length ? ' (⚠️ ' + falhas.length + ' não puderam ser lidas — ver consola)' : '') +
+            '\n📁 ' + numFicheiros + ' ficheiro(s)\n\n' +
+            (numFicheiros > 1
+                ? 'Como havia muitas fotos, foram divididas em ' + numFicheiros + ' ficheiros para não sobrecarregar a memória do tablet.\nNo outro tablet, usa o botão IMPORTAR uma vez PARA CADA ficheiro (um a seguir ao outro).'
+                : 'Usa o botão IMPORTAR no outro tablet para as carregar (só as fotos são alteradas).'));
     } catch(e) {
         console.error('❌ Erro ao exportar fotos:', e);
+        _fecharOverlayDownload();
         alert('❌ Erro ao exportar fotos: ' + e.message);
     }
 }
