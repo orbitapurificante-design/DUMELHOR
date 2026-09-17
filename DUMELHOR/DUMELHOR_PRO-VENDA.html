@@ -5377,15 +5377,36 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
     // Só mostra "Partilhar" se o telemóvel/navegador realmente suportar partilhar ESTE ficheiro
     // (Web Share API nível 2, precisa de contexto seguro — https). Se não suportar, simplesmente
     // não aparece, e fica só a opção de Descarregar como já era.
+    //
+    // IMPORTANTE: o Chrome só aceita partilhar ficheiros de certos tipos "seguros" (imagens, PDF,
+    // texto simples, etc.) — "application/json" fica de fora dessa lista e faz canShare() devolver
+    // sempre false. Por isso, para efeitos de partilha, identificamos o ficheiro como "text/plain"
+    // (o conteúdo não muda nada — continua a ser lido normalmente pelo IMPORTAR do outro tablet).
     let podePartilhar = false;
     let ficheiroPartilha = null;
+    let motivoSemPartilha = '';
     try {
-        if(navigator.share && navigator.canShare) {
-            ficheiroPartilha = new File([blob], nomeFicheiro, { type: 'application/json' });
+        if(!navigator.share) {
+            motivoSemPartilha = 'este navegador não suporta partilha (navigator.share indisponível)';
+        } else if(!navigator.canShare) {
+            motivoSemPartilha = 'este navegador é demasiado antigo para partilhar ficheiros (navigator.canShare indisponível)';
+        } else {
+            const blobParaPartilha = new Blob([blob], { type: 'text/plain' });
+            ficheiroPartilha = new File([blobParaPartilha], nomeFicheiro, { type: 'text/plain' });
             podePartilhar = navigator.canShare({ files: [ficheiroPartilha] });
+            if(!podePartilhar) motivoSemPartilha = 'canShare() recusou este ficheiro neste dispositivo';
         }
-    } catch(e) { podePartilhar = false; }
+    } catch(e) { podePartilhar = false; motivoSemPartilha = e.message; }
     elBotaoPartilhar.style.display = podePartilhar ? 'block' : 'none';
+
+    let elDiag = overlay.querySelector('#odp-diag');
+    if(!elDiag) {
+        elDiag = document.createElement('div');
+        elDiag.id = 'odp-diag';
+        elDiag.style.cssText = 'font-size:10.5px;color:#B0B0B0;margin-top:10px;line-height:1.4;';
+        overlay.querySelector('div').appendChild(elDiag);
+    }
+    elDiag.textContent = podePartilhar ? '' : ('ℹ️ Partilhar não disponível: ' + motivoSemPartilha + '. Usa Descarregar.');
 
     await new Promise((resolve) => {
         let resolvido = false;
@@ -5394,6 +5415,7 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
             resolvido = true;
             elBotao.style.display = 'none';
             elBotaoPartilhar.style.display = 'none';
+            elDiag.textContent = '';
             elTitulo.textContent = tituloDepoisDoClique || 'A preparar…';
             elStatus.textContent = 'Um momento…';
             resolve();
