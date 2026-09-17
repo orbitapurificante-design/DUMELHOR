@@ -5430,12 +5430,20 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
         };
         if(podePartilhar) {
             elBotaoPartilhar.onclick = async () => {
+                elDiag.textContent = 'A abrir partilha…';
                 try {
                     await navigator.share({ files: [ficheiroPartilha], title: nomeFicheiro });
                     concluir();
                 } catch(e) {
-                    // Utilizador cancelou a partilha, ou falhou — deixa-o tentar Descarregar em vez disso
+                    // AbortError = o utilizador fechou a caixa de partilha sem escolher nada (normal).
+                    // Qualquer outro erro mostramos aqui, em vez de só na consola, para se perceber
+                    // exatamente o que falhou.
                     console.warn('Partilha cancelada ou falhou:', e);
+                    if(e && e.name === 'AbortError') {
+                        elDiag.textContent = 'Partilha fechada sem escolher nada. Toca outra vez para tentar de novo, ou usa Descarregar.';
+                    } else {
+                        elDiag.textContent = '⚠️ Falha ao partilhar (' + (e && e.name ? e.name : 'erro') + '): ' + (e && e.message ? e.message : e) + '\nUsa Descarregar em vez disso.';
+                    }
                 }
             };
         }
