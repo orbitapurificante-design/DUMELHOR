@@ -4,15 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#E60000">
-    <!-- barra de navegação inferior Android também vermelha -->
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#E60000">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#E60000">
-    <meta name="background-color" content="#FFFFFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DUMELHOR">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
     <title>DUMELHOR — Encomendas</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -23,16 +15,8 @@
             --border: #E0E0E0; --green: #00A651;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        /* html branco — splash screen branca ao abrir a PWA */
-        html { scroll-padding-top: 52px; background: #FFFFFF; }
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--light); color: var(--grey);
-            overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%;
-            /* garante que a barra inferior Android vê o fundo vermelho */
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-        }
+        html { scroll-padding-top: 52px; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--light); color: var(--grey); overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 
         /* ══════════════════════════════
            HEADER
@@ -40,7 +24,7 @@
         header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 3000;
             height: 52px; background: var(--red);
-            display: flex; align-items: center; gap: 6px; padding: 0 6px 0 8px;
+            display: flex; align-items: center; gap: 8px; padding: 0 10px;
             box-shadow: 0 2px 10px rgba(230,0,0,0.35);
         }
 
@@ -101,19 +85,18 @@
            ══════════════════════════════ */
         .marcas-container {
             position: fixed; left: 0; right: 0;
-            top: -110%;
+            top: -110%;                      /* escondida acima */
             max-height: calc(100vh - 52px);
-            background: var(--light);
-            border-bottom: 2px solid var(--border);
+            background: #1A1A1A;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
             z-index: 4000;
             overflow-y: auto; overflow-x: hidden;
             transition: top 0.15s ease-out;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-            /* cola mesmo ao header sem espaço morto */
-            padding: 8px 10px 14px;
-            box-sizing: border-box;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            /* padding-top = altura do header para não ficar por baixo */
+            padding: 60px 10px 14px;
         }
-        .marcas-container.aberto { top: 52px; } /* desce logo abaixo do header */
+        .marcas-container.aberto { top: 0; }
 
         /* Overlay escuro para fechar ao clicar fora */
         .marcas-overlay {
@@ -127,22 +110,19 @@
             display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
         }
         .marcas-search input {
-            flex: 1; height: 38px; border-radius: 10px;
-            border: 1.5px solid var(--border);
-            background: white; color: var(--grey);
+            flex: 1; height: 36px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.09); color: white;
             padding: 0 12px; font-size: 12px; font-weight: 600;
             font-family: 'Montserrat', sans-serif; outline: none;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
-        .marcas-search input::placeholder { color: #B0B0B0; }
-        .marcas-search input:focus { border-color: var(--red); }
+        .marcas-search input::placeholder { color: rgba(255,255,255,0.3); }
         .btn-fechar-marcas {
-            width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
-            border: 1.5px solid var(--border);
-            background: white; color: var(--mid);
-            font-size: 18px; cursor: pointer;
+            width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.6); font-size: 18px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         /* Grelha: 4 col mobile, 6 col landscape */
@@ -153,40 +133,36 @@
             .marcas-grid { grid-template-columns: repeat(6, 1fr); }
         }
 
-        /* Cada botão de marca */
+        /* Cada botão de marca — só imagem (logótipo), sem texto */
         .marca-btn {
             aspect-ratio: 1/1; border-radius: 10px;
-            border: 1.5px solid #D0D0D0;   /* borda cinza igual à pesquisa */
+            border: 1.5px solid rgba(255,255,255,0.1);
             background: white; cursor: pointer; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            padding: 0; transition: all 0.1s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            padding: 6px; transition: all 0.1s;
         }
         .marca-btn:active { transform: scale(0.93); }
         .marca-btn.ativo {
             border-color: var(--red); border-width: 2.5px;
-            box-shadow: 0 0 10px rgba(230,0,0,0.35);
+            box-shadow: 0 0 10px rgba(230,0,0,0.45);
         }
-        .marca-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .marca-btn img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
         /* fallback quando não há imagem: inicial da marca */
         .marca-inicial {
             font-size: 20px; font-weight: 900; color: var(--red); line-height: 1;
-            background: var(--light); width:100%; height:100%;
-            display:flex; align-items:center; justify-content:center;
         }
 
         /* Rodapé do menu marcas */
         .marcas-footer {
             margin-top: 10px; padding-top: 10px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         .btn-todas {
-            width: 100%; height: 40px; border-radius: 10px;
-            border: 1.5px solid var(--border);
-            background: white; color: var(--mid);
+            width: 100%; height: 38px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65);
             font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
             cursor: pointer; letter-spacing: 0.5px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         /* ══════════════════════════════
@@ -277,44 +253,43 @@
         .btn-add:active { background: var(--red-d); }
         .btn-remove { width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.4); font-size:12px; font-weight:600; cursor:pointer; font-family:'Montserrat',sans-serif; margin-bottom:10px; }
 
+        /* ══════════════════════════════
+           PAINEL CARRINHO
+           ══════════════════════════════ */
         .cart-panel { position: fixed; inset: 0; z-index: 7000; background: white; display: none; flex-direction: column; }
         .cart-panel.open { display: flex; }
         .cart-header { background: var(--red); height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 14px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .cart-header h2 { color: white; font-size: 15px; font-weight: 800; flex: 1; }
-        .btn-back { width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        /* corpo ocupa todo o espaço disponível */
-        .cart-body { flex: 1; overflow-y: auto; background: var(--light); -webkit-overflow-scrolling: touch; }
-        /* footer mínimo — só total + botões */
-        .cart-footer-min { flex-shrink: 0; background: white; padding: 12px 14px 16px; border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
+        .btn-back { width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .cart-body { flex: 1; overflow-y: auto; background: var(--light); }
+        .cart-footer { flex-shrink: 0; background: white; padding: 14px; border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
 
         .flbl { font-size:10px; font-weight:700; color:#B0B0B0; letter-spacing:1.2px; text-transform:uppercase; display:block; margin-bottom:4px; margin-top:10px; }
-        .finp, .ftxt { width:100%; padding:11px 13px; background:var(--light); border:1.5px solid var(--border); border-radius:10px; font-size:14px; color:var(--grey); font-family:'Montserrat',sans-serif; outline:none; -webkit-appearance:none; box-sizing:border-box; }
+        .finp, .ftxt { width:100%; padding:11px 13px; background:var(--light); border:1.5px solid var(--border); border-radius:10px; font-size:14px; color:var(--grey); font-family:'Montserrat',sans-serif; outline:none; -webkit-appearance:none; }
         .finp:focus, .ftxt:focus { border-color:var(--red); background:white; }
         .ftxt { resize:none; height:70px; }
 
-        .total-strip { display:flex; justify-content:space-between; align-items:center; background:var(--light); border-radius:10px; padding:10px 14px; margin-bottom:10px; border:1px solid var(--border); }
+        .total-strip { display:flex; justify-content:space-between; align-items:center; background:var(--light); border-radius:10px; padding:12px 14px; margin:12px 0 10px; border:1px solid var(--border); }
         .total-lbl { font-size:11px; font-weight:700; color:var(--mid); letter-spacing:0.5px; }
-        .total-val { font-size:22px; font-weight:900; color:var(--red); }
+        .total-val { font-size:24px; font-weight:900; color:var(--red); }
         .total-items { font-size:11px; color:var(--mid); }
 
         .envio-btns { display:flex; flex-direction:column; gap:8px; }
-        .btn-wpp { width:100%; padding:14px; border-radius:14px; border:none; background:#25D366; color:white; font-size:14px; font-weight:900; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-wpp { width:100%; padding:15px; border-radius:14px; border:none; background:#25D366; color:white; font-size:15px; font-weight:900; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
         .btn-wpp:active { background:#1ea952; }
-        .btn-eml { width:100%; padding:12px; border-radius:14px; border:1.5px solid var(--border); background:white; color:var(--grey); font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-eml { width:100%; padding:13px; border-radius:14px; border:1.5px solid var(--border); background:white; color:var(--grey); font-size:14px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
         .btn-eml:active { background:var(--light); }
         .btn-dis { opacity:0.45; pointer-events:none; }
 
-        /* cart items — corrigir overflow dos controlos */
-        .cart-item { background:white; border-bottom:1px solid #F0F0F0; padding:10px 12px; display:flex; align-items:center; gap:8px; overflow:hidden; }
-        .ci-img { width:46px; height:46px; border-radius:8px; flex-shrink:0; object-fit:contain; background:var(--light); border:1px solid var(--border); }
-        .ci-info { flex:1; min-width:0; overflow:hidden; }
+        .cart-item { background:white; border-bottom:1px solid #F0F0F0; padding:10px 12px; display:flex; align-items:center; gap:10px; }
+        .ci-img { width:48px; height:48px; border-radius:8px; flex-shrink:0; object-fit:contain; background:var(--light); border:1px solid var(--border); }
+        .ci-info { flex:1; min-width:0; }
         .ci-nome { font-size:12px; font-weight:700; color:var(--grey); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .ci-preco { font-size:11px; color:var(--mid); margin-top:2px; }
-        /* controlos quantidade — fixos à direita, nunca saem do ecrã */
-        .ci-ctrl { display:flex; align-items:center; gap:4px; flex-shrink:0; }
-        .bqs { width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--light); color:var(--grey); font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .ci-ctrl { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+        .bqs { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--border); background:var(--light); color:var(--grey); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
         .bqs.del { border-color:#ffcccc; background:#fff5f5; color:#cc0000; }
-        .qd { font-size:15px; font-weight:900; color:var(--grey); min-width:24px; text-align:center; flex-shrink:0; }
+        .qd { font-size:16px; font-weight:900; color:var(--grey); min-width:22px; text-align:center; }
         .cart-sec { padding:8px 12px; font-size:9px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:#B0B0B0; background:var(--light); border-bottom:1px solid var(--border); }
         .cart-empty { text-align:center; padding:60px 20px; color:var(--mid); }
 
@@ -338,11 +313,11 @@
         .toast.show { opacity:1; }
 
         /* Barra inferior */
-        .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:2500; background:white; border-top:1px solid var(--border); padding:8px 12px 10px; box-shadow:0 -2px 12px rgba(0,0,0,0.06); display:flex; align-items:center; gap:8px; overflow:hidden; }
-        .bt-total { flex:1; min-width:0; overflow:hidden; }
-        .bt-lbl { font-size:9px; font-weight:700; color:#B0B0B0; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
-        .bt-val { font-size:18px; font-weight:900; color:var(--red); line-height:1; white-space:nowrap; }
-        .btn-ver-cart { background:var(--red); color:white; border:none; border-radius:12px; padding:11px 14px; font-size:12px; font-weight:800; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:5px; white-space:nowrap; flex-shrink:0; max-width:160px; }
+        .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:2500; background:white; border-top:1px solid var(--border); padding:8px 14px 10px; box-shadow:0 -2px 12px rgba(0,0,0,0.06); display:flex; align-items:center; gap:12px; }
+        .bt-total { flex:1; }
+        .bt-lbl { font-size:9px; font-weight:700; color:#B0B0B0; letter-spacing:1px; text-transform:uppercase; }
+        .bt-val { font-size:20px; font-weight:900; color:var(--red); line-height:1; }
+        .btn-ver-cart { background:var(--red); color:white; border:none; border-radius:12px; padding:12px 20px; font-size:13px; font-weight:800; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
         .btn-ver-cart:active { background:var(--red-d); }
         .btn-ver-cart.hidden { display:none; }
     </style>
@@ -350,21 +325,6 @@
 <body>
 
 <div class="toast" id="toast"></div>
-
-<!-- Banner instalar como App -->
-<div id="banner-instalar" style="display:none; position:fixed; bottom:70px; left:10px; right:10px; z-index:6000;
-    background:#1A1A1A; border:1px solid rgba(255,255,255,0.15); border-radius:14px;
-    padding:12px 14px; align-items:center; gap:10px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
-    <img src="images/logo.png" style="width:36px;height:36px;border-radius:8px;object-fit:contain;background:white;padding:3px;flex-shrink:0" onerror="this.style.display='none'">
-    <div style="flex:1;min-width:0;">
-        <div style="color:white;font-size:12px;font-weight:800;letter-spacing:0.3px">Instalar DUMELHOR</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:10px;font-weight:500;margin-top:1px">Adicionar ao ecrã inicial como App</div>
-    </div>
-    <button onclick="instalarApp()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Montserrat',sans-serif;white-space:nowrap;flex-shrink:0">
-        INSTALAR
-    </button>
-    <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;padding:0;flex-shrink:0;line-height:1">✕</button>
-</div>
 
 <!-- ══ HEADER ══ -->
 <header>
@@ -459,12 +419,14 @@
         <button class="btn-back" onclick="fecharCarrinho()">←</button>
         <h2>🛒 CARRINHO</h2>
     </div>
-
-    <!-- Lista de produtos — ocupa tudo -->
     <div class="cart-body" id="cart-body"></div>
-
-    <!-- Footer mínimo — só total + botão enviar -->
-    <div class="cart-footer-min">
+    <div class="cart-footer">
+        <label class="flbl">O SEU NOME</label>
+        <input type="text" class="finp" id="cli-nome" placeholder="Nome completo">
+        <label class="flbl">TELEFONE (opcional)</label>
+        <input type="text" class="finp" id="cli-tel" placeholder="Telefone">
+        <label class="flbl">OBSERVAÇÕES (opcional)</label>
+        <textarea class="ftxt" id="cli-obs" placeholder="Notas sobre a encomenda..."></textarea>
         <div class="total-strip">
             <div>
                 <div class="total-lbl">TOTAL A PAGAR</div>
@@ -473,69 +435,9 @@
             <div class="total-val" id="total-val">0,00 €</div>
         </div>
         <div class="envio-btns">
-            <button class="btn-wpp" id="btn-wpp" onclick="abrirFormEnvio('wpp')">📲 ENVIAR POR WHATSAPP</button>
-            <button class="btn-eml" id="btn-eml" onclick="abrirFormEnvio('email')">✉️ ENVIAR POR EMAIL</button>
+            <button class="btn-wpp" id="btn-wpp" onclick="enviar('wpp')">📲 ENVIAR POR WHATSAPP</button>
+            <button class="btn-eml" id="btn-eml" onclick="enviar('email')">✉️ ENVIAR POR EMAIL</button>
         </div>
-    </div>
-</div>
-
-<!-- ══ MODAL FORMULÁRIO ENVIO ══ -->
-<div id="modal-form-envio" style="display:none; position:fixed; inset:0; z-index:8500;
-    background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center;">
-    <div style="background:white; border-radius:20px 20px 0 0; padding:20px 16px 30px;
-        width:100%; max-width:520px; box-shadow:0 -4px 30px rgba(0,0,0,0.2);">
-        <div style="display:flex; align-items:center; margin-bottom:16px;">
-            <div style="font-size:15px; font-weight:900; color:var(--grey); flex:1">Dados da Encomenda</div>
-            <button onclick="fecharFormEnvio()" style="background:var(--light);border:none;border-radius:50%;
-                width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--mid)">✕</button>
-        </div>
-        <label class="flbl">O SEU NOME *</label>
-        <input type="text" class="finp" id="cli-nome" placeholder="Nome completo">
-        <label class="flbl">TELEFONE (opcional)</label>
-        <input type="tel" class="finp" id="cli-tel" placeholder="Telefone">
-        <label class="flbl">OBSERVAÇÕES (opcional)</label>
-        <textarea class="ftxt" id="cli-obs" placeholder="Notas sobre a encomenda..."></textarea>
-        <button id="btn-confirmar-envio" onclick="confirmarEnvio()"
-            style="margin-top:16px; width:100%; padding:16px; border-radius:14px;
-            border:none; background:#25D366; color:white; font-size:15px; font-weight:900;
-            cursor:pointer; font-family:'Montserrat',sans-serif; display:flex;
-            align-items:center; justify-content:center; gap:8px;">
-            📲 CONFIRMAR E ENVIAR
-        </button>
-    </div>
-</div>
-
-<!-- ══ MODAL INSTALAR iOS ══ -->
-<div id="modal-instalar" style="display:none; position:fixed; inset:0; z-index:9500;
-    background:rgba(0,0,0,0.85); align-items:flex-end; justify-content:center;">
-    <div style="background:#1A1A1A; border-radius:20px 20px 0 0; padding:24px 20px 36px;
-        width:100%; max-width:480px; border-top:1px solid rgba(255,255,255,0.12);">
-        <div style="text-align:center; margin-bottom:20px;">
-            <div style="font-size:32px; margin-bottom:8px">📲</div>
-            <div style="color:white; font-size:16px; font-weight:900; margin-bottom:6px">Instalar como App</div>
-            <div style="color:rgba(255,255,255,0.5); font-size:12px; line-height:1.6">Siga os passos para o seu telemóvel:</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.07); border-radius:12px; padding:16px; margin-bottom:12px;">
-            <div style="color:white; font-size:12px; font-weight:800; margin-bottom:10px; letter-spacing:0.5px">📱 ANDROID (Chrome)</div>
-            <div style="color:rgba(255,255,255,0.7); font-size:12px; line-height:1.8">
-                1. Toque nos <b style="color:white">⋮ três pontos</b> no canto superior direito<br>
-                2. Toque em <b style="color:white">"Adicionar ao ecrã principal"</b><br>
-                3. Confirme e a app fica instalada
-            </div>
-        </div>
-        <div style="background:rgba(255,255,255,0.07); border-radius:12px; padding:16px; margin-bottom:20px;">
-            <div style="color:white; font-size:12px; font-weight:800; margin-bottom:10px; letter-spacing:0.5px">🍎 iOS (Safari)</div>
-            <div style="color:rgba(255,255,255,0.7); font-size:12px; line-height:1.8">
-                1. Toque no ícone <b style="color:white">⎙ partilhar</b> (barra inferior)<br>
-                2. Toque em <b style="color:white">"Adicionar ao ecrã de início"</b><br>
-                3. Confirme e a app fica instalada
-            </div>
-        </div>
-        <button onclick="fecharModalInstalar()" style="width:100%; padding:15px; border-radius:12px;
-            border:none; background:var(--red); color:white; font-size:15px; font-weight:800;
-            cursor:pointer; font-family:'Montserrat',sans-serif;">
-            Entendido ✓
-        </button>
     </div>
 </div>
 
@@ -562,29 +464,26 @@ const CONFIG = {
 // ══════════════════════════════
 // ESTADO
 // ══════════════════════════════
-let DADOS = [], CART = {};
+let DADOS = [], MARCAS = [], CART = {};
 let MARCA_ATIVA = null, BUSCA = '', PROD_MODAL = null;
 let FAM_EST = {}, MARCAS_ABERTO = false;
-
-// Lista fixa de marcas — ficheiros: SAYMA.jpg, COCA COLA.jpg, etc.
-const MARCAS = [
-    "TREVI","MILKA","DULCESOL","EDUBOM","MILANEZA","HIPERD","COMPAL","JUVER",
-    "WIKINGER","DIATOSTA","KNORR","NESTLE","BOCK CERVEJA","COCA COLA","VIDAL",
-    "CIRIO","FUN","PLOK","AMALFI","VILEDA","SCOTCH-BRITE","NIVEA","EVAX",
-    "CASA BELLA","JOKER","DENIM","AXE","SAYMA","MISTOLIN","AJAX","GILLETTE",
-    "VINHO","WHISKY","ARROZ","OLEO","AZEITE","FARINHA","ROLL-ON","SACOS LIXO","ROUPA"
-];
 
 // ══════════════════════════════
 // CARREGAR PRODUTOS
 // ══════════════════════════════
 async function carregarProdutos() {
-    // Mostra grelha de marcas imediatamente (não depende do JSON)
-    renderMarcasGrid();
     try {
         const r = await fetch(CONFIG.produtosJson + '?v=' + Date.now());
         if (!r.ok) throw new Error();
         DADOS = await r.json();
+        // Marcas únicas, por ordem de aparecimento no JSON (preserva ordem do Excel)
+        const seen = new Set();
+        MARCAS = [];
+        DADOS.forEach(p => {
+            const m = (p.marca || '').trim();
+            if (m && !seen.has(m)) { seen.add(m); MARCAS.push(m); }
+        });
+        renderMarcasGrid();
         renderLoja();
     } catch(e) {
         document.getElementById('loja-container').innerHTML =
@@ -629,15 +528,26 @@ function renderMarcasGrid(filtro) {
     }
 
     grid.innerHTML = lista.map(marca => {
-        // Ficheiros são sempre MARCA.jpg em maiúsculas — ex: SAYMA.jpg, COCA COLA.jpg
+        // O ficheiro de imagem da marca deve chamar-se igual à marca em minúsculas
+        // ex: marca "SUPER BOCK" → images/super-bock.png  OU  images/super bock.jpg
+        const slug = marca.toLowerCase().replace(/\s+/g, '-');
+        const slugS = marca.toLowerCase().replace(/\s+/g, '');
         const ativo = MARCA_ATIVA === marca ? ' ativo' : '';
-        const ficheiro = marca + '.jpg';  // ex: COCA COLA.jpg
-        const ficheiroEnc = encodeURIComponent(marca) + '.jpg'; // para URLs com espaços
 
+        // Tenta .png depois .jpg depois sem espaços — onerror em cadeia
         const imgHtml = `<img
-            src="${CONFIG.imagesDir}${ficheiroEnc}"
-            alt="${marca}" title="${marca}"
-            onerror="this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>'">`;
+            src="${CONFIG.imagesDir}${slug}.png"
+            onerror="this.src='${CONFIG.imagesDir}${slug}.jpg';
+                     this.onerror=function(){
+                         this.src='${CONFIG.imagesDir}${slugS}.png';
+                         this.onerror=function(){
+                             this.src='${CONFIG.imagesDir}${slugS}.jpg';
+                             this.onerror=function(){
+                                 this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>';
+                             };
+                         };
+                     };"
+            alt="${marca}" title="${marca}">`;
 
         return `<button class="marca-btn${ativo}" onclick="selecionarMarca('${marca.replace(/'/g,"\\'")}')">
             ${imgHtml}
@@ -668,17 +578,7 @@ function renderLoja() {
     container.innerHTML = '';
 
     let produtos = DADOS;
-    if (MARCA_ATIVA) {
-        const ma = MARCA_ATIVA.trim().toUpperCase();
-        produtos = produtos.filter(p => {
-            // 1. campo marca (se existir)
-            const marcaCampo = (p.marca || '').trim().toUpperCase();
-            if (marcaCampo && marcaCampo === ma) return true;
-            // 2. fallback: nome do produto começa ou contém o nome da marca
-            const nome = (p.nome || '').toUpperCase();
-            return nome.includes(ma);
-        });
-    }
+    if (MARCA_ATIVA) produtos = produtos.filter(p => (p.marca||'').trim() === MARCA_ATIVA);
     if (BUSCA) {
         const q = BUSCA.toLowerCase();
         produtos = produtos.filter(p =>
@@ -707,15 +607,11 @@ function renderLoja() {
         const cards = prods.map(p => {
             const qty = CART[p.id] ? CART[p.id].qty : 0;
             const src = imgSrc(p);
-            return `<div class="card-pro"
-                onpointerdown="iniciarPress('${String(p.id).replace(/'/g,"\\'")}', event)"
-                onpointerup="terminarPress(event)"
-                onpointercancel="cancelarPress()"
-                oncontextmenu="return false">
+            return `<div class="card-pro" onclick="abrirModal('${String(p.id).replace(/'/g,"\\'")}')">
                 <div class="b-qty${qty>0?' show':''}" id="bq-${p.id}">${qty}</div>
                 ${src
                     ? `<img class="card-pro-img" src="${src}" loading="lazy"
-                            onerror="this.outerHTML='<div class=\\'card-pro-img ph\\'>📦</div>'" draggable="false">`
+                            onerror="this.outerHTML='<div class=\\'card-pro-img ph\\'>📦</div>'">`
                     : `<div class="card-pro-img ph">📦</div>`}
                 <div class="card-pro-nome">${p.nome}</div>
                 <div class="card-pro-preco">${fmt(p.preco)}</div>
@@ -870,32 +766,6 @@ function atualizarUI() {
 // ══════════════════════════════
 // ENVIAR ENCOMENDA
 // ══════════════════════════════
-let _viaEnvio = 'wpp';
-
-function abrirFormEnvio(via) {
-    const items = Object.values(CART);
-    if (!items.length) return;
-    _viaEnvio = via;
-    // Atualizar botão conforme via
-    const btn = document.getElementById('btn-confirmar-envio');
-    if (via === 'wpp') {
-        btn.style.background = '#25D366';
-        btn.innerHTML = '📲 CONFIRMAR E ENVIAR POR WHATSAPP';
-    } else {
-        btn.style.background = 'var(--red)';
-        btn.innerHTML = '✉️ CONFIRMAR E ENVIAR POR EMAIL';
-    }
-    document.getElementById('modal-form-envio').style.display = 'flex';
-}
-
-function fecharFormEnvio() {
-    document.getElementById('modal-form-envio').style.display = 'none';
-}
-
-function confirmarEnvio() {
-    enviar(_viaEnvio);
-}
-
 function enviar(via) {
     const nome = document.getElementById('cli-nome').value.trim();
     const tel  = document.getElementById('cli-tel').value.trim();
@@ -918,7 +788,6 @@ function enviar(via) {
         const subj = `Encomenda ${CONFIG.nomeLoja} — ${nome}`;
         window.open(`mailto:${CONFIG.email}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`, '_blank');
     }
-    fecharFormEnvio();
     setTimeout(() => {
         document.getElementById('cart-panel').classList.remove('open');
         document.getElementById('success-screen').classList.add('open');
@@ -933,46 +802,8 @@ function novaEncomenda() {
 }
 
 // ══════════════════════════════
-// CLIQUE CURTO = +1 / LONGO = MODAL
+// UTILS
 // ══════════════════════════════
-let _pressTimer = null, _pressId = null, _pressMovido = false;
-
-function iniciarPress(id, e) {
-    _pressId = id; _pressMovido = false;
-    _pressTimer = setTimeout(() => {
-        _pressTimer = null;
-        abrirModal(id); // longo = modal
-    }, 500);
-}
-
-function terminarPress(e) {
-    if (_pressMovido) { cancelarPress(); return; }
-    if (_pressTimer) {
-        // curto = +1
-        clearTimeout(_pressTimer); _pressTimer = null;
-        adicionarUm(_pressId);
-    }
-    // se timer já disparou (longo) não faz nada aqui
-}
-
-function cancelarPress() {
-    if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
-}
-
-function adicionarUm(id) {
-    const p = DADOS.find(x => String(x.id) === String(id));
-    if (!p) return;
-    if (CART[id]) {
-        CART[id].qty += 1;
-    } else {
-        CART[id] = { nome: p.nome, preco: p.preco, un: p.un, img: imgSrc(p), qty: 1 };
-    }
-    atualizarUI();
-    showToast('1x ' + p.nome + ' adicionado');
-}
-
-// Detectar scroll/move para cancelar press
-document.addEventListener('pointermove', () => { _pressMovido = true; });
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -980,115 +811,6 @@ function showToast(msg) {
 }
 document.getElementById('modal-qty').addEventListener('click', e => { if(e.target===e.currentTarget) fecharModal(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape') { fecharModal(); fecharMarcas(); fecharCarrinho(); } });
-
-// ══════════════════════════════
-// PWA — SERVICE WORKER + INSTALAR
-// ══════════════════════════════
-let _pwaPrompt = null;
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js');
-}
-
-// Interceta prompt de instalação
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    _pwaPrompt = e;
-    // Mostrar banner
-    const banner = document.getElementById('banner-instalar');
-    if (banner) banner.style.display = 'flex';
-    console.log('PWA instalável!');
-});
-
-window.addEventListener('appinstalled', () => {
-    const banner = document.getElementById('banner-instalar');
-    if (banner) banner.style.display = 'none';
-    localStorage.setItem('dm_installed', '1');
-    console.log('PWA instalada!');
-});
-
-// Mostrar banner de instalação após 4 segundos
-// (se não estiver já instalado nem em modo standalone)
-const jaInstalado = localStorage.getItem('dm_installed');
-const emStandalone = window.matchMedia('(display-mode: standalone)').matches
-    || window.navigator.standalone === true;
-
-if (!jaInstalado && !emStandalone) {
-    setTimeout(() => {
-        const banner = document.getElementById('banner-instalar');
-        if (banner) banner.style.display = 'flex';
-    }, 4000);
-}
-
-function instalarApp() {
-    if (_pwaPrompt) {
-        // Chrome Android — instala diretamente
-        _pwaPrompt.prompt();
-        _pwaPrompt.userChoice.then(() => {
-            _pwaPrompt = null;
-            const banner = document.getElementById('banner-instalar');
-            if (banner) banner.style.display = 'none';
-        });
-    } else {
-        // Mostrar instruções manuais
-        document.getElementById('modal-instalar').style.display = 'flex';
-    }
-}
-
-function fecharModalInstalar() {
-    document.getElementById('modal-instalar').style.display = 'none';
-}
-
-// ══════════════════════════════
-// BOTÃO RETROCEDER ANDROID
-// ══════════════════════════════
-function pushBack() {
-    history.pushState({ dumelhor: Date.now() }, '', location.href);
-}
-
-// Empurra estados iniciais
-pushBack(); pushBack(); pushBack();
-
-window.addEventListener('popstate', () => {
-    if (document.getElementById('success-screen').classList.contains('open')) {
-        novaEncomenda(); pushBack(); return;
-    }
-    if (document.getElementById('cart-panel').classList.contains('open')) {
-        fecharCarrinho(); pushBack(); return;
-    }
-    if (document.getElementById('modal-qty').classList.contains('open')) {
-        fecharModal(); pushBack(); return;
-    }
-    if (document.getElementById('modal-form-envio').style.display === 'flex') {
-        fecharFormEnvio(); pushBack(); return;
-    }
-    if (document.getElementById('modal-instalar').style.display === 'flex') {
-        fecharModalInstalar(); pushBack(); return;
-    }
-    if (MARCAS_ABERTO) {
-        fecharMarcas(); pushBack(); return;
-    }
-    if (MARCA_ATIVA) {
-        selecionarMarca(null); pushBack(); return;
-    }
-    if (Object.keys(CART).length > 0) {
-        if (!confirm('Tem itens no carrinho. Sair mesmo assim?')) {
-            pushBack(); return;
-        }
-    }
-    history.back();
-});
-
-// ══════════════════════════════
-// AVISO AO FECHAR/ATUALIZAR
-// ══════════════════════════════
-window.addEventListener('beforeunload', e => {
-    if (Object.keys(CART).length > 0) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-    }
-});
 
 // ── INIT ──
 carregarProdutos();
