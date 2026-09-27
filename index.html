@@ -534,19 +534,29 @@ function renderMarcasGrid(filtro) {
         const slugS = marca.toLowerCase().replace(/\s+/g, '');
         const ativo = MARCA_ATIVA === marca ? ' ativo' : '';
 
-        // Tenta .png depois .jpg depois sem espaços — onerror em cadeia
+        // Tenta várias variações do nome do ficheiro (o nome exato da marca
+        // tal como está nos dados, depois versões em minúsculas/com traços)
+        // porque os ficheiros de logotipo podem ter maiúsculas e espaços
+        // (ex: "DIATOSTA.jpg", "COCA COLA.jpg").
+        const marcaEsc = marca.replace(/'/g, "\\'");
+        const tentativas = [
+            `${CONFIG.imagesDir}${marcaEsc}.jpg`,
+            `${CONFIG.imagesDir}${marcaEsc}.png`,
+            `${CONFIG.imagesDir}${marcaEsc}.jpeg`,
+            `${CONFIG.imagesDir}${slug}.png`,
+            `${CONFIG.imagesDir}${slug}.jpg`,
+            `${CONFIG.imagesDir}${slugS}.png`,
+            `${CONFIG.imagesDir}${slugS}.jpg`,
+        ];
+        // Constrói a cadeia de onerror dinamicamente a partir da 2ª tentativa em diante
+        let onerrorChain = `this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>';`;
+        for (let i = tentativas.length - 1; i >= 1; i--) {
+            const src = tentativas[i].replace(/'/g, "\\'");
+            onerrorChain = `this.src='${src}'; this.onerror=function(){${onerrorChain}};`;
+        }
         const imgHtml = `<img
-            src="${CONFIG.imagesDir}${slug}.png"
-            onerror="this.src='${CONFIG.imagesDir}${slug}.jpg';
-                     this.onerror=function(){
-                         this.src='${CONFIG.imagesDir}${slugS}.png';
-                         this.onerror=function(){
-                             this.src='${CONFIG.imagesDir}${slugS}.jpg';
-                             this.onerror=function(){
-                                 this.outerHTML='<span class=marca-inicial>${marca.charAt(0)}</span>';
-                             };
-                         };
-                     };"
+            src="${tentativas[0]}"
+            onerror="${onerrorChain}"
             alt="${marca}" title="${marca}">`;
 
         return `<button class="marca-btn${ativo}" onclick="selecionarMarca('${marca.replace(/'/g,"\\'")}')">
