@@ -58,6 +58,13 @@
             height: env(safe-area-inset-top, 0px); background: var(--primary);
             z-index: 3100; pointer-events: none;
         }
+        /* Mesma faixa vermelha em baixo, por baixo dos botões de navegação do Android
+           (efeito de app em ecrã inteiro, cores iguais em cima e em baixo). */
+        body::after {
+            content: ''; position: fixed; bottom: 0; left: 0; right: 0;
+            height: env(safe-area-inset-bottom, 0px); background: var(--primary);
+            z-index: 3100; pointer-events: none;
+        }
         body { font-family: 'Montserrat', 'DM Sans', sans-serif; margin: 0; background: var(--bg-light); color: var(--text-main); -webkit-tap-highlight-color: transparent; font-size: 14px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         /* Android mobile optimizations */
         input, button, select, textarea { font-family: 'Montserrat', sans-serif; font-size: 13px !important; }
@@ -246,9 +253,9 @@
         .bottom-bar, .cart-bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: var(--primary);
-            padding: 4px 0 6px;
+            padding: 4px 0 calc(6px + env(safe-area-inset-bottom, 0px));
             display: flex; align-items: stretch; justify-content: space-around;
-            z-index: 2500; box-sizing: border-box; height: 56px;
+            z-index: 2500; box-sizing: border-box; height: calc(56px + env(safe-area-inset-bottom, 0px));
             border-top: 1px solid rgba(255,255,255,0.18);
             box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
         }
@@ -5774,17 +5781,111 @@ async function coletarFotosParaItens(itens) {
     return fotos;
 }
 
+// Janela para escolher que encomendas enviar: hoje, por data, por cliente, ou data + cliente.
+// Devolve {dataIni, dataFim, cliente, soNovas} ou null se cancelado.
+function escolherFiltroEnvioEncomendas() {
+    return new Promise(resolve => {
+        document.getElementById('modal-filtro-envio')?.remove();
+        const hojeD = new Date();
+        const hoje = hojeD.getFullYear() + '-' + String(hojeD.getMonth()+1).padStart(2,'0') + '-' + String(hojeD.getDate()).padStart(2,'0');
+
+        // Só clientes que têm pelo menos uma encomenda
+        const clientesMap = new Map();
+        PEDIDOS_DB.forEach(p => { if(p.cliente) clientesMap.set(String(p.cliente.num), p.cliente.nome || ('Cliente ' + p.cliente.num)); });
+        const opcoesCli = [...clientesMap.entries()].sort((a,b) => a[1].localeCompare(b[1]))
+            .map(([num, nome]) => `<option value="${num}">${nome}</option>`).join('');
+
+        const ov = document.createElement('div');
+        ov.id = 'modal-filtro-envio';
+        ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99996;display:flex;align-items:center;justify-content:center;padding:16px;';
+        ov.innerHTML = `
+            <div style="background:#fff;width:100%;max-width:420px;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+                <div style="background:#E60000;color:#fff;padding:14px 16px;font-weight:800;font-size:14px;">📤 ENVIAR ENCOMENDAS</div>
+                <div style="padding:16px;">
+                    <div class="lbl-g">Período</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                        <button type="button" id="fe-hoje" style="padding:10px;border-radius:8px;border:1.5px solid #E60000;background:#fff;color:#E60000;font-weight:700;font-size:12px;cursor:pointer;">HOJE</button>
+                        <button type="button" id="fe-todas" style="padding:10px;border-radius:8px;border:1.5px solid #E0E0E0;background:#fff;color:#666;font-weight:700;font-size:12px;cursor:pointer;">TODAS AS DATAS</button>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <div style="flex:1;"><label style="font-size:11px;font-weight:700;color:#666;">DE:</label><input type="date" id="fe-ini" class="inp-g" style="margin-bottom:10px;padding:9px 10px;font-size:13px;"></div>
+                        <div style="flex:1;"><label style="font-size:11px;font-weight:700;color:#666;">ATÉ:</label><input type="date" id="fe-fim" class="inp-g" style="margin-bottom:10px;padding:9px 10px;font-size:13px;"></div>
+                    </div>
+                    <div class="lbl-g">Cliente</div>
+                    <select id="fe-cli" class="sel-g" style="padding:10px 12px;font-size:13px;">
+                        <option value="">TODOS OS CLIENTES</option>${opcoesCli}
+                    </select>
+                    <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#333;margin-bottom:6px;cursor:pointer;">
+                        <input type="checkbox" id="fe-novas" style="width:16px;height:16px;"> Só as que ainda não foram enviadas
+                    </label>
+                    <div id="fe-contagem" style="font-size:12px;font-weight:700;color:#E60000;margin:8px 0 12px;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <button type="button" id="fe-cancelar" style="padding:13px;border:none;border-radius:10px;background:#757575;color:#fff;font-weight:700;">CANCELAR</button>
+                        <button type="button" id="fe-enviar" style="padding:13px;border:none;border-radius:10px;background:#E60000;color:#fff;font-weight:700;">ENVIAR</button>
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(ov);
+
+        const $ = id => ov.querySelector('#' + id);
+        const ler = () => ({ dataIni: $('fe-ini').value, dataFim: $('fe-fim').value, cliente: $('fe-cli').value, soNovas: $('fe-novas').checked });
+        const contar = () => {
+            const f = ler();
+            const n = PEDIDOS_DB.filter(p => {
+                if(f.cliente && String(p.cliente && p.cliente.num) !== f.cliente) return false;
+                if(f.dataIni || f.dataFim) {
+                    const d = parsearDataPedido(p.data); if(!d) return false;
+                    const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                    if(f.dataIni && iso < f.dataIni) return false;
+                    if(f.dataFim && iso > f.dataFim) return false;
+                }
+                if(f.soNovas && p._enviadoResidual) return false;
+                return true;
+            }).length;
+            $('fe-contagem').textContent = n + ' encomenda(s) serão enviadas';
+        };
+        const marcarPeriodo = modo => {
+            $('fe-hoje').style.cssText += modo==='hoje' ? ';background:#E60000;color:#fff;' : ';background:#fff;color:#E60000;';
+            $('fe-todas').style.cssText += modo==='todas' ? ';background:#E60000;color:#fff;border-color:#E60000;' : ';background:#fff;color:#666;border-color:#E0E0E0;';
+        };
+
+        $('fe-hoje').onclick = () => { $('fe-ini').value = hoje; $('fe-fim').value = hoje; marcarPeriodo('hoje'); contar(); };
+        $('fe-todas').onclick = () => { $('fe-ini').value = ''; $('fe-fim').value = ''; marcarPeriodo('todas'); contar(); };
+        ['fe-ini','fe-fim'].forEach(id => $(id).onchange = () => { marcarPeriodo(null); contar(); });
+        $('fe-cli').onchange = contar;
+        $('fe-novas').onchange = contar;
+        $('fe-cancelar').onclick = () => { ov.remove(); resolve(null); };
+        $('fe-enviar').onclick = () => {
+            const f = ler();
+            if(f.dataIni && f.dataFim && f.dataIni > f.dataFim) { alert('A data "DE" é posterior à data "ATÉ".'); return; }
+            ov.remove(); resolve(f);
+        };
+
+        // Por omissão: encomendas de hoje
+        $('fe-hoje').click();
+    });
+}
+
 async function exportarEncomendasLeve() {
     try {
         if(!PEDIDOS_DB.length) { alert('Não há encomendas para enviar.'); return; }
 
-        const porEnviar = PEDIDOS_DB.filter(p => !p._enviadoResidual);
-        const usarTodas = porEnviar.length === 0
-            ? confirm('Todas as encomendas já foram enviadas antes.\n\nQueres reenviar TODAS as ' + PEDIDOS_DB.length + ' encomendas na mesma?')
-            : !confirm('Enviar só as ' + porEnviar.length + ' encomenda(s) NOVA(S)?\n\n(Cancelar = enviar TODAS as ' + PEDIDOS_DB.length + ')');
+        const filtro = await escolherFiltroEnvioEncomendas();
+        if(!filtro) return; // cancelado
 
-        const lista = usarTodas ? PEDIDOS_DB : porEnviar;
-        if(!lista.length) { alert('Não há encomendas novas para enviar.'); return; }
+        const lista = PEDIDOS_DB.filter(p => {
+            if(filtro.cliente && String(p.cliente && p.cliente.num) !== String(filtro.cliente)) return false;
+            if(filtro.dataIni || filtro.dataFim) {
+                const d = parsearDataPedido(p.data);
+                if(!d) return false;
+                const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                if(filtro.dataIni && iso < filtro.dataIni) return false;
+                if(filtro.dataFim && iso > filtro.dataFim) return false;
+            }
+            if(filtro.soNovas && p._enviadoResidual) return false;
+            return true;
+        });
+        if(!lista.length) { alert('Não há encomendas que correspondam ao filtro escolhido.'); return; }
 
         const [vendedor] = await dbGetAll(['DM_VENDEDOR']);
 
