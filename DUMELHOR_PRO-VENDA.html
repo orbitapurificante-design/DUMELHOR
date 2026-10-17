@@ -179,7 +179,15 @@
             transition: background 0.1s;
         }
         .fam-header:active { background: #F5F5F5; }
-        .fam-arrow { color: #B0B0B0 !important; font-weight: 400; }
+        .fam-arrow { color: #0B3D91 !important; font-weight: 700; }
+        /* Famílias: azul de contraste, seta à esquerda do nome */
+        .fam-header, #m3 .fam-header {
+            background: #DCEBFF !important; color: #0B3D91 !important;
+            border: 1px solid #9CC2F5 !important;
+            justify-content: flex-start !important; align-items: center; gap: 8px;
+        }
+        .fam-header:active, #m3 .fam-header:active { background: #C6DDFB !important; }
+        .fam-header .fam-arrow, .fam-header .fam-arrow-cardex { order: -1; float: none !important; color: #0B3D91 !important; font-size: 11px; }
         .fam-content { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 10px; content-visibility: auto; }
         /* Remove top margin from very first fam-header */
         #loja-dinamica > .fam-header:first-child { margin-top: 4px; }
@@ -306,16 +314,15 @@
         .btn-mini { padding: 8px 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; color: white; margin: 2px; cursor: pointer; }
 
         /* ── M3 CARRINHO LISTA ESTILO FOTO ── */
-        #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0; background: #FFFFFF; }
-        #m3 { padding: 0 0 56px 0 !important; background: #FFFFFF; }
+        #cardex-content { display: flex; flex-direction: column; gap: 0; padding: 0 0 8px; background: #E4E6EB; }
+        #m3 { padding: 0 0 56px 0 !important; background: #E4E6EB; }
         
         #m3 .fam-header { 
-            padding: 5px 14px; margin-top: 0; font-size: 9px;
-            background: #F5F5F5;
-            color: #B0B0B0; font-weight: 700;
+            padding: 7px 14px; margin: 8px 8px 0; font-size: 10px;
+            background: #DCEBFF;
+            color: #0B3D91; font-weight: 800;
             cursor: pointer;
-            border-radius: 0; border: none;
-            border-bottom: 1px solid #E0E0E0;
+            border-radius: 8px;
             letter-spacing: 1.2px;
             text-transform: uppercase;
         }
@@ -323,12 +330,15 @@
         /* Cart list item — estilo da foto */
         .cart-list-item {
             background: #FFFFFF;
-            border-bottom: 1px solid #F0F0F0;
-            padding: 3px 8px 3px 10px;
+            border: 1px solid #CDD1D9;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.10);
+            margin: 6px 8px 0;
+            padding: 6px 8px 6px 10px;
             display: flex;
             align-items: center;
             gap: 8px;
-            min-height: 40px;
+            min-height: 46px;
         }
         
         .cart-list-item-img {
@@ -538,13 +548,13 @@
         }
 
         .btn-dumelhor { 
-            width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
-            border: none; background: rgba(255,255,255,0.2); 
+            min-width: 76px; height: 36px; border-radius: 8px; flex-shrink: 0; padding: 0 4px;
+            border: none; background: transparent; 
             cursor: pointer; overflow: hidden; display: flex; align-items: center; 
             justify-content: center; transition: opacity 0.1s; 
         }
         .btn-dumelhor:active { transform: scale(0.95); }
-        .btn-dumelhor img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .btn-dumelhor img { max-width: 76px; max-height: 34px; object-fit: contain; }
         #text-dumelhor { font-size: 7px; font-weight: 800; color: #1A1A1A; text-align: center; line-height: 1.1; }
 
         /* ── MARCAS ── */
@@ -683,7 +693,7 @@
     <button style="font-size:26px; line-height:1; background:transparent; border:none; border-radius:0; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
-        <span id="text-dumelhor" style="font-size:9px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.1;">DUMELHOR</span>
+        <div id="text-dumelhor" style="text-align:center; line-height:1;"><div style="font-size:15px; font-weight:900; color:#FFFFFF; letter-spacing:0.4px;">DUMELHOR</div><div style="font-size:7.5px; font-weight:500; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:1.6px; margin-top:3px;">PRO VENDA</div></div>
     </div>
     <div style="flex:1; position:relative; display:flex; align-items:center;">
         <button onclick="limparPesquisaProduto()" style="position:absolute; left:4px; width:32px; height:32px; border-radius:8px; border:none; background:white; color:#E60000; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
@@ -3771,7 +3781,125 @@ function abrirGestao() {
         drawer.classList.remove('open');
         if(overlay) overlay.style.display = 'none';
     }
-    let h = ""; PEDIDOS_DB.forEach((p) => { let tot = Object.values(p.itens).reduce((acc, i) => acc + (i.q * i.preco), 0); h += `<div style="background:rgba(255,255,255,0.97); padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid #E60000; box-shadow:0 1px 6px rgba(0,0,0,0.07);"><div style="display:flex; justify-content:space-between;"><b>${p.cliente.nome}</b> <b style="color:red;">${tot.toFixed(2)}€</b></div><div style="font-size:11px; color:#888; font-weight:600; margin-top:2px;">📅 ${formatarDataPedidoComDia(p)}</div><div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; flex-wrap:wrap;"><button style="background:orange; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="editarPedido(${p.id})">EDITAR</button><button style="background:#1a6b8a; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="imprimirPedidoDireto(${p.id})">IMPRIMIR</button><button style="background:var(--dm-vermelho); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:12px;" onclick="eliminarPedido(${p.id})">APAGAR</button></div></div>`; }); document.getElementById('gestao-lista').innerHTML = h || "Sem pedidos."; nav('m5'); }
+    renderGestaoPedidos();
+    nav('m5');
+}
+
+// ── PEDIDOS: lista compacta + PEDIDO GERAL DO DIA ──
+let GESTAO_DIA_GERAL = '';   // yyyy-mm-dd escolhido no pedido geral
+let GESTAO_GERAL_ABERTO = false;
+
+function isoDataPedido(p) {
+    const d = parsearDataPedido(p.data || '');
+    if(!d) return '';
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function totaisPedido(p) {
+    let q = 0, v = 0;
+    Object.values(p.itens || {}).forEach(i => { q += (i.q || 0); v += (i.q || 0) * (i.precoCustom ?? i.preco ?? 0); });
+    return { q, v };
+}
+// Junta todos os pedidos de um dia numa única encomenda (soma por produto)
+function calcularPedidoGeralDia(iso) {
+    const pedidos = PEDIDOS_DB.filter(p => isoDataPedido(p) === iso);
+    const mapa = new Map();
+    let qTot = 0, vTot = 0;
+    pedidos.forEach(p => {
+        Object.values(p.itens || {}).forEach(i => {
+            if(!(i.q > 0)) return;
+            const preco = i.precoCustom ?? i.preco ?? 0;
+            const nome = i.nomeCustom ?? i.nome ?? '';
+            const chave = (i.ean || i.id || nome) + '|' + preco;
+            const ex = mapa.get(chave) || { cat: i.cat || '', nome, preco, q: 0 };
+            ex.q += i.q;
+            mapa.set(chave, ex);
+            qTot += i.q; vTot += i.q * preco;
+        });
+    });
+    const linhas = [...mapa.values()].sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
+    return { pedidos, linhas, qTot, vTot };
+}
+function formatarDiaISO(iso) {
+    if(!iso) return '';
+    const [y,m,d] = iso.split('-').map(Number);
+    const dt = new Date(y, m-1, d);
+    const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    return DIAS[dt.getDay()] + ', ' + String(d).padStart(2,'0') + '/' + String(m).padStart(2,'0') + '/' + y;
+}
+function fmtEuro(n) { return n.toFixed(2).replace('.', ',') + '€'; }
+
+function renderGestaoPedidos() {
+    const hoje = new Date();
+    const hojeISO = hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0') + '-' + String(hoje.getDate()).padStart(2,'0');
+    if(!GESTAO_DIA_GERAL) {
+        // Por omissão: hoje; se hoje não houver pedidos, o dia mais recente com pedidos
+        const dias = PEDIDOS_DB.map(isoDataPedido).filter(Boolean).sort();
+        GESTAO_DIA_GERAL = dias.includes(hojeISO) ? hojeISO : (dias[dias.length-1] || hojeISO);
+    }
+    const g = calcularPedidoGeralDia(GESTAO_DIA_GERAL);
+
+    const btn = 'border:none; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:10px !important; font-weight:700; color:white; white-space:nowrap;';
+    let h = `<div style="background:#0B3D91; color:#fff; border-radius:10px; padding:10px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <div style="font-size:12px; font-weight:900; letter-spacing:0.6px;">📦 PEDIDO GERAL DO DIA</div>
+            <input type="date" value="${GESTAO_DIA_GERAL}" onchange="GESTAO_DIA_GERAL=this.value; renderGestaoPedidos();" style="padding:4px 6px; border:none; border-radius:6px; font-size:12px; font-weight:700; color:#0B3D91; background:#fff;">
+        </div>
+        <div style="font-size:10px; opacity:0.8; margin-top:2px;">${formatarDiaISO(GESTAO_DIA_GERAL)}</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
+            <div style="flex:1 1 100%; display:flex; gap:18px;">
+                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">ENCOMENDAS</div><div style="font-size:16px; font-weight:900;">${g.pedidos.length}</div></div>
+                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">QUANTIDADE</div><div style="font-size:16px; font-weight:900;">${g.qTot}</div></div>
+                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">TOTAL</div><div style="font-size:16px; font-weight:900;">${fmtEuro(g.vTot)}</div></div>
+            </div>
+            <button style="${btn} margin-left:auto; background:#1565C0; border:1px solid rgba(255,255,255,0.5);" onclick="GESTAO_GERAL_ABERTO=!GESTAO_GERAL_ABERTO; renderGestaoPedidos();">${GESTAO_GERAL_ABERTO ? 'FECHAR' : 'VER'}</button>
+            <button style="${btn} background:#1a6b8a; border:1px solid rgba(255,255,255,0.5);" onclick="imprimirPedidoGeralDia()">IMPRIMIR</button>
+        </div>`;
+    if(GESTAO_GERAL_ABERTO) {
+        if(!g.linhas.length) h += `<div style="background:#fff; color:#666; border-radius:8px; padding:10px; margin-top:8px; font-size:12px;">Sem encomendas neste dia.</div>`;
+        else {
+            let cat = '', rows = '';
+            g.linhas.forEach(l => {
+                if(l.cat !== cat) { cat = l.cat; rows += `<tr><td colspan="3" style="background:#DCEBFF; color:#0B3D91; font-size:10px; font-weight:800; padding:4px 8px; text-transform:uppercase;">${cat}</td></tr>`; }
+                rows += `<tr><td style="padding:4px 8px; font-size:12px; border-bottom:1px solid #eee;">${l.nome}</td><td style="padding:4px 6px; font-size:12px; font-weight:800; text-align:center; border-bottom:1px solid #eee;">${l.q}</td><td style="padding:4px 8px; font-size:12px; text-align:right; border-bottom:1px solid #eee;">${fmtEuro(l.q * l.preco)}</td></tr>`;
+            });
+            h += `<div style="background:#fff; color:#222; border-radius:8px; margin-top:8px; max-height:50vh; overflow:auto;"><table style="width:100%; border-collapse:collapse;">${rows}
+                <tr><td style="padding:6px 8px; font-weight:900; font-size:12px;">TOTAL</td><td style="padding:6px; font-weight:900; text-align:center; font-size:12px;">${g.qTot}</td><td style="padding:6px 8px; font-weight:900; text-align:right; font-size:12px; color:#E60000;">${fmtEuro(g.vTot)}</td></tr></table></div>`;
+        }
+    }
+    h += `</div>`;
+
+    // Lista compacta: NOME | EDITAR IMPRIMIR APAGAR | PREÇO
+    PEDIDOS_DB.forEach(p => {
+        const t = totaisPedido(p);
+        h += `<div style="background:rgba(255,255,255,0.97); padding:7px 10px; margin-bottom:6px; border-radius:8px; border-left:4px solid #E60000; box-shadow:0 1px 5px rgba(0,0,0,0.07);">
+            <div style="display:flex; align-items:center; gap:6px;">
+                <b style="flex:1; min-width:0; font-size:13px; line-height:1.2; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${p.cliente.nome}</b>
+                <button style="background:orange; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="editarPedido(${p.id})">EDITAR</button>
+                <button style="background:#1a6b8a; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="imprimirPedidoDireto(${p.id})">IMPRIMIR</button>
+                <button style="background:var(--dm-vermelho); color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="eliminarPedido(${p.id})">APAGAR</button>
+                <b style="color:red; font-size:13px; white-space:nowrap; min-width:58px; text-align:right;">${t.v.toFixed(2)}€</b>
+            </div>
+            <div style="font-size:10px; color:#888; font-weight:600; margin-top:1px;">📅 ${formatarDataPedidoComDia(p)}</div>
+        </div>`;
+    });
+    document.getElementById('gestao-lista').innerHTML = h;
+}
+
+function imprimirPedidoGeralDia() {
+    const g = calcularPedidoGeralDia(GESTAO_DIA_GERAL);
+    if(!g.linhas.length) { alert('Sem encomendas neste dia.'); return; }
+    let cat = '', rows = '';
+    g.linhas.forEach(l => {
+        if(l.cat !== cat) { cat = l.cat; rows += `<tr><td colspan="3" style="background:#eee; font-size:10px; font-weight:bold; padding:3px 6px; text-transform:uppercase;">${cat}</td></tr>`; }
+        rows += `<tr><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px;">${l.nome}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:center; font-weight:bold;">${l.q}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:right;">${fmtEuro(l.q * l.preco)}</td></tr>`;
+    });
+    const html = `<div style="font-family:Arial,sans-serif;">
+        <h3 style="margin:0 0 2px;">PEDIDO GERAL DO DIA</h3>
+        <div style="font-size:12px; margin-bottom:8px;">${formatarDiaISO(GESTAO_DIA_GERAL)} · ${g.pedidos.length} encomenda(s)</div>
+        <table style="width:100%; border-collapse:collapse;"><tr><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; text-align:left; font-size:11px;">PRODUTO</th><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; font-size:11px;">QTD</th><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; text-align:right; font-size:11px;">VALOR</th></tr>${rows}
+        <tr><td style="padding:5px 6px; font-weight:bold;">TOTAL</td><td style="padding:5px 6px; text-align:center; font-weight:bold;">${g.qTot}</td><td style="padding:5px 6px; text-align:right; font-weight:bold;">${fmtEuro(g.vTot)}</td></tr></table></div>`;
+    imprimirHTMLIsolado(html);
+}
 function eliminarPedido(id) { 
     id = parseInt(id);
     if(!confirm("Eliminar este pedido?")) return;
