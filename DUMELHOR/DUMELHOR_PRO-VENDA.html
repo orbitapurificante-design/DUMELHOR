@@ -1367,7 +1367,7 @@
 <!-- INPUTS DE ARQUIVO - antes do script para serem encontrados -->
 <input type="file" id="f-excel" accept=".xlsx" style="display:none">
 <input type="file" id="f-fotos" accept="image/*" multiple style="display:none">
-<input type="file" id="f-backup" accept=".json" style="display:none">
+<input type="file" id="f-backup" accept=".json,.txt,application/json,text/plain" style="display:none">
 
 <script>
 // ── DADOS PERSISTENTES v33: tudo guardado em IndexedDB (sobrevive a limpeza do Chrome)
@@ -4005,7 +4005,7 @@ async function exportarGeralDia() {
 }
 function importarGeraisDia() {
     const inp = document.createElement('input');
-    inp.type = 'file'; inp.accept = '.json,application/json,text/plain'; inp.multiple = true;
+    inp.type = 'file'; inp.accept = '.json,.txt,application/json,text/plain'; inp.multiple = true;
     inp.onchange = async () => {
         const iso = GESTAO_DIA_GERAL;
         const resumo = [];
@@ -5681,7 +5681,11 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
             motivoSemPartilha = 'este navegador é demasiado antigo para partilhar ficheiros (navigator.canShare indisponível)';
         } else {
             const blobParaPartilha = new Blob([blob], { type: 'text/plain' });
-            ficheiroPartilha = new File([blobParaPartilha], nomeFicheiro, { type: 'text/plain' });
+            // O Android (Chrome) recusa partilhar ficheiros com extensão .json ("NotAllowedError: Permission denied"),
+            // mesmo com canShare() a dizer que sim. Por isso, na PARTILHA o ficheiro vai com extensão .txt
+            // (o conteúdo é o mesmo e o IMPORTAR lê-o na mesma). O botão Descarregar mantém .json.
+            const nomePartilha = nomeFicheiro.replace(/\.json$/i, '.txt');
+            ficheiroPartilha = new File([blobParaPartilha], nomePartilha, { type: 'text/plain' });
             podePartilhar = navigator.canShare({ files: [ficheiroPartilha] });
             if(!podePartilhar) motivoSemPartilha = 'canShare() recusou este ficheiro neste dispositivo';
         }
@@ -5721,7 +5725,7 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
             elBotaoPartilhar.onclick = async () => {
                 elDiag.textContent = 'A abrir partilha…';
                 try {
-                    await navigator.share({ files: [ficheiroPartilha], title: nomeFicheiro });
+                    await navigator.share({ files: [ficheiroPartilha] });
                     concluir();
                 } catch(e) {
                     // AbortError = o utilizador fechou a caixa de partilha sem escolher nada (normal).
