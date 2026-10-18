@@ -812,8 +812,8 @@ function renderLista(){
       : `<span class="enc-status" style="background:#F0F0F0;color:#888">Por separar</span>`;
     const selecionado = SELECIONADOS.has(p.id);
     const onclickCard = MODO_SELECAO
-      ? `alternarSelecaoEncomenda(${JSON.stringify(p.id)})`
-      : `abrirM3(${JSON.stringify(p.id)})`;
+      ? `alternarSelecaoEncomenda(${jsId(p.id)})`
+      : `abrirM3(${jsId(p.id)})`;
     return `<div class="enc-card ${MODO_SELECAO ? 'modo-selecao' : ''} ${selecionado ? 'selecionado' : ''}" data-id="${p.id}" onclick="${onclickCard}">
       <div class="enc-checkbox">${selecionado ? '✓' : ''}</div>
       <div class="enc-avatar" style="background:${avatarCor}">${p.geral ? '📦' : iniciaisCliente(nome)}</div>
@@ -829,12 +829,14 @@ function renderLista(){
         ${p.nota ? '<div style="font-size:11px;color:#B45309;font-weight:700;margin-top:3px;white-space:pre-wrap;">📝 ' + String(p.nota).replace(/</g,'&lt;') + '</div>' : ''}
       </div>
       <div class="enc-side">
-        ${MODO_SELECAO ? '' : `<button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${JSON.stringify(p.id)})">🗑️</button><span class="chevron">›</span>`}
+        ${MODO_SELECAO ? '' : `<button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${jsId(p.id)})">🗑️</button><span class="chevron">›</span>`}
       </div>
     </div>`;
   }).join('');
   if(MODO_SELECAO) atualizarContagemSelecao();
 }
+// id para usar dentro de onclick="..." (número tal como está; texto entre plicas, para não partir as aspas do atributo)
+function jsId(id){ return typeof id === 'number' ? String(id) : "'" + String(id).replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'"; }
 function apagarEncomenda(id){
   if(String(id).startsWith('GERAL-')){
     if(!confirm('Apagar este geral do dia deste tablet?')) return;
