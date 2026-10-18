@@ -548,14 +548,22 @@
         }
 
         .btn-dumelhor { 
-            min-width: 76px; height: 36px; border-radius: 8px; flex-shrink: 0; padding: 0 4px;
+            height: 36px; border-radius: 8px; flex-shrink: 0; padding: 0 2px; gap: 6px;
             border: none; background: transparent; 
             cursor: pointer; overflow: hidden; display: flex; align-items: center; 
-            justify-content: center; transition: opacity 0.1s; 
+            justify-content: flex-start; transition: opacity 0.1s; 
         }
         .btn-dumelhor:active { transform: scale(0.95); }
-        .btn-dumelhor img { max-width: 76px; max-height: 34px; object-fit: contain; }
-        #text-dumelhor { font-size: 7px; font-weight: 800; color: #1A1A1A; text-align: center; line-height: 1.1; }
+        .btn-dumelhor img { max-width: 64px; max-height: 34px; object-fit: contain; flex-shrink: 0; }
+        #text-dumelhor { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+        #text-dumelhor .dm-t1 { font-size: 16px; font-weight: 900; color: #FFFFFF; letter-spacing: 0.4px; }
+        #text-dumelhor .dm-t2 { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1.2px; }
+        @media (max-width: 520px) {
+            #text-dumelhor { flex-direction: column; align-items: center; gap: 3px; line-height: 1; }
+            #text-dumelhor .dm-t1 { font-size: 15px; }
+            #text-dumelhor .dm-t2 { font-size: 7.5px; letter-spacing: 1.6px; }
+        }
+        
 
         /* ── MARCAS ── */
         .marcas-horizontal-container { 
@@ -693,7 +701,7 @@
     <button style="font-size:26px; line-height:1; background:transparent; border:none; border-radius:0; cursor:pointer; color:white; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:0;" onclick="toggleMenu()">☰</button>
     <div class="btn-dumelhor" onclick="toggleMarcasHorizontal()" id="btn-dumelhor">
         <img id="img-dumelhor" src="" style="display:none;" onerror="this.style.display='none'">
-        <div id="text-dumelhor" style="text-align:center; line-height:1;"><div style="font-size:15px; font-weight:900; color:#FFFFFF; letter-spacing:0.4px;">DUMELHOR</div><div style="font-size:7.5px; font-weight:500; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:1.6px; margin-top:3px;">PRO VENDA</div></div>
+        <div id="text-dumelhor"><span class="dm-t1">DUMELHOR</span><span class="dm-t2">PRO VENDA</span></div>
     </div>
     <div style="flex:1; position:relative; display:flex; align-items:center;">
         <button onclick="limparPesquisaProduto()" style="position:absolute; left:4px; width:32px; height:32px; border-radius:8px; border:none; background:white; color:#E60000; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.2);">🔍</button>
@@ -1378,6 +1386,8 @@ let ULTIMO_PRODUTO_ID = null;
 let PRINT_SOURCE = 'm3';
 let FOTOS_ORDEM = 'nome'; // 'nome' ou 'tamanho'
 let PEDIDO_EDIT_ID = null;
+let GERAIS_DB = {};          // gerais do dia guardados (editáveis), por data yyyy-mm-dd
+let GERAL_EDIT_DIA = null;   // dia do geral aberto no carrinho (null = pedido normal)
 let FILTRO_SEGMENTO = null;
 let M2_COLUNAS = 2;
 let CAT_COLUNAS = 5; // nº de colunas do catálogo (carrinho) — ajustável por pinça, tal como no M2
@@ -1451,12 +1461,13 @@ async function iniciarDados() {
     // Carregar todos os dados do IndexedDB
     const [
         produtos, pedidos, clientes, pagamentos, cardex, cardexEx,
-        ultimosPedidos, marcasConfig, m2colunas, visitasSemana, catColunas
+        ultimosPedidos, marcasConfig, m2colunas, visitasSemana, catColunas, geraisDia
     ] = await dbGetAll([
         'DM_PRODUTOS_AUTO','DM_PEDIDOS_V11','DM_CLIENTES_V11','DM_PAGAMENTOS_V2',
         'DM_CARDEX_CLIENTES','DM_CARDEX_EX','DM_ULTIMO_PEDIDO','DM_MARCAS_CONFIG',
-        'DM_M2_COLUNAS','DM_VISITAS_SEMANA','DM_CAT_COLUNAS'
+        'DM_M2_COLUNAS','DM_VISITAS_SEMANA','DM_CAT_COLUNAS','DM_GERAIS'
     ]);
+    GERAIS_DB = geraisDia || {};
 
     DADOS = produtos || [];
     PEDIDOS_DB = pedidos || [];
@@ -1842,31 +1853,17 @@ function toggleMarcasHorizontal() {
 
 function atualizarBotaoDumelhor() {
     const imgDumelhor = document.getElementById('img-dumelhor');
-    const textDumelhor = document.getElementById('text-dumelhor');
-    
+    if(!imgDumelhor) return;
+    // Logótipo (da marca ativa, ou o DUMELHOR) à frente; a frase "DUMELHOR PRO VENDA" fica sempre visível
+    let imgUrl = '';
     if(MARCA_ATIVA) {
-        // Mostrar imagem da marca ativa
-        const nomeFoto = MARCA_ATIVA.toLowerCase() + '.jpg';
-        const imgUrl = IMGS.get(nomeFoto) || IMGS.get(MARCA_ATIVA.toLowerCase() + '.png') || "";
-        
-        if(imgUrl && imgDumelhor && textDumelhor) {
-            imgDumelhor.src = imgUrl;
-            imgDumelhor.style.display = 'block';
-            textDumelhor.style.display = 'none';
-        }
+        const nomeFoto = MARCA_ATIVA.toLowerCase();
+        imgUrl = IMGS.get(nomeFoto + '.jpg') || IMGS.get(nomeFoto + '.png') || '';
     } else {
-        // Voltar para DUMELHOR
-        const dumelhorImg = IMGS.get('dumelhor.png') || IMGS.get('dumelhor.jpg');
-        
-        if(dumelhorImg && imgDumelhor && textDumelhor) {
-            imgDumelhor.src = dumelhorImg;
-            imgDumelhor.style.display = 'block';
-            textDumelhor.style.display = 'none';
-        } else if(textDumelhor) {
-            if(imgDumelhor) imgDumelhor.style.display = 'none';
-            textDumelhor.style.display = 'block';
-        }
+        imgUrl = IMGS.get('dumelhor.png') || IMGS.get('dumelhor.jpg') || '';
     }
+    if(imgUrl) { imgDumelhor.src = imgUrl; imgDumelhor.style.display = 'block'; }
+    else imgDumelhor.style.display = 'none';
 }
 
 function renderMarcas() {
@@ -2511,7 +2508,8 @@ function change(id, v) {
 function renderCardexTotal() {
     const agora = new Date();
     const dataStr = agora.toLocaleDateString('pt-PT', {day:'2-digit', month:'2-digit', year:'numeric'});
-    const nomeLabel = CLI_ATUAL ? `${CLI_ATUAL.nome}  —  ${dataStr}` : "SELECIONE O CLIENTE";
+    let nomeLabel = CLI_ATUAL ? `${CLI_ATUAL.nome}  —  ${dataStr}` : "SELECIONE O CLIENTE";
+    if(GERAL_EDIT_DIA && CLI_ATUAL && CLI_ATUAL.num === 'GERAL') nomeLabel = `📦 GERAL DO DIA — ${GERAL_EDIT_DIA.split('-').reverse().join('/')} (não altera as encomendas)`;
     const labelEl = document.getElementById('label-cli-m3');
     if(labelEl) labelEl.innerText = nomeLabel;
 
@@ -2792,7 +2790,7 @@ function novoPedido() {
     if(Object.keys(CART).length > 0 || CLI_ATUAL) {
         if(!confirm("Iniciar novo pedido?\n\nO carrinho atual será limpo.")) return;
     }
-    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null;
+    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null;
     MARCA_ATIVA = null;
     LINHAS_MANUAIS = [];
     document.getElementById('painel-sem-resultado').style.display = 'none';
@@ -2812,6 +2810,11 @@ function novoPedido() {
 }
 
 function salvarPedido() { 
+    // Geral do dia aberto no carrinho: grava só no geral, nunca nas encomendas dos clientes
+    if(GERAL_EDIT_DIA) {
+        if(CLI_ATUAL && CLI_ATUAL.num === 'GERAL') { guardarGeralEditado(); return; }
+        GERAL_EDIT_DIA = null; // mudou de cliente: volta a ser um pedido normal
+    }
     if(!CLI_ATUAL) return alert("Selecione um cliente!"); 
     let obs = document.getElementById('obs-pedido-final').value;
 
@@ -3494,7 +3497,7 @@ function limparCartUI() {
 }
 
 function limparTudoPosGravacao(destino) { 
-    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null;
+    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null;
     LINHAS_MANUAIS = [];
     MARCA_ATIVA = null;
     document.getElementById('obs-pedido-final').value=""; 
@@ -3504,7 +3507,7 @@ function limparTudoPosGravacao(destino) {
 }
 function limparTudo() { 
     if(confirm("Limpar pedido?")) { 
-        CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; 
+        CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null; 
         LINHAS_MANUAIS = [];
         MARCA_ATIVA = null;
         SEPARACAO_STATUS = {}; SEPARACAO_QTD = {}; FAM_ESTADOS_TICKET = {};
@@ -3785,9 +3788,10 @@ function abrirGestao() {
     nav('m5');
 }
 
-// ── PEDIDOS: lista compacta + PEDIDO GERAL DO DIA ──
-let GESTAO_DIA_GERAL = '';   // yyyy-mm-dd escolhido no pedido geral
+// ── PEDIDOS: lista compacta + PEDIDO GERAL DO DIA (editável, importar/exportar) ──
+let GESTAO_DIA_GERAL = '';        // yyyy-mm-dd escolhido no pedido geral
 let GESTAO_GERAL_ABERTO = false;
+let GESTAO_GERAL_NOTAS = true;    // incluir as notas dos pedidos (ver / imprimir / exportar)
 
 function isoDataPedido(p) {
     const d = parsearDataPedido(p.data || '');
@@ -3799,26 +3803,8 @@ function totaisPedido(p) {
     Object.values(p.itens || {}).forEach(i => { q += (i.q || 0); v += (i.q || 0) * (i.precoCustom ?? i.preco ?? 0); });
     return { q, v };
 }
-// Junta todos os pedidos de um dia numa única encomenda (soma por produto)
-function calcularPedidoGeralDia(iso) {
-    const pedidos = PEDIDOS_DB.filter(p => isoDataPedido(p) === iso);
-    const mapa = new Map();
-    let qTot = 0, vTot = 0;
-    pedidos.forEach(p => {
-        Object.values(p.itens || {}).forEach(i => {
-            if(!(i.q > 0)) return;
-            const preco = i.precoCustom ?? i.preco ?? 0;
-            const nome = i.nomeCustom ?? i.nome ?? '';
-            const chave = (i.ean || i.id || nome) + '|' + preco;
-            const ex = mapa.get(chave) || { cat: i.cat || '', nome, preco, q: 0 };
-            ex.q += i.q;
-            mapa.set(chave, ex);
-            qTot += i.q; vTot += i.q * preco;
-        });
-    });
-    const linhas = [...mapa.values()].sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome));
-    return { pedidos, linhas, qTot, vTot };
-}
+function novoUidGeral() { return 'G' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function fmtEuro(n) { return n.toFixed(2).replace('.', ',') + '€'; }
 function formatarDiaISO(iso) {
     if(!iso) return '';
     const [y,m,d] = iso.split('-').map(Number);
@@ -3826,58 +3812,139 @@ function formatarDiaISO(iso) {
     const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
     return DIAS[dt.getDay()] + ', ' + String(d).padStart(2,'0') + '/' + String(m).padStart(2,'0') + '/' + y;
 }
-function fmtEuro(n) { return n.toFixed(2).replace('.', ',') + '€'; }
+
+// Junta notas: linhas "Nx produto" somam-se; as restantes ficam (com o nome do cliente à frente)
+function fundirNotas(entradas) {
+    const somas = new Map(), livres = [];
+    entradas.forEach(({ cli, texto }) => {
+        String(texto || '').split('\n').map(l => l.trim()).filter(Boolean).forEach(l => {
+            const m = l.match(/^(\d+)x\s+(.+)$/i);
+            if(m) {
+                const k = m[2].toLowerCase();
+                const ex = somas.get(k) || { desc: m[2], q: 0 };
+                ex.q += parseInt(m[1]); somas.set(k, ex);
+            } else {
+                const linha = cli ? '[' + cli + '] ' + l : l;
+                if(!livres.includes(linha)) livres.push(linha);
+            }
+        });
+    });
+    return [...somas.values()].map(x => x.q + 'x ' + x.desc).concat(livres).join('\n');
+}
+
+// Soma uma lista de itens (objeto id→item) para dentro de um destino; devolve o destino
+function somarItensGeral(destino, origemItens) {
+    Object.values(origemItens || {}).forEach(i => {
+        const q = i.q || 0;
+        if(!(q > 0)) return;
+        const preco = i.precoCustom ?? i.preco ?? 0;
+        const nome = i.nomeCustom ?? i.nome ?? '';
+        let chave = null;
+        if(i.ean) chave = Object.keys(destino).find(k => destino[k].ean && destino[k].ean === i.ean);
+        if(chave === undefined || chave === null) chave = (i.id != null && destino[i.id]) ? String(i.id) : null;
+        if(chave !== null && destino[chave]) { destino[chave].q += q; return; }
+        let id = i.id;
+        if(id == null || destino[id]) { id = Math.max(0, ...Object.keys(destino).map(Number).filter(n => !isNaN(n))) + 1; }
+        destino[id] = { id, nome, cat: i.cat || 'GERAL', preco, q, f: i.f || i.foto || '', ean: i.ean || '', unidades: i.unidades || 1 };
+    });
+    return destino;
+}
+
+function assinaturaDia(iso) {
+    const ps = PEDIDOS_DB.filter(p => isoDataPedido(p) === iso);
+    let q = 0, v = 0; ps.forEach(p => { const t = totaisPedido(p); q += t.q; v += t.v; });
+    return ps.length + ':' + q + ':' + v.toFixed(2);
+}
+// Geral calculado a partir das encomendas do dia (sempre atual)
+function calcularGeralAuto(iso) {
+    const pedidos = PEDIDOS_DB.filter(p => isoDataPedido(p) === iso);
+    const itens = {};
+    pedidos.forEach(p => somarItensGeral(itens, p.itens));
+    const obs = fundirNotas(pedidos.map(p => ({ cli: p.cliente && p.cliente.nome, texto: p.obs })));
+    return { uid: null, dia: iso, itens, obs, fontes: [], pedidos: pedidos.length, guardado: false };
+}
+// Geral a mostrar: o guardado (editável) se existir, senão o automático
+function geralDoDia(iso) {
+    const g = GERAIS_DB[iso];
+    if(g) return Object.assign({}, g, { pedidos: PEDIDOS_DB.filter(p => isoDataPedido(p) === iso).length, guardado: true });
+    return calcularGeralAuto(iso);
+}
+function totaisGeral(itens) {
+    const linhas = Object.values(itens || {}).filter(i => i.q > 0)
+        .sort((a, b) => (a.cat || '').localeCompare(b.cat || '') || (a.nome || '').localeCompare(b.nome || ''));
+    let q = 0, v = 0; linhas.forEach(l => { q += l.q; v += l.q * (l.preco || 0); });
+    return { linhas, q, v };
+}
+// Guarda uma cópia do geral (para poder editar / exportar sem tocar nas encomendas)
+function guardarSnapshotGeral(iso) {
+    if(GERAIS_DB[iso]) return GERAIS_DB[iso];
+    const a = calcularGeralAuto(iso);
+    GERAIS_DB[iso] = { uid: novoUidGeral(), dia: iso, itens: a.itens, obs: a.obs, fontes: [], baseSig: assinaturaDia(iso), atualizado: Date.now() };
+    dbSave('DM_GERAIS', GERAIS_DB);
+    return GERAIS_DB[iso];
+}
 
 function renderGestaoPedidos() {
     const hoje = new Date();
     const hojeISO = hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0') + '-' + String(hoje.getDate()).padStart(2,'0');
     if(!GESTAO_DIA_GERAL) {
-        // Por omissão: hoje; se hoje não houver pedidos, o dia mais recente com pedidos
         const dias = PEDIDOS_DB.map(isoDataPedido).filter(Boolean).sort();
         GESTAO_DIA_GERAL = dias.includes(hojeISO) ? hojeISO : (dias[dias.length-1] || hojeISO);
     }
-    const g = calcularPedidoGeralDia(GESTAO_DIA_GERAL);
+    const iso = GESTAO_DIA_GERAL;
+    const g = geralDoDia(iso);
+    const t = totaisGeral(g.itens);
+    const desatualizado = g.guardado && g.baseSig && g.baseSig !== assinaturaDia(iso);
 
-    const btn = 'border:none; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:10px !important; font-weight:700; color:white; white-space:nowrap;';
+    const btn = 'border:1px solid rgba(255,255,255,0.45); border-radius:6px; padding:7px 9px; cursor:pointer; font-size:10px !important; font-weight:700; color:white; white-space:nowrap;';
     let h = `<div style="background:#0B3D91; color:#fff; border-radius:10px; padding:10px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
             <div style="font-size:12px; font-weight:900; letter-spacing:0.6px;">📦 PEDIDO GERAL DO DIA</div>
-            <input type="date" value="${GESTAO_DIA_GERAL}" onchange="GESTAO_DIA_GERAL=this.value; renderGestaoPedidos();" style="padding:4px 6px; border:none; border-radius:6px; font-size:12px; font-weight:700; color:#0B3D91; background:#fff;">
+            <input type="date" value="${iso}" onchange="GESTAO_DIA_GERAL=this.value; renderGestaoPedidos();" style="padding:4px 6px; border:none; border-radius:6px; font-size:12px; font-weight:700; color:#0B3D91; background:#fff;">
         </div>
-        <div style="font-size:10px; opacity:0.8; margin-top:2px;">${formatarDiaISO(GESTAO_DIA_GERAL)}</div>
-        <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
-            <div style="flex:1 1 100%; display:flex; gap:18px;">
-                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">ENCOMENDAS</div><div style="font-size:16px; font-weight:900;">${g.pedidos.length}</div></div>
-                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">QUANTIDADE</div><div style="font-size:16px; font-weight:900;">${g.qTot}</div></div>
-                <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">TOTAL</div><div style="font-size:16px; font-weight:900;">${fmtEuro(g.vTot)}</div></div>
-            </div>
-            <button style="${btn} margin-left:auto; background:#1565C0; border:1px solid rgba(255,255,255,0.5);" onclick="GESTAO_GERAL_ABERTO=!GESTAO_GERAL_ABERTO; renderGestaoPedidos();">${GESTAO_GERAL_ABERTO ? 'FECHAR' : 'VER'}</button>
-            <button style="${btn} background:#1a6b8a; border:1px solid rgba(255,255,255,0.5);" onclick="imprimirPedidoGeralDia()">IMPRIMIR</button>
+        <div style="font-size:10px; opacity:0.85; margin-top:2px;">${formatarDiaISO(iso)} · <b>${g.guardado ? '✏️ EDITÁVEL (guardado)' : 'AUTOMÁTICO (das encomendas)'}</b></div>
+        <div style="display:flex; gap:18px; margin-top:8px; flex-wrap:wrap;">
+            <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">ENCOMENDAS</div><div style="font-size:16px; font-weight:900;">${g.pedidos}${(g.fontes||[]).length ? ' <span style="font-size:10px; font-weight:700;">+' + g.fontes.length + ' import.</span>' : ''}</div></div>
+            <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">QUANTIDADE</div><div style="font-size:16px; font-weight:900;">${t.q}</div></div>
+            <div><div style="font-size:9px; opacity:0.75; letter-spacing:0.8px;">TOTAL</div><div style="font-size:16px; font-weight:900;">${fmtEuro(t.v)}</div></div>
+        </div>
+        ${desatualizado ? `<div style="background:#FFB300; color:#222; border-radius:6px; padding:5px 8px; margin-top:8px; font-size:11px; font-weight:700;">⚠️ Há encomendas novas ou alteradas neste dia desde que o geral foi guardado. Usa REFAZER para o atualizar (perde as tuas edições).</div>` : ''}
+        <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; margin-top:8px; cursor:pointer;">
+            <input type="checkbox" ${GESTAO_GERAL_NOTAS ? 'checked' : ''} onchange="GESTAO_GERAL_NOTAS=this.checked; renderGestaoPedidos();" style="width:16px; height:16px;"> Incluir as notas dos pedidos
+        </label>
+        <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+            <button style="${btn} background:#1565C0;" onclick="GESTAO_GERAL_ABERTO=!GESTAO_GERAL_ABERTO; renderGestaoPedidos();">${GESTAO_GERAL_ABERTO ? 'FECHAR' : 'VER'}</button>
+            <button style="${btn} background:#F57C00;" onclick="abrirGeralNoCarrinho('${iso}')">✏️ EDITAR NO CARRINHO</button>
+            <button style="${btn} background:#1a6b8a;" onclick="imprimirPedidoGeralDia()">IMPRIMIR</button>
+            <button style="${btn} background:#2E7D32;" onclick="exportarGeralDia()">📤 EXPORTAR</button>
+            <button style="${btn} background:#6A1B9A;" onclick="importarGeraisDia()">📥 IMPORTAR</button>
+            ${g.guardado ? `<button style="${btn} background:#B71C1C;" onclick="refazerGeralDia()">REFAZER</button>` : ''}
         </div>`;
     if(GESTAO_GERAL_ABERTO) {
-        if(!g.linhas.length) h += `<div style="background:#fff; color:#666; border-radius:8px; padding:10px; margin-top:8px; font-size:12px;">Sem encomendas neste dia.</div>`;
+        if(!t.linhas.length && !(GESTAO_GERAL_NOTAS && g.obs)) h += `<div style="background:#fff; color:#666; border-radius:8px; padding:10px; margin-top:8px; font-size:12px;">Sem encomendas neste dia.</div>`;
         else {
             let cat = '', rows = '';
-            g.linhas.forEach(l => {
+            t.linhas.forEach(l => {
                 if(l.cat !== cat) { cat = l.cat; rows += `<tr><td colspan="3" style="background:#DCEBFF; color:#0B3D91; font-size:10px; font-weight:800; padding:4px 8px; text-transform:uppercase;">${cat}</td></tr>`; }
                 rows += `<tr><td style="padding:4px 8px; font-size:12px; border-bottom:1px solid #eee;">${l.nome}</td><td style="padding:4px 6px; font-size:12px; font-weight:800; text-align:center; border-bottom:1px solid #eee;">${l.q}</td><td style="padding:4px 8px; font-size:12px; text-align:right; border-bottom:1px solid #eee;">${fmtEuro(l.q * l.preco)}</td></tr>`;
             });
-            h += `<div style="background:#fff; color:#222; border-radius:8px; margin-top:8px; max-height:50vh; overflow:auto;"><table style="width:100%; border-collapse:collapse;">${rows}
-                <tr><td style="padding:6px 8px; font-weight:900; font-size:12px;">TOTAL</td><td style="padding:6px; font-weight:900; text-align:center; font-size:12px;">${g.qTot}</td><td style="padding:6px 8px; font-weight:900; text-align:right; font-size:12px; color:#E60000;">${fmtEuro(g.vTot)}</td></tr></table></div>`;
+            h += `<div style="background:#fff; color:#222; border-radius:8px; margin-top:8px; max-height:55vh; overflow:auto;"><table style="width:100%; border-collapse:collapse;">${rows}
+                <tr><td style="padding:6px 8px; font-weight:900; font-size:12px;">TOTAL</td><td style="padding:6px; font-weight:900; text-align:center; font-size:12px;">${t.q}</td><td style="padding:6px 8px; font-weight:900; text-align:right; font-size:12px; color:#E60000;">${fmtEuro(t.v)}</td></tr></table>
+                ${GESTAO_GERAL_NOTAS && g.obs ? `<div style="border-top:2px solid #DCEBFF; padding:8px; font-size:12px; white-space:pre-wrap;"><b style="color:#0B3D91; font-size:10px; letter-spacing:0.8px;">NOTAS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : ''}</div>`;
         }
     }
     h += `</div>`;
 
     // Lista compacta: NOME | EDITAR IMPRIMIR APAGAR | PREÇO
     PEDIDOS_DB.forEach(p => {
-        const t = totaisPedido(p);
+        const tp = totaisPedido(p);
         h += `<div style="background:rgba(255,255,255,0.97); padding:7px 10px; margin-bottom:6px; border-radius:8px; border-left:4px solid #E60000; box-shadow:0 1px 5px rgba(0,0,0,0.07);">
             <div style="display:flex; align-items:center; gap:6px;">
                 <b style="flex:1; min-width:0; font-size:13px; line-height:1.2; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${p.cliente.nome}</b>
                 <button style="background:orange; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="editarPedido(${p.id})">EDITAR</button>
                 <button style="background:#1a6b8a; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="imprimirPedidoDireto(${p.id})">IMPRIMIR</button>
                 <button style="background:var(--dm-vermelho); color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="eliminarPedido(${p.id})">APAGAR</button>
-                <b style="color:red; font-size:13px; white-space:nowrap; min-width:58px; text-align:right;">${t.v.toFixed(2)}€</b>
+                <b style="color:red; font-size:13px; white-space:nowrap; min-width:58px; text-align:right;">${tp.v.toFixed(2)}€</b>
             </div>
             <div style="font-size:10px; color:#888; font-weight:600; margin-top:1px;">📅 ${formatarDataPedidoComDia(p)}</div>
         </div>`;
@@ -3885,21 +3952,107 @@ function renderGestaoPedidos() {
     document.getElementById('gestao-lista').innerHTML = h;
 }
 
+// Abre o geral no carrinho: mexer aqui NÃO altera as encomendas dos clientes
+function abrirGeralNoCarrinho(iso) {
+    const g = guardarSnapshotGeral(iso);
+    limparCartUI();
+    PEDIDO_EDIT_ID = null;
+    GERAL_EDIT_DIA = iso;
+    CLI_ATUAL = { num: 'GERAL', nome: '📦 GERAL DO DIA' };
+    CART = {};
+    Object.entries(g.itens || {}).forEach(([k, v]) => { CART[parseInt(k)] = Object.assign({}, v); });
+    document.getElementById('obs-pedido-final').value = g.obs || '';
+    sincronizarObsParaLinhas();
+    nav('m3');
+    sincronizarBadgesCart();
+}
+function guardarGeralEditado() {
+    const iso = GERAL_EDIT_DIA;
+    const base = GERAIS_DB[iso] || { uid: novoUidGeral(), dia: iso, fontes: [], baseSig: assinaturaDia(iso) };
+    const itens = {};
+    Object.entries(CART).forEach(([k, v]) => { if((v.q || 0) > 0) itens[parseInt(k)] = Object.assign({}, v); });
+    GERAIS_DB[iso] = Object.assign({}, base, { itens, obs: document.getElementById('obs-pedido-final').value, atualizado: Date.now() });
+    dbSave('DM_GERAIS', GERAIS_DB);
+    GESTAO_DIA_GERAL = iso;
+    limparTudoPosGravacao('m5');
+    abrirGestao();
+    alert('✅ Geral do dia guardado.\n\nAs encomendas dos clientes não foram alteradas.');
+}
+function refazerGeralDia() {
+    const iso = GESTAO_DIA_GERAL;
+    if(!confirm('REFAZER o geral de ' + formatarDiaISO(iso) + ' a partir das encomendas?\n\nAs edições e os gerais importados deste dia serão perdidos.')) return;
+    delete GERAIS_DB[iso];
+    dbSave('DM_GERAIS', GERAIS_DB);
+    renderGestaoPedidos();
+}
+
+// ── EXPORTAR / IMPORTAR GERAL DO DIA ──
+async function exportarGeralDia() {
+    const iso = GESTAO_DIA_GERAL;
+    const t0 = totaisGeral(geralDoDia(iso).itens);
+    if(!t0.linhas.length) { alert('Não há nada para exportar neste dia.'); return; }
+    const g = guardarSnapshotGeral(iso); // fixa um identificador, para não somar duas vezes ao importar
+    const [vendedor] = await dbGetAll(['DM_VENDEDOR']);
+    const dados = {
+        tipo: 'DM_GERAL_DIA', versao: 1,
+        uid: g.uid, fontes: g.fontes || [], dia: iso,
+        vendedor: vendedor || '', exportadoEm: new Date().toISOString(),
+        itens: g.itens, obs: GESTAO_GERAL_NOTAS ? (g.obs || '') : ''
+    };
+    const blob = new Blob([JSON.stringify(dados)], { type: 'application/json' });
+    renderGestaoPedidos();
+    await _descarregarComToque(blob, 'GERAL-DUMELHOR-' + iso + (vendedor ? '-' + String(vendedor).replace(/[^\w]+/g, '_') : '') + '.json', 'Geral exportado');
+}
+function importarGeraisDia() {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = '.json,application/json,text/plain'; inp.multiple = true;
+    inp.onchange = async () => {
+        const iso = GESTAO_DIA_GERAL;
+        const resumo = [];
+        let g = null; // só se guarda se algo for importado
+        for(const f of Array.from(inp.files || [])) {
+            try {
+                const d = JSON.parse(await f.text());
+                if(d.tipo !== 'DM_GERAL_DIA' || !d.itens) { resumo.push('❌ ' + f.name + ': não é um geral do dia'); continue; }
+                const atual = GERAIS_DB[iso] || geralDoDia(iso);
+                const ja = new Set([atual.uid, ...(atual.fontes || [])].filter(Boolean));
+                if(ja.has(d.uid)) { resumo.push('⚠️ ' + f.name + ': já tinha sido importado (ignorado)'); continue; }
+                if((d.fontes || []).some(x => ja.has(x)) && !confirm(f.name + '\n\nEste ficheiro já inclui gerais que foram importados antes. Juntar na mesma? (pode duplicar quantidades)')) { resumo.push('⏭️ ' + f.name + ': ignorado'); continue; }
+                if(d.dia && d.dia !== iso && !confirm(f.name + '\n\nÉ o geral de ' + d.dia.split('-').reverse().join('/') + ', mas estás em ' + iso.split('-').reverse().join('/') + '.\n\nJuntar na mesma a este dia?')) { resumo.push('⏭️ ' + f.name + ': ignorado'); continue; }
+                g = guardarSnapshotGeral(iso);
+                somarItensGeral(g.itens, d.itens);
+                g.obs = fundirNotas([{ texto: g.obs }, { texto: d.obs }]);
+                g.fontes = Array.from(new Set([...(g.fontes || []), d.uid, ...(d.fontes || [])]));
+                g.atualizado = Date.now();
+                const tt = totaisGeral(d.itens);
+                resumo.push('✅ ' + f.name + (d.vendedor ? ' (' + d.vendedor + ')' : '') + ': +' + tt.q + ' un · ' + fmtEuro(tt.v));
+            } catch(e) { resumo.push('❌ ' + f.name + ': ficheiro inválido'); }
+        }
+        if(g) dbSave('DM_GERAIS', GERAIS_DB);
+        renderGestaoPedidos();
+        if(resumo.length) alert('IMPORTAR GERAL\n\n' + resumo.join('\n'));
+    };
+    inp.click();
+}
+
 function imprimirPedidoGeralDia() {
-    const g = calcularPedidoGeralDia(GESTAO_DIA_GERAL);
-    if(!g.linhas.length) { alert('Sem encomendas neste dia.'); return; }
+    const g = geralDoDia(GESTAO_DIA_GERAL);
+    const t = totaisGeral(g.itens);
+    if(!t.linhas.length) { alert('Sem encomendas neste dia.'); return; }
     let cat = '', rows = '';
-    g.linhas.forEach(l => {
+    t.linhas.forEach(l => {
         if(l.cat !== cat) { cat = l.cat; rows += `<tr><td colspan="3" style="background:#eee; font-size:10px; font-weight:bold; padding:3px 6px; text-transform:uppercase;">${cat}</td></tr>`; }
         rows += `<tr><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px;">${l.nome}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:center; font-weight:bold;">${l.q}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:right;">${fmtEuro(l.q * l.preco)}</td></tr>`;
     });
+    const notas = (GESTAO_GERAL_NOTAS && g.obs) ? `<div style="margin-top:10px; font-size:12px; white-space:pre-wrap;"><b>NOTAS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : '';
     const html = `<div style="font-family:Arial,sans-serif;">
         <h3 style="margin:0 0 2px;">PEDIDO GERAL DO DIA</h3>
-        <div style="font-size:12px; margin-bottom:8px;">${formatarDiaISO(GESTAO_DIA_GERAL)} · ${g.pedidos.length} encomenda(s)</div>
+        <div style="font-size:12px; margin-bottom:8px;">${formatarDiaISO(GESTAO_DIA_GERAL)} · ${g.pedidos} encomenda(s)${(g.fontes||[]).length ? ' + ' + g.fontes.length + ' geral(is) importado(s)' : ''}</div>
         <table style="width:100%; border-collapse:collapse;"><tr><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; text-align:left; font-size:11px;">PRODUTO</th><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; font-size:11px;">QTD</th><th style="border:1px solid #ccc; background:#eee; padding:3px 6px; text-align:right; font-size:11px;">VALOR</th></tr>${rows}
-        <tr><td style="padding:5px 6px; font-weight:bold;">TOTAL</td><td style="padding:5px 6px; text-align:center; font-weight:bold;">${g.qTot}</td><td style="padding:5px 6px; text-align:right; font-weight:bold;">${fmtEuro(g.vTot)}</td></tr></table></div>`;
+        <tr><td style="padding:5px 6px; font-weight:bold;">TOTAL</td><td style="padding:5px 6px; text-align:center; font-weight:bold;">${t.q}</td><td style="padding:5px 6px; text-align:right; font-weight:bold;">${fmtEuro(t.v)}</td></tr></table>${notas}</div>`;
     imprimirHTMLIsolado(html);
 }
+
 function eliminarPedido(id) { 
     id = parseInt(id);
     if(!confirm("Eliminar este pedido?")) return;
@@ -3944,6 +4097,7 @@ function editarPedido(id) {
     // Limpar estado anterior
     limparCartUI();
     PEDIDO_EDIT_ID = id;
+    GERAL_EDIT_DIA = null;
     CLI_ATUAL = p.cliente;
     // Garantir que as chaves do CART são números (não strings)
     CART = {};
@@ -5680,6 +5834,7 @@ async function exportarBackup() {
             cardexEx: CARDEX_EXCLUIDOS,
             ultimosPedidos: ULTIMOS_PEDIDOS,
             marcasConfig: MARCAS_CONFIG,
+            gerais: GERAIS_DB,
             config: {
                 vendedor: vendedor || '',
                 empresa: empresa || '',
@@ -6110,6 +6265,7 @@ async function importarBackup(file) {
 
             // Restaurar dados para IndexedDB
             if(backup.pedidos) dbSave('DM_PEDIDOS_V11', backup.pedidos);
+            if(backup.gerais) dbSave('DM_GERAIS', backup.gerais);
             if(backup.pagamentos) dbSave('DM_PAGAMENTOS_V2', backup.pagamentos);
             if(backup.clientes) dbSave('DM_CLIENTES_V11', backup.clientes);
             if(backup.produtos) dbSave('DM_PRODUTOS_AUTO', backup.produtos);
