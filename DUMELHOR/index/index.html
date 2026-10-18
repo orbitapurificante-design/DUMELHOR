@@ -337,7 +337,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
       <button class="selecao-btn apagar" onclick="apagarSelecionadas()">🗑️ Apagar selecionadas</button>
     </div>
   </div>
-  <input type="file" id="f-import" accept=".json" multiple style="display:none">
+  <input type="file" id="f-import" accept=".json,.txt,application/json,text/plain" multiple style="display:none">
   <button id="btn-importar-grande" class="btn-importar-grande" onclick="document.getElementById('f-import').click()">📥 Importar ficheiro(s) de encomendas</button>
   <div id="lista-encomendas"></div>
 </div>
@@ -354,7 +354,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
         <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         <span id="btn-selecionar-label">SELECIONAR</span>
     </button>
-    <button class="bbar-btn" id="btn-sync" onclick="sincronizarGithub(true)" title="Sincronizar encomendas de hoje">
+    <button class="bbar-btn" id="btn-sync" onclick="sincronizarGithub(true)" title="Sincronizar encomendas">
         <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         <span>SINCRONIZAR</span>
     </button>
@@ -498,7 +498,7 @@ async function sincronizarGithub(mostrarFeedback){
         const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
         if(!rawResp.ok) continue;
         const dados = await rawResp.json();
-        const res = await importarPacote(dados, true); // só encomendas de hoje
+        const res = await importarPacote(dados, false); // todas as datas enviadas pelo vendedor
         totalNovas += res.novas;
         totalFotos += res.fotos;
       }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
@@ -507,7 +507,7 @@ async function sincronizarGithub(mostrarFeedback){
     renderLista();
     atualizarBotaoEncomendas();
     if(status) status.textContent = '✅ Sincronizado agora mesmo';
-    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s) de hoje\n📸 ' + totalFotos + ' foto(s)');
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
   }catch(e){
     console.error(e);
     if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
@@ -596,6 +596,7 @@ async function importarPacote(dados, apenasHoje){
   let fotosObj = (dados && dados.fotos) || {};
   if(dados && dados.tipo === 'dumelhor_encomendas' && Array.isArray(dados.encomendas)){
     novasEncomendas = dados.encomendas.map(en => ({...en, vendedor: dados.vendedor || ''}));
+    if(Array.isArray(dados.gerais)) dados.gerais.forEach(g => adicionarGeralRecebido({...g, vendedor: g.vendedor || dados.vendedor || ''}));
   } else if(dados && Array.isArray(dados.pedidos)){
     novasEncomendas = dados.pedidos.map(p => ({
       id: p.id, data: p.data, dataISO: p.dataISO, obs: p.obs || '',
@@ -620,6 +621,107 @@ async function importarPacote(dados, apenasHoje){
 
   await guardarFotos(fotosObj);
   return {novas: novasEncomendas.length, fotos: Object.keys(fotosObj).length};
+}
+
+/* =========================================================
+   GERAL DO DIA — recebido dos vendedores; vários gerais do mesmo dia somam-se
+   ========================================================= */
+const LS_GERAIS = 'DM_RESIDUAL_GERAIS'; // { 'yyyy-mm-dd': { uid: {uid, dia, vendedor, itens:[], obs, fontes:[]} } }
+function getGerais(){ try{ return JSON.parse(localStorage.getItem(LS_GERAIS)) || {}; }catch(e){ return {}; } }
+function saveGerais(o){ localStorage.setItem(LS_GERAIS, JSON.stringify(o)); }
+
+// Cada origem (tablet/vendedor) tem o seu id. Reenviar a mesma origem ATUALIZA; origens diferentes SOMAM.
+function adicionarGeralRecebido(g){
+  if(!g || !g.uid || !g.dia || !Array.isArray(g.itens)) return false;
+  const todos = getGerais();
+  const dia = todos[g.dia] || {};
+  // já está incluído num geral maior (que juntou esta origem)? então ignora
+  if(Object.values(dia).some(o => o.uid !== g.uid && (o.fontes || []).includes(g.uid))) return false;
+  // este geral já inclui outras origens: substitui-as
+  (g.fontes || []).forEach(f => { delete dia[f]; });
+  dia[g.uid] = { uid: g.uid, dia: g.dia, vendedor: g.vendedor || '', itens: g.itens, obs: g.obs || '', fontes: g.fontes || [], recebidoEm: Date.now() };
+  todos[g.dia] = dia;
+  saveGerais(todos);
+  return true;
+}
+function fundirNotasGeral(textos){
+  const somas = new Map(), livres = [];
+  textos.forEach(txt => String(txt || '').split('\n').map(l => l.trim()).filter(Boolean).forEach(l => {
+    const m = l.match(/^(\d+)x\s+(.+)$/i);
+    if(m){ const k = m[2].toLowerCase(); const ex = somas.get(k) || {desc:m[2], q:0}; ex.q += parseInt(m[1]); somas.set(k, ex); }
+    else if(!livres.includes(l)) livres.push(l);
+  }));
+  return [...somas.values()].map(x => x.q + 'x ' + x.desc).concat(livres).join('\n');
+}
+function somaGeralDia(iso){
+  const origens = Object.values(getGerais()[iso] || {});
+  const mapa = new Map();
+  origens.forEach(o => (o.itens || []).forEach(i => {
+    if(!(i.q > 0)) return;
+    const k = i.ean ? 'e' + i.ean : (i.id != null ? 'i' + i.id : 'n' + i.nome);
+    const ex = mapa.get(k);
+    if(ex) ex.q += i.q; else mapa.set(k, {...i});
+  }));
+  const linhas = [...mapa.values()].sort((a,b) => (a.cat||'').localeCompare(b.cat||'') || (a.nome||'').localeCompare(b.nome||''));
+  let q = 0, v = 0; linhas.forEach(l => { q += l.q; v += l.q * (l.preco || 0); });
+  const vendedores = [...new Set(origens.map(o => o.vendedor).filter(Boolean))];
+  return { linhas, q, v, origens: origens.length, vendedores, obs: fundirNotasGeral(origens.map(o => o.obs)) };
+}
+function euroG(n){ return n.toFixed(2).replace('.', ',') + '€'; }
+function diaLongo(iso){
+  const [y,m,d] = iso.split('-').map(Number);
+  const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  return DIAS[new Date(y, m-1, d).getDay()] + ', ' + String(d).padStart(2,'0') + '/' + String(m).padStart(2,'0') + '/' + y;
+}
+function htmlGeraisDia(){
+  const todos = getGerais();
+  const dias = Object.keys(todos).filter(d => Object.keys(todos[d]).length).sort().reverse();
+  if(!dias.length) return '';
+  return '<div style="margin:10px 12px 4px;background:#0B3D91;color:#fff;border-radius:12px;padding:8px 10px;">' +
+    '<div style="font-size:12px;font-weight:900;letter-spacing:.6px;margin-bottom:6px;">📦 GERAL DO DIA</div>' +
+    dias.map(d => { const s = somaGeralDia(d);
+      return '<div onclick="abrirGeralDia(\'' + d + '\')" style="display:flex;align-items:center;gap:8px;background:#fff;color:#222;border-radius:8px;padding:8px 10px;margin-top:5px;cursor:pointer;">' +
+        '<div style="flex:1;min-width:0;"><b style="font-size:13px;">' + diaLongo(d) + '</b>' +
+        '<div style="font-size:10px;color:#777;">' + s.origens + ' origem(ns)' + (s.vendedores.length ? ' · 👤 ' + s.vendedores.join(', ') : '') + '</div></div>' +
+        '<div style="font-size:12px;font-weight:800;color:#0B3D91;white-space:nowrap;">' + s.q + ' un · ' + euroG(s.v) + '</div><span style="color:#999;font-size:18px;">›</span></div>';
+    }).join('') + '</div>';
+}
+function tabelaGeralHTML(iso, paraImprimir){
+  const s = somaGeralDia(iso);
+  let cat = '', rows = '';
+  s.linhas.forEach(l => {
+    if(l.cat !== cat){ cat = l.cat; rows += '<tr><td colspan="3" style="background:' + (paraImprimir ? '#eee' : '#DCEBFF') + ';color:#0B3D91;font-size:11px;font-weight:800;padding:4px 8px;text-transform:uppercase;">' + (cat || '') + '</td></tr>'; }
+    rows += '<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:' + (paraImprimir ? 15 : 13) + 'px;">' + l.nome + '</td><td style="padding:5px 6px;border-bottom:1px solid #eee;text-align:center;font-weight:800;font-size:' + (paraImprimir ? 16 : 14) + 'px;">' + l.q + '</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-size:12px;">' + euroG(l.q * (l.preco || 0)) + '</td></tr>';
+  });
+  const notas = s.obs ? '<div style="margin-top:10px;font-size:' + (paraImprimir ? 15 : 13) + 'px;white-space:pre-wrap;"><b>NOTAS</b>\n' + s.obs.replace(/</g,'&lt;') + '</div>' : '';
+  return '<table style="width:100%;border-collapse:collapse;">' + rows +
+    '<tr><td style="padding:7px 8px;font-weight:900;">TOTAL</td><td style="padding:7px 6px;text-align:center;font-weight:900;">' + s.q + '</td><td style="padding:7px 8px;text-align:right;font-weight:900;color:#E60000;">' + euroG(s.v) + '</td></tr></table>' + notas;
+}
+function abrirGeralDia(iso){
+  document.getElementById('modal-geral-dia')?.remove();
+  const ov = document.createElement('div');
+  ov.id = 'modal-geral-dia';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99990;display:flex;align-items:center;justify-content:center;padding:14px;';
+  const s = somaGeralDia(iso);
+  ov.innerHTML = '<div style="background:#fff;width:100%;max-width:560px;max-height:90vh;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;">' +
+    '<div style="background:#0B3D91;color:#fff;padding:12px 14px;"><div style="font-weight:900;font-size:14px;">📦 GERAL DO DIA</div><div style="font-size:11px;opacity:.85;">' + diaLongo(iso) + ' · ' + s.origens + ' origem(ns)' + (s.vendedores.length ? ' · ' + s.vendedores.join(', ') : '') + '</div></div>' +
+    '<div style="overflow:auto;padding:6px 6px 10px;flex:1;">' + tabelaGeralHTML(iso, false) + '</div>' +
+    '<div style="display:flex;gap:8px;padding:10px;border-top:1px solid #eee;">' +
+      '<button id="gd-fechar" style="flex:1;padding:12px;border:none;border-radius:10px;background:#757575;color:#fff;font-weight:700;">FECHAR</button>' +
+      '<button id="gd-apagar" style="padding:12px 14px;border:none;border-radius:10px;background:#B71C1C;color:#fff;font-weight:700;">🗑️</button>' +
+      '<button id="gd-imprimir" style="flex:1;padding:12px;border:none;border-radius:10px;background:#1a6b8a;color:#fff;font-weight:700;">IMPRIMIR</button></div></div>';
+  document.body.appendChild(ov);
+  ov.querySelector('#gd-fechar').onclick = () => ov.remove();
+  ov.querySelector('#gd-apagar').onclick = () => {
+    if(!confirm('Apagar o geral de ' + diaLongo(iso) + ' deste tablet?')) return;
+    const todos = getGerais(); delete todos[iso]; saveGerais(todos); ov.remove(); renderLista();
+  };
+  ov.querySelector('#gd-imprimir').onclick = () => {
+    document.getElementById('print-area').innerHTML = '<div style="font-family:Arial,sans-serif;"><h2 style="margin:0 0 2px;">PEDIDO GERAL DO DIA</h2><div style="margin-bottom:10px;">' + diaLongo(iso) + ' · ' + s.origens + ' origem(ns)' + (s.vendedores.length ? ' · ' + s.vendedores.join(', ') : '') + '</div>' + tabelaGeralHTML(iso, true) + '</div>';
+    document.body.classList.add('print-resumo');
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-resumo'), 500);
+  };
 }
 
 /* =========================================================
@@ -722,13 +824,13 @@ function renderLista(){
   document.getElementById('count-chip').textContent = pedidos.length;
   const cont = document.getElementById('lista-encomendas');
   if(!pedidos.length){
-    cont.innerHTML = '<div class="vazio-msg"><span class="vic">📭</span>Ainda não há encomendas importadas.<br>Usa "Importar" para carregar os ficheiros enviados pelos vendedores.</div>';
+    cont.innerHTML = htmlGeraisDia() + '<div class="vazio-msg"><span class="vic">📭</span>Ainda não há encomendas importadas.<br>Usa "Importar" para carregar os ficheiros enviados pelos vendedores.</div>';
     return;
   }
   const cores = {verde:'#16a34a', vermelho:'#E60000', laranja:'#FF8C00'};
   const labelsEstado = {verde:'✓ Completo', vermelho:'✕ Em falta', laranja:'! Incompleto'};
   const avatarCores = ['#0B63C5','#1FA24A','#B30000','#8E44AD','#D68910','#117864'];
-  cont.innerHTML = pedidos.map((p)=>{
+  cont.innerHTML = htmlGeraisDia() + pedidos.map((p)=>{
     const estado = estadoGeralEncomenda(p);
     const cor = estado ? cores[estado] : '#8a8a8a';
     const nItens = (p.itens||[]).length;
