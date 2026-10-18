@@ -1386,6 +1386,7 @@ let ULTIMO_PRODUTO_ID = null;
 let PRINT_SOURCE = 'm3';
 let FOTOS_ORDEM = 'nome'; // 'nome' ou 'tamanho'
 let PEDIDO_EDIT_ID = null;
+let GERAL_DEVICE = '';        // identificador deste tablet (para o geral do dia ter sempre o mesmo id)
 let GERAIS_DB = {};          // gerais do dia guardados (editáveis), por data yyyy-mm-dd
 let GERAL_EDIT_DIA = null;   // dia do geral aberto no carrinho (null = pedido normal)
 let FILTRO_SEGMENTO = null;
@@ -1461,13 +1462,15 @@ async function iniciarDados() {
     // Carregar todos os dados do IndexedDB
     const [
         produtos, pedidos, clientes, pagamentos, cardex, cardexEx,
-        ultimosPedidos, marcasConfig, m2colunas, visitasSemana, catColunas, geraisDia
+        ultimosPedidos, marcasConfig, m2colunas, visitasSemana, catColunas, geraisDia, geralDevice
     ] = await dbGetAll([
         'DM_PRODUTOS_AUTO','DM_PEDIDOS_V11','DM_CLIENTES_V11','DM_PAGAMENTOS_V2',
         'DM_CARDEX_CLIENTES','DM_CARDEX_EX','DM_ULTIMO_PEDIDO','DM_MARCAS_CONFIG',
-        'DM_M2_COLUNAS','DM_VISITAS_SEMANA','DM_CAT_COLUNAS','DM_GERAIS'
+        'DM_M2_COLUNAS','DM_VISITAS_SEMANA','DM_CAT_COLUNAS','DM_GERAIS','DM_GERAL_DEVICE'
     ]);
     GERAIS_DB = geraisDia || {};
+    GERAL_DEVICE = geralDevice || ('T' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5));
+    if(!geralDevice) dbSave('DM_GERAL_DEVICE', GERAL_DEVICE);
 
     DADOS = produtos || [];
     PEDIDOS_DB = pedidos || [];
@@ -3804,6 +3807,8 @@ function totaisPedido(p) {
     return { q, v };
 }
 function novoUidGeral() { return 'G' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+// Id fixo por tablet+dia: reenviar o mesmo dia atualiza em vez de somar duas vezes
+function uidGeralDia(iso) { return 'G-' + (GERAL_DEVICE || 'T') + '-' + iso; }
 function fmtEuro(n) { return n.toFixed(2).replace('.', ',') + '€'; }
 function formatarDiaISO(iso) {
     if(!iso) return '';
@@ -3879,7 +3884,7 @@ function totaisGeral(itens) {
 function guardarSnapshotGeral(iso) {
     if(GERAIS_DB[iso]) return GERAIS_DB[iso];
     const a = calcularGeralAuto(iso);
-    GERAIS_DB[iso] = { uid: novoUidGeral(), dia: iso, itens: a.itens, obs: a.obs, fontes: [], baseSig: assinaturaDia(iso), atualizado: Date.now() };
+    GERAIS_DB[iso] = { uid: uidGeralDia(iso), dia: iso, itens: a.itens, obs: a.obs, fontes: [], baseSig: assinaturaDia(iso), atualizado: Date.now() };
     dbSave('DM_GERAIS', GERAIS_DB);
     return GERAIS_DB[iso];
 }
@@ -3968,7 +3973,7 @@ function abrirGeralNoCarrinho(iso) {
 }
 function guardarGeralEditado() {
     const iso = GERAL_EDIT_DIA;
-    const base = GERAIS_DB[iso] || { uid: novoUidGeral(), dia: iso, fontes: [], baseSig: assinaturaDia(iso) };
+    const base = GERAIS_DB[iso] || { uid: uidGeralDia(iso), dia: iso, fontes: [], baseSig: assinaturaDia(iso) };
     const itens = {};
     Object.entries(CART).forEach(([k, v]) => { if((v.q || 0) > 0) itens[parseInt(k)] = Object.assign({}, v); });
     GERAIS_DB[iso] = Object.assign({}, base, { itens, obs: document.getElementById('obs-pedido-final').value, atualizado: Date.now() });
@@ -6202,12 +6207,26 @@ async function exportarEncomendasLeve() {
         const todosItens = encomendas.flatMap(e => e.itens);
         const fotos = await coletarFotosParaItens(todosItens);
 
+        // ── O geral (resumo) de cada dia das encomendas enviadas vai junto ──
+        const diasEnviados = [...new Set(lista.map(isoDataPedido).filter(Boolean))];
+        const gerais = diasEnviados.map(iso => {
+            const g = geralDoDia(iso);
+            const t = totaisGeral(g.itens);
+            if(!t.linhas.length && !g.obs) return null;
+            return {
+                uid: g.uid || uidGeralDia(iso), dia: iso, vendedor: vendedor || '',
+                fontes: g.fontes || [], obs: g.obs || '',
+                itens: t.linhas.map(i => ({ id: i.id, ean: i.ean || '', nome: i.nome, cat: i.cat || '', preco: i.preco || 0, q: i.q, f: i.f || '' }))
+            };
+        }).filter(Boolean);
+
         const pacote = {
             tipo: 'dumelhor_encomendas',
-            versao: 1,
+            versao: 2,
             vendedor: vendedor || '',
             dataEnvio: new Date().toISOString(),
             encomendas,
+            gerais,
             fotos
         };
 
@@ -6247,7 +6266,7 @@ async function exportarEncomendasLeve() {
         dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
 
         if(enviadoGithub) {
-            alert('✅ ' + encomendas.length + ' encomenda(s) enviada(s) automaticamente para o tablet de separação!\n\n(Foi também guardado um ficheiro local de reserva com fotos, ' + nomeFicheiro + ' — só é preciso se a internet falhar)');
+            alert('✅ ' + encomendas.length + ' encomenda(s)' + (gerais.length ? ' + ' + gerais.length + ' geral(is) do dia' : '') + ' enviada(s) automaticamente para o tablet de separação!\n\n(Foi também guardado um ficheiro local de reserva com fotos, ' + nomeFicheiro + ' — só é preciso se a internet falhar)');
         } else {
             alert('⚠️ Não foi possível enviar automaticamente (' + erroGithub + ').\n\nFicheiro guardado localmente: ' + nomeFicheiro + '\n\nEnvia-o manualmente (WhatsApp, e-mail, pasta partilhada, pen) e importa-o no tablet de separação.');
         }
