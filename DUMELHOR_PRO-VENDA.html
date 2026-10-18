@@ -4003,36 +4003,46 @@ async function exportarGeralDia() {
     renderGestaoPedidos();
     await _descarregarComToque(blob, 'GERAL-DUMELHOR-' + iso + (vendedor ? '-' + String(vendedor).replace(/[^\w]+/g, '_') : '') + '.json', 'Geral exportado');
 }
+// Junta UM geral importado (objeto já lido do ficheiro) ao geral do dia `iso`. Devolve a linha de resumo.
+function juntarUmGeral(nome, d, iso, perguntarDia) {
+    if(!d || d.tipo !== 'DM_GERAL_DIA' || !d.itens) return '❌ ' + nome + ': não é um geral do dia';
+    const atual = GERAIS_DB[iso] || geralDoDia(iso);
+    const ja = new Set([atual.uid, ...(atual.fontes || [])].filter(Boolean));
+    if(ja.has(d.uid)) return '⚠️ ' + nome + ': já tinha sido importado (ignorado)';
+    if((d.fontes || []).some(x => ja.has(x)) && !confirm(nome + '\n\nEste ficheiro já inclui gerais que foram importados antes. Juntar na mesma? (pode duplicar quantidades)')) return '⏭️ ' + nome + ': ignorado';
+    if(perguntarDia && d.dia && d.dia !== iso && !confirm(nome + '\n\nÉ o geral de ' + d.dia.split('-').reverse().join('/') + ', mas estás em ' + iso.split('-').reverse().join('/') + '.\n\nJuntar na mesma a este dia?')) return '⏭️ ' + nome + ': ignorado';
+    const g = guardarSnapshotGeral(iso);
+    somarItensGeral(g.itens, d.itens);
+    g.obs = fundirNotas([{ texto: g.obs }, { texto: d.obs }]);
+    g.fontes = Array.from(new Set([...(g.fontes || []), d.uid, ...(d.fontes || [])]));
+    g.atualizado = Date.now();
+    dbSave('DM_GERAIS', GERAIS_DB);
+    const tt = totaisGeral(d.itens);
+    return '✅ ' + nome + (d.vendedor ? ' (' + d.vendedor + ')' : '') + ': +' + tt.q + ' un · ' + fmtEuro(tt.v);
+}
 function importarGeraisDia() {
     const inp = document.createElement('input');
     inp.type = 'file'; inp.accept = '.json,.txt,application/json,text/plain'; inp.multiple = true;
     inp.onchange = async () => {
         const iso = GESTAO_DIA_GERAL;
         const resumo = [];
-        let g = null; // só se guarda se algo for importado
         for(const f of Array.from(inp.files || [])) {
-            try {
-                const d = JSON.parse(await f.text());
-                if(d.tipo !== 'DM_GERAL_DIA' || !d.itens) { resumo.push('❌ ' + f.name + ': não é um geral do dia'); continue; }
-                const atual = GERAIS_DB[iso] || geralDoDia(iso);
-                const ja = new Set([atual.uid, ...(atual.fontes || [])].filter(Boolean));
-                if(ja.has(d.uid)) { resumo.push('⚠️ ' + f.name + ': já tinha sido importado (ignorado)'); continue; }
-                if((d.fontes || []).some(x => ja.has(x)) && !confirm(f.name + '\n\nEste ficheiro já inclui gerais que foram importados antes. Juntar na mesma? (pode duplicar quantidades)')) { resumo.push('⏭️ ' + f.name + ': ignorado'); continue; }
-                if(d.dia && d.dia !== iso && !confirm(f.name + '\n\nÉ o geral de ' + d.dia.split('-').reverse().join('/') + ', mas estás em ' + iso.split('-').reverse().join('/') + '.\n\nJuntar na mesma a este dia?')) { resumo.push('⏭️ ' + f.name + ': ignorado'); continue; }
-                g = guardarSnapshotGeral(iso);
-                somarItensGeral(g.itens, d.itens);
-                g.obs = fundirNotas([{ texto: g.obs }, { texto: d.obs }]);
-                g.fontes = Array.from(new Set([...(g.fontes || []), d.uid, ...(d.fontes || [])]));
-                g.atualizado = Date.now();
-                const tt = totaisGeral(d.itens);
-                resumo.push('✅ ' + f.name + (d.vendedor ? ' (' + d.vendedor + ')' : '') + ': +' + tt.q + ' un · ' + fmtEuro(tt.v));
-            } catch(e) { resumo.push('❌ ' + f.name + ': ficheiro inválido'); }
+            try { resumo.push(juntarUmGeral(f.name, JSON.parse(await f.text()), iso, true)); }
+            catch(e) { resumo.push('❌ ' + f.name + ': ficheiro inválido'); }
         }
-        if(g) dbSave('DM_GERAIS', GERAIS_DB);
         renderGestaoPedidos();
         if(resumo.length) alert('IMPORTAR GERAL\n\n' + resumo.join('\n'));
     };
     inp.click();
+}
+// Se alguém escolher um ficheiro de GERAL no IMPORTAR do backup: junta ao geral (nunca substitui os pedidos)
+function importarGeralVindoDoBackup(nome, d) {
+    const iso = d.dia || GESTAO_DIA_GERAL;
+    GESTAO_DIA_GERAL = iso;
+    GESTAO_GERAL_ABERTO = true;
+    const msg = juntarUmGeral(nome, d, iso, false);
+    abrirGestao();
+    alert('Este ficheiro é um GERAL DO DIA, não um backup.\n\nFoi juntado ao Pedido Geral de ' + iso.split('-').reverse().join('/') + ' (os pedidos não foram alterados).\n\n' + msg);
 }
 
 function imprimirPedidoGeralDia() {
@@ -6253,6 +6263,7 @@ async function importarBackup(file) {
     reader.onload = async e => {
         try {
             const backup = JSON.parse(e.target.result);
+            if(backup && backup.tipo === 'DM_GERAL_DIA') { importarGeralVindoDoBackup(file.name, backup); return; }
             if(!backup.versao) throw new Error('Ficheiro inválido');
 
             const pedidosExist = PEDIDOS_DB.length;
