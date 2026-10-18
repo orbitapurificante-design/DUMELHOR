@@ -824,6 +824,10 @@
             <div class="icon-emoji">📥</div>
             <div class="icon-text" style="background:#E60000; color:white;">IMPORTAR</div>
         </button>
+        <button class="menu-btn-icon" onclick="abrirCaixaNota(); toggleMenu()">
+            <div class="icon-emoji">📝</div>
+            <div class="icon-text" style="background:#F57C00; color:white;">NOTAS</div>
+        </button>
         <button class="menu-btn-icon" onclick="exportarEncomendasLeve(); toggleMenu()">
             <img class="btn-img" data-nome="enviarencomendas.jpg" src="" onerror="this.style.display='none'">
             <div class="icon-emoji">📤</div>
@@ -1036,8 +1040,8 @@
     <div id="cardex-content"></div> 
     <div id="cart-list-content"></div>
     <div style="padding: 16px 16px 0;">
-        <label style="font-size: 11px; font-weight: 600; color: #666666; letter-spacing: 0.8px; text-transform: uppercase; display:block; margin-bottom:6px;">NOTAS DO PEDIDO</label>
-        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Escreva uma nota por linha..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}" oninput="sincronizarObsParaLinhas()"></textarea>
+        <label style="font-size: 11px; font-weight: 600; color: #666666; letter-spacing: 0.8px; text-transform: uppercase; display:block; margin-bottom:6px;">OUTROS PRODUTOS (com quantidade)</label>
+        <textarea id="obs-pedido-final" class="obs-final" style="height:90px; margin-top:6px; font-size:15px; line-height:1.6;" placeholder="Produtos fora do catálogo, um por linha. Ex: 2x Detergente..." onkeypress="if(event.key==='Enter'){event.stopPropagation();}" oninput="sincronizarObsParaLinhas()"></textarea>
     </div>
 </div>
 
@@ -1054,6 +1058,10 @@
     <button class="bbar-btn col-amber" onclick="irParaCatalogo()">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
         <span>CATÁLOGO</span>
+    </button>
+    <button class="bbar-btn" onclick="abrirCaixaNota()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        <span>NOTAS</span>
     </button>
     <button class="bbar-btn" onclick="voltarParaLoja()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1388,6 +1396,8 @@ let FOTOS_ORDEM = 'nome'; // 'nome' ou 'tamanho'
 let PEDIDO_EDIT_ID = null;
 let GERAL_DEVICE = '';        // identificador deste tablet (para o geral do dia ter sempre o mesmo id)
 let GERAIS_DB = {};          // gerais do dia guardados (editáveis), por data yyyy-mm-dd
+let NOTA_PEDIDO = '';        // nota (texto livre) do pedido em curso — diferente de "outros produtos"
+let GESTAO_MODO_NOTA = false; // Gestão de Pedidos aberta só para escolher a encomenda a que se escreve a nota
 let GERAL_EDIT_DIA = null;   // dia do geral aberto no carrinho (null = pedido normal)
 let FILTRO_SEGMENTO = null;
 let M2_COLUNAS = 2;
@@ -2793,7 +2803,7 @@ function novoPedido() {
     if(Object.keys(CART).length > 0 || CLI_ATUAL) {
         if(!confirm("Iniciar novo pedido?\n\nO carrinho atual será limpo.")) return;
     }
-    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null;
+    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null; NOTA_PEDIDO = '';
     MARCA_ATIVA = null;
     LINHAS_MANUAIS = [];
     document.getElementById('painel-sem-resultado').style.display = 'none';
@@ -2831,7 +2841,7 @@ function salvarPedido() {
     const agora = new Date();
     const dataISO = agora.toISOString().split('T')[0]; // YYYY-MM-DD para ordenação
     const dataStr = agora.toLocaleString('pt-PT');
-    PEDIDOS_DB.unshift({ id: Date.now(), cliente: {...CLI_ATUAL}, itens: {...CART}, obs: obs, data: dataStr, dataISO: dataISO }); 
+    PEDIDOS_DB.unshift({ id: Date.now(), cliente: {...CLI_ATUAL}, itens: {...CART}, obs: obs, nota: NOTA_PEDIDO || '', data: dataStr, dataISO: dataISO }); 
     dbSave('DM_PEDIDOS_V11', PEDIDOS_DB); 
 
     // Guardar data do último pedido por cliente
@@ -3500,7 +3510,7 @@ function limparCartUI() {
 }
 
 function limparTudoPosGravacao(destino) { 
-    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null;
+    CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null; NOTA_PEDIDO = '';
     LINHAS_MANUAIS = [];
     MARCA_ATIVA = null;
     document.getElementById('obs-pedido-final').value=""; 
@@ -3510,7 +3520,7 @@ function limparTudoPosGravacao(destino) {
 }
 function limparTudo() { 
     if(confirm("Limpar pedido?")) { 
-        CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null; 
+        CART = {}; CLI_ATUAL = null; ULTIMO_PRODUTO_ID = null; PEDIDO_EDIT_ID = null; GERAL_EDIT_DIA = null; NOTA_PEDIDO = ''; 
         LINHAS_MANUAIS = [];
         MARCA_ATIVA = null;
         SEPARACAO_STATUS = {}; SEPARACAO_QTD = {}; FAM_ESTADOS_TICKET = {};
@@ -3780,7 +3790,8 @@ function formatarDataPedidoComDia(p) {
     return `${diaSemana}, ${dd}/${mm}/${yyyy}${hora ? ' · ' + hora : ''}`;
 }
 
-function abrirGestao() {
+function abrirGestao(modoNota) {
+    GESTAO_MODO_NOTA = (modoNota === true);
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('overlay');
     if(drawer && drawer.classList.contains('open')) {
@@ -3866,7 +3877,8 @@ function calcularGeralAuto(iso) {
     const itens = {};
     pedidos.forEach(p => somarItensGeral(itens, p.itens));
     const obs = fundirNotas(pedidos.map(p => ({ cli: p.cliente && p.cliente.nome, texto: p.obs })));
-    return { uid: null, dia: iso, itens, obs, fontes: [], pedidos: pedidos.length, guardado: false };
+    const notas = fundirNotas(pedidos.map(p => ({ cli: p.cliente && p.cliente.nome, texto: p.nota })));
+    return { uid: null, dia: iso, itens, obs, notas, fontes: [], pedidos: pedidos.length, guardado: false };
 }
 // Geral a mostrar: o guardado (editável) se existir, senão o automático
 function geralDoDia(iso) {
@@ -3884,7 +3896,7 @@ function totaisGeral(itens) {
 function guardarSnapshotGeral(iso) {
     if(GERAIS_DB[iso]) return GERAIS_DB[iso];
     const a = calcularGeralAuto(iso);
-    GERAIS_DB[iso] = { uid: uidGeralDia(iso), dia: iso, itens: a.itens, obs: a.obs, fontes: [], baseSig: assinaturaDia(iso), atualizado: Date.now() };
+    GERAIS_DB[iso] = { uid: uidGeralDia(iso), dia: iso, itens: a.itens, obs: a.obs, notas: a.notas, fontes: [], baseSig: assinaturaDia(iso), atualizado: Date.now() };
     dbSave('DM_GERAIS', GERAIS_DB);
     return GERAIS_DB[iso];
 }
@@ -3902,7 +3914,8 @@ function renderGestaoPedidos() {
     const desatualizado = g.guardado && g.baseSig && g.baseSig !== assinaturaDia(iso);
 
     const btn = 'border:1px solid rgba(255,255,255,0.45); border-radius:6px; padding:7px 9px; cursor:pointer; font-size:10px !important; font-weight:700; color:white; white-space:nowrap;';
-    let h = `<div style="background:#0B3D91; color:#fff; border-radius:10px; padding:10px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
+    let h = GESTAO_MODO_NOTA ? `<div style="background:#FFB300; color:#222; border-radius:10px; padding:10px 12px; margin-bottom:10px; font-weight:800; font-size:13px; display:flex; align-items:center; gap:8px;"><span style="flex:1;">📝 Escolhe a encomenda para escrever a nota (toca no nome ou no 📝)</span><button style="border:none; background:#222; color:#fff; border-radius:6px; padding:6px 10px; font-size:11px !important; font-weight:700;" onclick="GESTAO_MODO_NOTA=false; renderGestaoPedidos();">CANCELAR</button></div>` : '';
+    h += `<div style="background:#0B3D91; color:#fff; border-radius:10px; padding:10px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
             <div style="font-size:12px; font-weight:900; letter-spacing:0.6px;">📦 PEDIDO GERAL DO DIA</div>
             <input type="date" value="${iso}" onchange="GESTAO_DIA_GERAL=this.value; renderGestaoPedidos();" style="padding:4px 6px; border:none; border-radius:6px; font-size:12px; font-weight:700; color:#0B3D91; background:#fff;">
@@ -3915,7 +3928,7 @@ function renderGestaoPedidos() {
         </div>
         ${desatualizado ? `<div style="background:#FFB300; color:#222; border-radius:6px; padding:5px 8px; margin-top:8px; font-size:11px; font-weight:700;">⚠️ Há encomendas novas ou alteradas neste dia desde que o geral foi guardado. Usa REFAZER para o atualizar (perde as tuas edições).</div>` : ''}
         <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; margin-top:8px; cursor:pointer;">
-            <input type="checkbox" ${GESTAO_GERAL_NOTAS ? 'checked' : ''} onchange="GESTAO_GERAL_NOTAS=this.checked; renderGestaoPedidos();" style="width:16px; height:16px;"> Incluir as notas dos pedidos
+            <input type="checkbox" ${GESTAO_GERAL_NOTAS ? 'checked' : ''} onchange="GESTAO_GERAL_NOTAS=this.checked; renderGestaoPedidos();" style="width:16px; height:16px;"> Incluir notas e outros produtos
         </label>
         <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
             <button style="${btn} background:#1565C0;" onclick="GESTAO_GERAL_ABERTO=!GESTAO_GERAL_ABERTO; renderGestaoPedidos();">${GESTAO_GERAL_ABERTO ? 'FECHAR' : 'VER'}</button>
@@ -3926,7 +3939,7 @@ function renderGestaoPedidos() {
             ${g.guardado ? `<button style="${btn} background:#B71C1C;" onclick="refazerGeralDia()">REFAZER</button>` : ''}
         </div>`;
     if(GESTAO_GERAL_ABERTO) {
-        if(!t.linhas.length && !(GESTAO_GERAL_NOTAS && g.obs)) h += `<div style="background:#fff; color:#666; border-radius:8px; padding:10px; margin-top:8px; font-size:12px;">Sem encomendas neste dia.</div>`;
+        if(!t.linhas.length && !(GESTAO_GERAL_NOTAS && (g.obs || g.notas))) h += `<div style="background:#fff; color:#666; border-radius:8px; padding:10px; margin-top:8px; font-size:12px;">Sem encomendas neste dia.</div>`;
         else {
             let cat = '', rows = '';
             t.linhas.forEach(l => {
@@ -3935,7 +3948,8 @@ function renderGestaoPedidos() {
             });
             h += `<div style="background:#fff; color:#222; border-radius:8px; margin-top:8px; max-height:55vh; overflow:auto;"><table style="width:100%; border-collapse:collapse;">${rows}
                 <tr><td style="padding:6px 8px; font-weight:900; font-size:12px;">TOTAL</td><td style="padding:6px; font-weight:900; text-align:center; font-size:12px;">${t.q}</td><td style="padding:6px 8px; font-weight:900; text-align:right; font-size:12px; color:#E60000;">${fmtEuro(t.v)}</td></tr></table>
-                ${GESTAO_GERAL_NOTAS && g.obs ? `<div style="border-top:2px solid #DCEBFF; padding:8px; font-size:12px; white-space:pre-wrap;"><b style="color:#0B3D91; font-size:10px; letter-spacing:0.8px;">NOTAS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : ''}</div>`;
+                ${GESTAO_GERAL_NOTAS && g.obs ? `<div style="border-top:2px solid #DCEBFF; padding:8px; font-size:12px; white-space:pre-wrap;"><b style="color:#0B3D91; font-size:10px; letter-spacing:0.8px;">OUTROS PRODUTOS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : ''}
+                ${GESTAO_GERAL_NOTAS && g.notas ? `<div style="border-top:2px solid #DCEBFF; padding:8px; font-size:12px; white-space:pre-wrap;"><b style="color:#0B3D91; font-size:10px; letter-spacing:0.8px;">📝 NOTAS</b>\n${g.notas.replace(/</g,'&lt;')}</div>` : ''}</div>`;
         }
     }
     h += `</div>`;
@@ -3945,16 +3959,68 @@ function renderGestaoPedidos() {
         const tp = totaisPedido(p);
         h += `<div style="background:rgba(255,255,255,0.97); padding:7px 10px; margin-bottom:6px; border-radius:8px; border-left:4px solid #E60000; box-shadow:0 1px 5px rgba(0,0,0,0.07);">
             <div style="display:flex; align-items:center; gap:6px;">
-                <b style="flex:1; min-width:0; font-size:13px; line-height:1.2; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${p.cliente.nome}</b>
+                <b style="flex:1; min-width:0; font-size:13px; line-height:1.2; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; cursor:pointer;" onclick="abrirNotaDePedido(${p.id})">${p.cliente.nome}</b>
+                <button style="background:${p.nota ? '#F57C00' : '#9E9E9E'}; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:11px !important;" onclick="abrirNotaDePedido(${p.id})" title="Nota">📝</button>
                 <button style="background:orange; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="editarPedido(${p.id})">EDITAR</button>
                 <button style="background:#1a6b8a; color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="imprimirPedidoDireto(${p.id})">IMPRIMIR</button>
                 <button style="background:var(--dm-vermelho); color:white; border:none; padding:6px 7px; border-radius:6px; cursor:pointer; font-size:10px !important; font-weight:700;" onclick="eliminarPedido(${p.id})">APAGAR</button>
                 <b style="color:red; font-size:13px; white-space:nowrap; min-width:58px; text-align:right;">${tp.v.toFixed(2)}€</b>
             </div>
             <div style="font-size:10px; color:#888; font-weight:600; margin-top:1px;">📅 ${formatarDataPedidoComDia(p)}</div>
+            ${p.nota ? `<div style="font-size:11px; color:#B45309; font-weight:700; margin-top:2px; white-space:pre-wrap; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">📝 ${String(p.nota).replace(/</g,'&lt;')}</div>` : ''}
         </div>`;
     });
     document.getElementById('gestao-lista').innerHTML = h;
+}
+
+// ── CAIXA DE NOTA (texto livre; aparece nas listagens, impressões e no tablet de separação) ──
+function mostrarCaixaNota(titulo, subtitulo, textoInicial, aoGuardar) {
+    document.getElementById('modal-nota')?.remove();
+    const ov = document.createElement('div');
+    ov.id = 'modal-nota';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99997;display:flex;align-items:flex-start;justify-content:center;padding:16px;padding-top:12vh;';
+    ov.innerHTML = `<div style="background:#fff;width:100%;max-width:460px;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+        <div style="background:#F57C00;color:#fff;padding:12px 16px;"><div style="font-weight:800;font-size:14px;">📝 ${titulo}</div><div style="font-size:11px;opacity:.9;">${subtitulo || ''}</div></div>
+        <div style="padding:14px;">
+            <textarea id="nota-texto" style="width:100%;height:140px;border:1.5px solid #E0E0E0;border-radius:10px;padding:10px;font-size:15px;line-height:1.5;resize:none;outline:none;" placeholder="Escreve aqui a nota..."></textarea>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+                <button id="nota-cancelar" style="padding:13px;border:none;border-radius:10px;background:#757575;color:#fff;font-weight:700;">CANCELAR</button>
+                <button id="nota-guardar" style="padding:13px;border:none;border-radius:10px;background:#F57C00;color:#fff;font-weight:700;">GUARDAR NOTA</button>
+            </div>
+        </div></div>`;
+    document.body.appendChild(ov);
+    const ta = ov.querySelector('#nota-texto');
+    ta.value = textoInicial || '';
+    setTimeout(() => ta.focus(), 100);
+    ov.querySelector('#nota-cancelar').onclick = () => ov.remove();
+    ov.querySelector('#nota-guardar').onclick = () => { const v = ta.value.trim(); ov.remove(); aoGuardar(v); };
+}
+// Botão NOTAS: com cliente (ou geral) abre a nota do pedido em curso; sem cliente abre a Gestão de Pedidos para escolher a encomenda
+function abrirCaixaNota() {
+    if(GERAL_EDIT_DIA && CLI_ATUAL && CLI_ATUAL.num === 'GERAL') {
+        mostrarCaixaNota('NOTAS DO GERAL', formatarDiaISO(GERAL_EDIT_DIA), NOTA_PEDIDO, v => { NOTA_PEDIDO = v; });
+        return;
+    }
+    if(CLI_ATUAL) {
+        mostrarCaixaNota('NOTA DO PEDIDO', CLI_ATUAL.nome || '', NOTA_PEDIDO, v => {
+            NOTA_PEDIDO = v;
+            alert(v ? '📝 Nota guardada no pedido (grava o pedido para a manter).' : 'Nota removida.');
+        });
+        return;
+    }
+    abrirGestao(true);
+}
+function abrirNotaDePedido(id) {
+    id = parseInt(id);
+    const p = PEDIDOS_DB.find(x => parseInt(x.id) === id);
+    if(!p) return;
+    mostrarCaixaNota('NOTA DA ENCOMENDA', (p.cliente && p.cliente.nome) || '', p.nota || '', v => {
+        p.nota = v;
+        p._enviadoResidual = false; // alterou-se: volta a poder ser enviada
+        dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
+        GESTAO_MODO_NOTA = false;
+        renderGestaoPedidos();
+    });
 }
 
 // Abre o geral no carrinho: mexer aqui NÃO altera as encomendas dos clientes
@@ -3967,6 +4033,7 @@ function abrirGeralNoCarrinho(iso) {
     CART = {};
     Object.entries(g.itens || {}).forEach(([k, v]) => { CART[parseInt(k)] = Object.assign({}, v); });
     document.getElementById('obs-pedido-final').value = g.obs || '';
+    NOTA_PEDIDO = g.notas || '';
     sincronizarObsParaLinhas();
     nav('m3');
     sincronizarBadgesCart();
@@ -3976,7 +4043,7 @@ function guardarGeralEditado() {
     const base = GERAIS_DB[iso] || { uid: uidGeralDia(iso), dia: iso, fontes: [], baseSig: assinaturaDia(iso) };
     const itens = {};
     Object.entries(CART).forEach(([k, v]) => { if((v.q || 0) > 0) itens[parseInt(k)] = Object.assign({}, v); });
-    GERAIS_DB[iso] = Object.assign({}, base, { itens, obs: document.getElementById('obs-pedido-final').value, atualizado: Date.now() });
+    GERAIS_DB[iso] = Object.assign({}, base, { itens, obs: document.getElementById('obs-pedido-final').value, notas: NOTA_PEDIDO || '', atualizado: Date.now() });
     dbSave('DM_GERAIS', GERAIS_DB);
     GESTAO_DIA_GERAL = iso;
     limparTudoPosGravacao('m5');
@@ -4002,7 +4069,7 @@ async function exportarGeralDia() {
         tipo: 'DM_GERAL_DIA', versao: 1,
         uid: g.uid, fontes: g.fontes || [], dia: iso,
         vendedor: vendedor || '', exportadoEm: new Date().toISOString(),
-        itens: g.itens, obs: GESTAO_GERAL_NOTAS ? (g.obs || '') : ''
+        itens: g.itens, obs: GESTAO_GERAL_NOTAS ? (g.obs || '') : '', notas: GESTAO_GERAL_NOTAS ? (g.notas || '') : ''
     };
     const blob = new Blob([JSON.stringify(dados)], { type: 'application/json' });
     renderGestaoPedidos();
@@ -4019,6 +4086,7 @@ function juntarUmGeral(nome, d, iso, perguntarDia) {
     const g = guardarSnapshotGeral(iso);
     somarItensGeral(g.itens, d.itens);
     g.obs = fundirNotas([{ texto: g.obs }, { texto: d.obs }]);
+    g.notas = fundirNotas([{ texto: g.notas }, { texto: d.notas }]);
     g.fontes = Array.from(new Set([...(g.fontes || []), d.uid, ...(d.fontes || [])]));
     g.atualizado = Date.now();
     dbSave('DM_GERAIS', GERAIS_DB);
@@ -4059,7 +4127,7 @@ function imprimirPedidoGeralDia() {
         if(l.cat !== cat) { cat = l.cat; rows += `<tr><td colspan="3" style="background:#eee; font-size:10px; font-weight:bold; padding:3px 6px; text-transform:uppercase;">${cat}</td></tr>`; }
         rows += `<tr><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px;">${l.nome}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:center; font-weight:bold;">${l.q}</td><td style="border:1px solid #ddd; padding:3px 6px; font-size:12px; text-align:right;">${fmtEuro(l.q * l.preco)}</td></tr>`;
     });
-    const notas = (GESTAO_GERAL_NOTAS && g.obs) ? `<div style="margin-top:10px; font-size:12px; white-space:pre-wrap;"><b>NOTAS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : '';
+    const notas = (GESTAO_GERAL_NOTAS && g.obs ? `<div style="margin-top:10px; font-size:12px; white-space:pre-wrap;"><b>OUTROS PRODUTOS</b>\n${g.obs.replace(/</g,'&lt;')}</div>` : '') + (GESTAO_GERAL_NOTAS && g.notas ? `<div style="margin-top:10px; font-size:12px; white-space:pre-wrap;"><b>📝 NOTAS</b>\n${g.notas.replace(/</g,'&lt;')}</div>` : '');
     const html = `<div style="font-family:Arial,sans-serif;">
         <h3 style="margin:0 0 2px;">PEDIDO GERAL DO DIA</h3>
         <div style="font-size:12px; margin-bottom:8px;">${formatarDiaISO(GESTAO_DIA_GERAL)} · ${g.pedidos} encomenda(s)${(g.fontes||[]).length ? ' + ' + g.fontes.length + ' geral(is) importado(s)' : ''}</div>
@@ -4113,6 +4181,7 @@ function editarPedido(id) {
     limparCartUI();
     PEDIDO_EDIT_ID = id;
     GERAL_EDIT_DIA = null;
+    NOTA_PEDIDO = p.nota || '';
     CLI_ATUAL = p.cliente;
     // Garantir que as chaves do CART são números (não strings)
     CART = {};
@@ -4193,7 +4262,7 @@ function imprimirPedidoDireto(id) {
     id = parseInt(id);
     let p = PEDIDOS_DB.find(x => parseInt(x.id) === id);
     if(!p) return;
-    CLI_ATUAL = p.cliente; CART = p.itens;
+    CLI_ATUAL = p.cliente; CART = p.itens; NOTA_PEDIDO = p.nota || '';
     document.getElementById('obs-pedido-final').value = p.obs || "";
     const html = construirTicketCompactoHTML();
     imprimirHTMLIsolado(html);
@@ -4308,11 +4377,10 @@ function gerarHTMLResumo(pedidosFiltrados, titulo) {
         
         // Guardar notas se existirem
         if(p.obs && p.obs.trim() !== '') {
-            notasPedidos.push({
-                cliente: p.cliente.nome,
-                data: p.data,
-                nota: p.obs
-            });
+            notasPedidos.push({ cliente: p.cliente.nome, data: p.data, nota: '<small style="color:#0288d1;"><b>OUTROS PRODUTOS</b></small><br>' + p.obs });
+        }
+        if(p.nota && p.nota.trim() !== '') {
+            notasPedidos.push({ cliente: p.cliente.nome, data: p.data, nota: '<small style="color:#c0392b;"><b>📝 NOTA</b></small><br>' + p.nota.replace(/</g,'&lt;') });
         }
     }); 
     
@@ -4347,7 +4415,7 @@ function gerarHTMLResumo(pedidosFiltrados, titulo) {
     
     // Adicionar seção de notas se existirem
     if(notasPedidos.length > 0) {
-        h += `<div style="background:#0288d1; color:white; padding:10px; margin-top:20px; font-size:16px; font-weight:bold;">📝 NOTAS DOS PEDIDOS</div>`;
+        h += `<div style="background:#0288d1; color:white; padding:10px; margin-top:20px; font-size:16px; font-weight:bold;">📝 NOTAS E OUTROS PRODUTOS</div>`;
         h += `<table width="100%" class="table-doc" style="margin-top:5px;">`;
         h += `<tr style="background:#eee;"><th>CLIENTE</th><th>DATA</th><th>NOTA</th></tr>`;
         
@@ -4446,7 +4514,8 @@ function construirTicketCompactoHTML() {
                 <div style="font-size:22px; font-weight:900; color:#c0392b;">${totalGeral.toFixed(2)} €</div>
             </div>
         </div>
-        ${obs ? `<div style="margin-top:8px; border:1px solid #ccc; padding:8px; font-size:12px; line-height:1.5; border-radius:5px;"><b>NOTAS:</b><br>${obsFormatada}</div>` : ''}
+        ${obs ? `<div style="margin-top:8px; border:1px solid #ccc; padding:8px; font-size:12px; line-height:1.5; border-radius:5px;"><b>OUTROS PRODUTOS:</b><br>${obsFormatada}</div>` : ''}
+        ${(NOTA_PEDIDO || '').trim() ? `<div style="margin-top:8px; border:2px solid #000; padding:8px; font-size:12px; line-height:1.5; border-radius:5px;"><b>📝 NOTA:</b><br>${String(NOTA_PEDIDO).replace(/</g,'&lt;').replace(/\n/g, '<br>')}</div>` : ''}
     </div>`;
 }
 
@@ -4847,7 +4916,7 @@ function irParaCatalogo() {
         html += `
         <div class="cat-page" style="height:auto; page-break-after:auto;">
             <div style="border:1px solid #000; border-radius:6px; padding:10px 14px; margin-top:6px;">
-                <div style="font-size:12px; font-weight:900; letter-spacing:0.5px; margin-bottom:6px; color:#1A1A1A;">📝 NOTAS DO PEDIDO</div>
+                <div style="font-size:12px; font-weight:900; letter-spacing:0.5px; margin-bottom:6px; color:#1A1A1A;">📦 OUTROS PRODUTOS</div>
                 <div style="font-size:12px; line-height:1.6; color:#333;">${obsCatalogoFormatada}</div>
             </div>
         </div>`;
@@ -6196,6 +6265,7 @@ async function exportarEncomendasLeve() {
             data: p.data,
             dataISO: p.dataISO,
             obs: p.obs || '',
+            nota: p.nota || '',
             cliente: p.cliente,
             itens: Object.values(p.itens || {}).map(it => ({
                 id: it.id, ean: it.ean || '', nome: it.nomeCustom || it.nome, cat: it.cat || '',
@@ -6212,10 +6282,10 @@ async function exportarEncomendasLeve() {
         const gerais = diasEnviados.map(iso => {
             const g = geralDoDia(iso);
             const t = totaisGeral(g.itens);
-            if(!t.linhas.length && !g.obs) return null;
+            if(!t.linhas.length && !g.obs && !g.notas) return null;
             return {
                 uid: g.uid || uidGeralDia(iso), dia: iso, vendedor: vendedor || '',
-                fontes: g.fontes || [], obs: g.obs || '',
+                fontes: g.fontes || [], obs: g.obs || '', notas: g.notas || '',
                 itens: t.linhas.map(i => ({ id: i.id, ean: i.ean || '', nome: i.nome, cat: i.cat || '', preco: i.preco || 0, q: i.q, f: i.f || '' }))
             };
         }).filter(Boolean);
