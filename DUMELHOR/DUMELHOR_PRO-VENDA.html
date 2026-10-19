@@ -1397,6 +1397,7 @@ let PEDIDO_EDIT_ID = null;
 let GERAL_DEVICE = '';        // identificador deste tablet (para o geral do dia ter sempre o mesmo id)
 let GERAIS_DB = {};          // gerais do dia guardados (editáveis), por data yyyy-mm-dd
 let NOTA_PEDIDO = '';        // nota (texto livre) do pedido em curso — diferente de "outros produtos"
+let GESTAO_SEL = null;        // Set de ids selecionados na Gestão de Pedidos (null = modo normal)
 let GESTAO_MODO_NOTA = false; // Gestão de Pedidos aberta só para escolher a encomenda a que se escreve a nota
 let GERAL_EDIT_DIA = null;   // dia do geral aberto no carrinho (null = pedido normal)
 let FILTRO_SEGMENTO = null;
@@ -3792,6 +3793,7 @@ function formatarDataPedidoComDia(p) {
 
 function abrirGestao(modoNota) {
     GESTAO_MODO_NOTA = (modoNota === true);
+    GESTAO_SEL = null;
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('overlay');
     if(drawer && drawer.classList.contains('open')) {
@@ -3902,6 +3904,7 @@ function guardarSnapshotGeral(iso) {
 }
 
 function renderGestaoPedidos() {
+    if(GESTAO_SEL) { renderGestaoSelecao(); return; }
     const hoje = new Date();
     const hojeISO = hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0') + '-' + String(hoje.getDate()).padStart(2,'0');
     if(!GESTAO_DIA_GERAL) {
@@ -3915,6 +3918,7 @@ function renderGestaoPedidos() {
 
     const btn = 'border:1px solid rgba(255,255,255,0.45); border-radius:6px; padding:7px 9px; cursor:pointer; font-size:10px !important; font-weight:700; color:white; white-space:nowrap;';
     let h = GESTAO_MODO_NOTA ? `<div style="background:#FFB300; color:#222; border-radius:10px; padding:10px 12px; margin-bottom:10px; font-weight:800; font-size:13px; display:flex; align-items:center; gap:8px;"><span style="flex:1;">📝 Escolhe a encomenda para escrever a nota (toca no nome ou no 📝)</span><button style="border:none; background:#222; color:#fff; border-radius:6px; padding:6px 10px; font-size:11px !important; font-weight:700;" onclick="GESTAO_MODO_NOTA=false; renderGestaoPedidos();">CANCELAR</button></div>` : '';
+    if(PEDIDOS_DB.length) h += `<button style="width:100%; border:none; border-radius:10px; padding:11px; margin-bottom:10px; background:#B71C1C; color:#fff; font-weight:800; font-size:13px !important; cursor:pointer;" onclick="gestaoSelecaoToggle()">☑️ SELECIONAR / APAGAR VÁRIAS ENCOMENDAS</button>`;
     h += `<div style="background:#0B3D91; color:#fff; border-radius:10px; padding:10px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
             <div style="font-size:12px; font-weight:900; letter-spacing:0.6px;">📦 PEDIDO GERAL DO DIA</div>
@@ -3971,6 +3975,68 @@ function renderGestaoPedidos() {
         </div>`;
     });
     document.getElementById('gestao-lista').innerHTML = h;
+}
+
+// ── SELECIONAR E APAGAR VÁRIAS ENCOMENDAS ──
+function gestaoSelecaoToggle() { GESTAO_SEL = GESTAO_SEL ? null : new Set(); renderGestaoPedidos(); }
+function gestaoSel(id) { id = parseInt(id); if(GESTAO_SEL.has(id)) GESTAO_SEL.delete(id); else GESTAO_SEL.add(id); renderGestaoPedidos(); }
+function gestaoSelTudo() { PEDIDOS_DB.forEach(p => GESTAO_SEL.add(p.id)); renderGestaoPedidos(); }
+function gestaoSelNenhum() { GESTAO_SEL.clear(); renderGestaoPedidos(); }
+function gestaoSelEnviadas() { PEDIDOS_DB.forEach(p => { if(p._enviadoResidual) GESTAO_SEL.add(p.id); }); renderGestaoPedidos(); }
+function gestaoSelDia(iso) { if(!iso) return; PEDIDOS_DB.forEach(p => { if(isoDataPedido(p) === iso) GESTAO_SEL.add(p.id); }); renderGestaoPedidos(); }
+
+function renderGestaoSelecao() {
+    const sel = GESTAO_SEL;
+    let somaV = 0; PEDIDOS_DB.forEach(p => { if(sel.has(p.id)) somaV += totaisPedido(p).v; });
+    const b = 'border:none; border-radius:6px; padding:8px 10px; font-size:11px !important; font-weight:700; color:#fff; cursor:pointer; white-space:nowrap; background:rgba(255,255,255,0.22);';
+    let h = `<div style="position:sticky; top:calc(50px + env(safe-area-inset-top, 0px)); z-index:20; background:#B71C1C; color:#fff; border-radius:10px; padding:10px; margin-bottom:8px; box-shadow:0 3px 10px rgba(0,0,0,0.3);">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <b style="flex:1; font-size:13px;">☑️ ${sel.size} de ${PEDIDOS_DB.length} selecionada(s) · ${fmtEuro(somaV)}</b>
+            <button style="${b} background:rgba(0,0,0,0.35);" onclick="gestaoSelecaoToggle()">CANCELAR</button>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; align-items:center;">
+            <button style="${b}" onclick="gestaoSelTudo()">TODAS</button>
+            <button style="${b}" onclick="gestaoSelNenhum()">NENHUMA</button>
+            <button style="${b}" onclick="gestaoSelEnviadas()">JÁ ENVIADAS</button>
+            <span style="font-size:11px; font-weight:700; margin-left:4px;">DIA:</span>
+            <input type="date" onchange="gestaoSelDia(this.value)" style="padding:5px 6px; border:none; border-radius:6px; font-size:12px; font-weight:700; color:#B71C1C; background:#fff;">
+        </div>
+        <button ${sel.size ? '' : 'disabled'} style="width:100%; margin-top:8px; padding:12px; border:none; border-radius:8px; font-weight:900; font-size:13px !important; background:${sel.size ? '#fff' : 'rgba(255,255,255,0.3)'}; color:#B71C1C; cursor:pointer;" onclick="gestaoApagarSel()">🗑️ APAGAR ${sel.size} SELECIONADA(S)</button>
+    </div>`;
+    PEDIDOS_DB.forEach(p => {
+        const on = sel.has(p.id);
+        const tp = totaisPedido(p);
+        h += `<div onclick="gestaoSel(${p.id})" style="background:${on ? '#FFEBEE' : 'rgba(255,255,255,0.97)'}; padding:9px 10px; margin-bottom:6px; border-radius:8px; border-left:4px solid ${on ? '#B71C1C' : '#E60000'}; box-shadow:0 1px 5px rgba(0,0,0,0.07); display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <div style="flex-shrink:0; width:24px; height:24px; border-radius:6px; border:2px solid ${on ? '#B71C1C' : '#bbb'}; background:${on ? '#B71C1C' : '#fff'}; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px;">${on ? '✓' : ''}</div>
+            <div style="flex:1; min-width:0;">
+                <b style="font-size:13px; line-height:1.2; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.cliente.nome}</b>
+                <div style="font-size:10px; color:#888; font-weight:600;">📅 ${formatarDataPedidoComDia(p)}${p._enviadoResidual ? ' · ✅ enviada' : ''}</div>
+            </div>
+            <b style="color:red; font-size:13px; white-space:nowrap;">${tp.v.toFixed(2)}€</b>
+        </div>`;
+    });
+    document.getElementById('gestao-lista').innerHTML = h;
+}
+function gestaoApagarSel() {
+    const ids = [...GESTAO_SEL];
+    if(!ids.length) return;
+    let v = 0; PEDIDOS_DB.forEach(p => { if(GESTAO_SEL.has(p.id)) v += totaisPedido(p).v; });
+    if(!confirm('Apagar ' + ids.length + ' encomenda(s) (' + fmtEuro(v) + ')?\n\nEsta ação não se pode desfazer.')) return;
+    const manterCardex = confirm('Manter os produtos destas encomendas no cardex dos clientes?\n\nOK = Manter como favoritos\nCANCELAR = Não manter');
+    if(manterCardex) {
+        PEDIDOS_DB.filter(p => GESTAO_SEL.has(p.id)).forEach(p => {
+            const num = p.cliente.num;
+            if(!CARDEX_CLIENTES[num]) CARDEX_CLIENTES[num] = [];
+            Object.keys(p.itens || {}).forEach(k => { const pid = parseInt(k); if(!CARDEX_CLIENTES[num].includes(pid)) CARDEX_CLIENTES[num].push(pid); });
+        });
+        dbSave('DM_CARDEX_CLIENTES', CARDEX_CLIENTES);
+    }
+    PEDIDOS_DB = PEDIDOS_DB.filter(p => !GESTAO_SEL.has(p.id));
+    dbSave('DM_PEDIDOS_V11', PEDIDOS_DB);
+    contarPedidosDoDia();
+    GESTAO_SEL = null;
+    renderGestaoPedidos();
+    alert('🗑️ ' + ids.length + ' encomenda(s) eliminada(s).');
 }
 
 // ── CAIXA DE NOTA (texto livre; aparece nas listagens, impressões e no tablet de separação) ──
