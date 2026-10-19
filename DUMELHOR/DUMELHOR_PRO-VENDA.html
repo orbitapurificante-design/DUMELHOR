@@ -4139,7 +4139,13 @@ async function exportarGeralDia() {
     };
     const blob = new Blob([JSON.stringify(dados)], { type: 'application/json' });
     renderGestaoPedidos();
-    await _descarregarComToque(blob, 'GERAL-DUMELHOR-' + iso + (vendedor ? '-' + String(vendedor).replace(/[^\w]+/g, '_') : '') + '.json', 'Geral exportado');
+    try {
+        await _descarregarComToque(blob, 'GERAL-DUMELHOR-' + iso + (vendedor ? '-' + String(vendedor).replace(/[^\w]+/g, '_') : '') + '.json', 'Geral exportado');
+    } catch(e) {
+        if(!(e && e.cancelado)) alert('❌ Erro ao exportar o geral: ' + (e && e.message));
+    } finally {
+        _fecharOverlayDownload(); // antes ficava a mensagem "Geral exportado" no ecrã
+    }
 }
 // Junta UM geral importado (objeto já lido do ficheiro) ao geral do dia `iso`. Devolve a linha de resumo.
 function juntarUmGeral(nome, d, iso, perguntarDia) {
@@ -5790,6 +5796,7 @@ function _overlayDownload() {
         '<div id="odp-status" style="font-size:12.5px;color:#666;margin-bottom:16px;line-height:1.5;">A converter fotos…</div>' +
         '<button id="odp-botao-partilhar" style="display:none;width:100%;padding:13px;border:none;border-radius:10px;background:#1A73E8;color:#fff;font-weight:800;font-size:13px;cursor:pointer;margin-bottom:8px;">📤 Partilhar (Bluetooth / Nearby Share)</button>' +
         '<button id="odp-botao" style="display:none;width:100%;padding:13px;border:none;border-radius:10px;background:#E60000;color:#fff;font-weight:800;font-size:13px;cursor:pointer;">📥 Descarregar</button>' +
+        '<button id="odp-fechar" style="display:none;width:100%;padding:12px;border:none;border-radius:10px;background:#757575;color:#fff;font-weight:800;font-size:13px;cursor:pointer;margin-top:8px;">✕ FECHAR</button>' +
         '</div>';
     document.body.appendChild(overlay);
     return overlay;
@@ -5807,6 +5814,7 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
     const elStatus = overlay.querySelector('#odp-status');
     const elBotao = overlay.querySelector('#odp-botao');
     const elBotaoPartilhar = overlay.querySelector('#odp-botao-partilhar');
+    const elFechar = overlay.querySelector('#odp-fechar');
 
     elTitulo.textContent = '📁 Ficheiro pronto';
     elStatus.textContent = nomeFicheiro + '  (' + (blob.size/1024/1024).toFixed(1) + ' MB)\nToca num dos botões abaixo.';
@@ -5851,13 +5859,22 @@ async function _descarregarComToque(blob, nomeFicheiro, tituloDepoisDoClique) {
     }
     elDiag.textContent = podePartilhar ? '' : ('ℹ️ Partilhar não disponível: ' + motivoSemPartilha + '. Usa Descarregar.');
 
-    await new Promise((resolve) => {
+    await new Promise((resolve, reject) => {
         let resolvido = false;
+        // FECHAR: cancela esta exportação e tira o ecrã de cima (antes não havia forma de sair)
+        elFechar.style.display = 'block';
+        elFechar.onclick = () => {
+            if(resolvido) return;
+            resolvido = true;
+            _fecharOverlayDownload();
+            const e = new Error('Exportação cancelada'); e.cancelado = true; reject(e);
+        };
         const concluir = () => {
             if(resolvido) return;
             resolvido = true;
             elBotao.style.display = 'none';
             elBotaoPartilhar.style.display = 'none';
+            elFechar.style.display = 'none';
             elDiag.textContent = '';
             elTitulo.textContent = tituloDepoisDoClique || 'A preparar…';
             elStatus.textContent = 'Um momento…';
@@ -6022,6 +6039,7 @@ async function exportarBackup() {
     } catch(e) {
         console.error('❌ Erro ao exportar backup:', e);
         _fecharOverlayDownload();
+        if(e && e.cancelado) return;
         alert('❌ Erro ao exportar: ' + e.message + '\n\nAbre a consola do navegador para mais detalhes.\n\nSe o separador tiver fechado/recarregado sozinho sem esta mensagem aparecer, foi provavelmente falta de memória do tablet.');
     }
 }
@@ -6067,6 +6085,7 @@ async function exportarBackupFotos() {
     } catch(e) {
         console.error('❌ Erro ao exportar fotos:', e);
         _fecharOverlayDownload();
+        if(e && e.cancelado) return;
         alert('❌ Erro ao exportar fotos: ' + e.message);
     }
 }
