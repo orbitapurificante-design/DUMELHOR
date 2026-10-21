@@ -1,7 +1,7 @@
 {
-  "id": "dumelhor-pro-venda-2",
-  "name": "DUMELHOR PRO VENDA",
-  "short_name": "DUMELHOR",
+  "id": "venda-dumelhor-v3",
+  "name": "DUMELHOR VENDA",
+  "short_name": "DM VENDA",
   "description": "Aplicação de vendas DUMELHOR PRO VENDA: pedidos, clientes, pagamentos e plano de visitas.",
   "lang": "pt-PT",
   "start_url": "./index.html",
