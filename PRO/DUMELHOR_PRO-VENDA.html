@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="theme-color" content="#E60000">
-    <meta name="theme-color" content="#E60000" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#E60000" media="(prefers-color-scheme: dark)">
     <link rel="manifest" href="./manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,7 +47,7 @@
         
         * { box-sizing: border-box; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        html { scroll-padding-top: 70px; background: var(--bg-light); }
+        html { scroll-padding-top: 70px; background: #E60000; }
         /* Pinta a faixa por baixo da barra de estado do Android (hora/bateria) quando a app
            é aberta a partir do ícone (instalada / standalone) — em separador normal do Chrome
            quem trata disso é o theme-color acima. */
@@ -65,7 +63,7 @@
             height: env(safe-area-inset-bottom, 0px); background: var(--primary);
             z-index: 3100; pointer-events: none;
         }
-        body { font-family: 'Montserrat', 'DM Sans', sans-serif; margin: 0; background: var(--bg-light); color: var(--text-main); -webkit-tap-highlight-color: transparent; font-size: 14px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { min-height: 100vh; min-height: 100dvh; font-family: 'Montserrat', 'DM Sans', sans-serif; margin: 0; background: var(--bg-light); color: var(--text-main); -webkit-tap-highlight-color: transparent; font-size: 14px; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         /* Android mobile optimizations */
         input, button, select, textarea { font-family: 'Montserrat', sans-serif; font-size: 13px !important; }
         input[type="text"], input[type="number"], input[type="search"] { min-height: 34px; }
