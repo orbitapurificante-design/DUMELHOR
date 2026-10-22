@@ -6610,21 +6610,27 @@ async function ghPut(own, rep, branch, path, base64, msg, token) {
     const H = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
     const ck = own + '/' + rep + ':' + path;
     let sha = PUB[ck] && PUB[ck].sha;
+    let ultimo = '';
     for(let t = 1; t <= 5; t++) {
         const r = await fetch(url, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H),
             body: JSON.stringify(Object.assign({ message: msg, content: base64, branch }, sha ? { sha } : {})) });
         if(r.ok) { const d = await r.json(); return d.content && d.content.sha; }
+        const e = await r.json().catch(() => ({}));
+        const m = String(e.message || '');
+        ultimo = 'GitHub (' + r.status + '): ' + m;
+        if(r.status === 401) throw new Error('A chave do GitHub não é válida ou expirou. Usa LIGAR GITHUB para colar uma chave nova.\n(' + m + ')');
+        if(r.status === 403 && /not accessible|permission|forbidden/i.test(m) && !/rate limit/i.test(m))
+            throw new Error('A chave do GitHub não tem permissão para escrever no repositório ' + own + '/' + rep + '.\nNo GitHub: Settings → Developer settings → Fine-grained tokens → a tua chave → Repository access: junta o repositório "' + rep + '" e põe Contents: Read and write.\n(' + m + ')');
+        if(r.status === 404) throw new Error('O GitHub diz que ' + own + '/' + rep + ' (ramo ' + branch + ') não foi encontrado — ou a chave não tem acesso a esse repositório.\n(' + m + ')');
         if(r.status === 409 || r.status === 422) {
             const g = await fetch(url + '?ref=' + branch, { headers: H });
             sha = g.ok ? (await g.json()).sha : undefined;
-            if(t >= 3 && !sha) { const e = await r.json().catch(() => ({})); throw new Error('GitHub (' + r.status + '): ' + (e.message || path)); }
             continue;
         }
-        if(r.status === 403 || r.status === 429) { await sleep(6000 * t); continue; }
-        const e = await r.json().catch(() => ({}));
-        throw new Error('GitHub (' + r.status + '): ' + (e.message || path));
+        if(r.status === 403 || r.status === 429) { await sleep(8000 * t); continue; }
+        throw new Error(ultimo);
     }
-    throw new Error('GitHub: demasiadas tentativas em ' + path);
+    throw new Error('Falhou ' + path + ' depois de várias tentativas.\n' + ultimo);
 }
 async function enviarFicheiro(own, rep, branch, path, conteudo, sig, token, msg) {
     const ck = own + '/' + rep + ':' + path;
