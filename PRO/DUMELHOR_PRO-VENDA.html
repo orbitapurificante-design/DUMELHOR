@@ -836,6 +836,10 @@
             <div class="icon-emoji">🔗</div>
             <div class="icon-text" style="background:#24292e; color:white; font-size:7px;">LIGAR<br>GITHUB</div>
         </button>
+        <button class="menu-btn-icon" onclick="abrirLojaAdmin(); toggleMenu()">
+            <div class="icon-emoji">🛒</div>
+            <div class="icon-text" style="background:#0B3D91; color:white; font-size:7px;">LOJA<br>ONLINE</div>
+        </button>
     </div>
     
     <!-- INPUTS DE ARQUIVO movidos para o final do body -->
@@ -2775,7 +2779,16 @@ document.getElementById('f-excel').onchange = e => {
     const reader = new FileReader(); 
     reader.onload = ev => { 
         const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'}); 
-        DADOS = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""}).slice(1).map((r,i) => ({ 
+        const _rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
+        const _cab = (_rows[0]||[]).map(c => String(c||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''));
+        const _ix = (...nomes) => { for(const n of nomes){ const k=_cab.indexOf(n); if(k>=0) return k; } return -1; };
+        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos');
+        const _sim = v => { const t=String(v==null?'':v).trim().toLowerCase(); return t!=='' && !['0','nao','não','n','no','false','-'].includes(t); };
+        DADOS = _rows.slice(1).map((r,i) => ({ 
+            marca: _cMarca>=0 ? String(r[_cMarca]||'').trim() : '',
+            sub: _cSub>=0 ? String(r[_cSub]||'').trim() : '',
+            promo: _cPromo>=0 && _sim(r[_cPromo]),
+            novo: _cNovo>=0 && _sim(r[_cNovo]),
             id: i, 
             ean: String(r[0]||"").trim(),
             cat: String(r[8]||"GERAL").toUpperCase(), 
@@ -2792,7 +2805,7 @@ document.getElementById('f-excel').onchange = e => {
         dbSave('DM_PRODUTOS_AUTO', DADOS); 
         LOJA_RENDERIZADA = false;
         renderLoja();
-        alert("Excel carregado! " + DADOS.length + " produtos.");
+        alert("Excel carregado! " + DADOS.length + " produtos." + (_cMarca>=0||_cSub>=0||_cPromo>=0||_cNovo>=0 ? "\n\nLoja online: MARCA " + DADOS.filter(p=>p.marca).length + " · SUBFAMILIA " + DADOS.filter(p=>p.sub).length + " · PROMO " + DADOS.filter(p=>p.promo).length + " · NOVIDADE " + DADOS.filter(p=>p.novo).length : ""));
         e.target.value = '';
     }; 
     reader.readAsArrayBuffer(e.target.files[0]); 
@@ -6508,6 +6521,419 @@ document.getElementById('f-backup').onchange = e => {
     e.target.value = '';
 };
 
+
+</script>
+<script>
+/* ===================== LOJA ONLINE — ADMIN (gestão + publicar) ===================== */
+(function(){
+'use strict';
+const CFG_KEY = 'DM_LOJA_CFG', PUB_KEY = 'DM_LOJA_PUB';
+let CFG = null, PUB = null, A_PUBLICAR = false;
+
+const el = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const novoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+async function carregarCfg() {
+    if(CFG) return CFG;
+    const c = await dbGet(CFG_KEY);
+    CFG = Object.assign({ nome: 'DUMELHOR', whatsapp: '', repo: 'orbitapurificante-design/loja', branch: 'main', marcas: [], banners: [] }, c || {});
+    PUB = (await dbGet(PUB_KEY)) || {};
+    return CFG;
+}
+function guardarCfg() { dbSave(CFG_KEY, CFG); }
+function guardarPub() { dbSave(PUB_KEY, PUB); }
+
+// ── fotos (blobs) guardadas no mesmo IndexedDB das outras fotos ──
+function idbGetFoto(key) {
+    return new Promise(res => {
+        try {
+            const r = db.transaction('fotos', 'readonly').objectStore('fotos').get(key);
+            r.onsuccess = () => res(r.result || null);
+            r.onerror = () => res(null);
+        } catch(e) { res(null); }
+    });
+}
+function idbPutFoto(key, blob) {
+    return new Promise((res, rej) => {
+        const tx = db.transaction('fotos', 'readwrite');
+        tx.objectStore('fotos').put(blob, key);
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+    });
+}
+function idbDelFoto(key) {
+    return new Promise(res => {
+        try {
+            const tx = db.transaction('fotos', 'readwrite');
+            tx.objectStore('fotos').delete(key);
+            tx.oncomplete = () => res(); tx.onerror = () => res();
+        } catch(e) { res(); }
+    });
+}
+function previewUrl(key) { return IMGS.get(key) || ''; }
+async function guardarFotoLoja(key, blob) {
+    await idbPutFoto(key, blob);
+    const velho = IMGS.get(key); if(velho) { try { URL.revokeObjectURL(velho); } catch(e) {} }
+    IMGS.set(key, URL.createObjectURL(blob));
+}
+
+// ── imagens ──
+const blobParaDataURL = b => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(b); });
+async function reduzir(blob, max, tipo, q) {
+    const bmp = await createImageBitmap(blob);
+    const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * k)), h = Math.max(1, Math.round(bmp.height * k));
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const cx = cv.getContext('2d');
+    if(tipo === 'image/jpeg') { cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); }
+    cx.drawImage(bmp, 0, 0, w, h);
+    if(bmp.close) bmp.close();
+    return await new Promise(r => cv.toBlob(r, tipo, q));
+}
+async function dataURLde(blob, max, q) {
+    const tipo = blob.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    const r = await reduzir(blob, max, tipo, q);
+    return await blobParaDataURL(r || blob);
+}
+function hashTxt(s) { // FNV-1a simples, para saber se um ficheiro mudou
+    let h = 2166136261;
+    for(let i = 0; i < s.length; i += 7) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(36) + ':' + s.length;
+}
+
+// ── GitHub ──
+async function ghPut(own, rep, branch, path, base64, msg, token) {
+    const url = `https://api.github.com/repos/${own}/${rep}/contents/${path}`;
+    const H = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+    const ck = own + '/' + rep + ':' + path;
+    let sha = PUB[ck] && PUB[ck].sha;
+    for(let t = 1; t <= 5; t++) {
+        const r = await fetch(url, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H),
+            body: JSON.stringify(Object.assign({ message: msg, content: base64, branch }, sha ? { sha } : {})) });
+        if(r.ok) { const d = await r.json(); return d.content && d.content.sha; }
+        if(r.status === 409 || r.status === 422) {
+            const g = await fetch(url + '?ref=' + branch, { headers: H });
+            sha = g.ok ? (await g.json()).sha : undefined;
+            if(t >= 3 && !sha) { const e = await r.json().catch(() => ({})); throw new Error('GitHub (' + r.status + '): ' + (e.message || path)); }
+            continue;
+        }
+        if(r.status === 403 || r.status === 429) { await sleep(6000 * t); continue; }
+        const e = await r.json().catch(() => ({}));
+        throw new Error('GitHub (' + r.status + '): ' + (e.message || path));
+    }
+    throw new Error('GitHub: demasiadas tentativas em ' + path);
+}
+async function enviarFicheiro(own, rep, branch, path, conteudo, sig, token, msg) {
+    const ck = own + '/' + rep + ':' + path;
+    if(PUB[ck] && PUB[ck].sig === sig) return false; // já está igual no GitHub
+    const blob = conteudo instanceof Blob ? conteudo : new Blob([conteudo], { type: 'text/plain' });
+    const b64 = (await blobParaDataURL(blob)).split(',')[1] || '';
+    const sha = await ghPut(own, rep, branch, path, b64, msg || ('Loja — ' + path), token);
+    PUB[ck] = { sig, sha };
+    guardarPub();
+    return true;
+}
+
+// ── produtos para a loja ──
+function marcaDoProduto(p, marcas) {
+    if(p.marca) return String(p.marca).trim();
+    const nome = norm(p.nome);
+    let melhor = '';
+    marcas.forEach(m => { const mn = norm(m.nome); if(mn && nome.startsWith(mn) && mn.length > norm(melhor).length) melhor = m.nome; });
+    return melhor;
+}
+function chaveFoto(p) {
+    const f = String(p.f || '').trim().toLowerCase();
+    if(!f) return '';
+    for(const k of [f, f + '.jpg', f + '.png', f + '.jpeg']) if(IMGS.has(k)) return k;
+    return '';
+}
+
+// ── interface ──
+function css() {
+    if(el('lj-css')) return;
+    const s = document.createElement('style'); s.id = 'lj-css';
+    s.textContent = `
+    #lj-admin{position:fixed;inset:0;z-index:99990;background:#f3f3f3;overflow-y:auto;font-family:'Montserrat',sans-serif;color:#222;}
+    #lj-admin .lj-top{position:sticky;top:0;background:#E60000;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:2;}
+    #lj-admin .lj-top b{flex:1;font-size:15px;letter-spacing:.5px}
+    #lj-admin .lj-x{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-weight:800;cursor:pointer}
+    #lj-admin .lj-box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+    #lj-admin h3{margin:0 0 4px;font-size:13px;letter-spacing:.8px;color:#B30000}
+    #lj-admin p.lj-h{margin:0 0 10px;font-size:11.5px;color:#666;line-height:1.45}
+    #lj-admin label{display:block;font-size:10.5px;font-weight:800;color:#555;margin:8px 0 3px;letter-spacing:.5px}
+    #lj-admin input[type=text],#lj-admin input[type=tel]{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:14px !important;box-sizing:border-box}
+    #lj-admin .lj-btn{border:none;border-radius:9px;padding:11px 14px;font-weight:800;font-size:12.5px !important;cursor:pointer;background:#E60000;color:#fff}
+    #lj-admin .lj-btn.sec{background:#555}
+    #lj-admin .lj-btn.pub{background:#00A651;width:100%;padding:15px;font-size:14px !important}
+    #lj-admin .lj-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee}
+    #lj-admin .lj-row img,#lj-admin .lj-row .lj-ph{width:46px;height:46px;object-fit:contain;border:1px solid #ddd;border-radius:8px;background:#fafafa;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+    #lj-admin .lj-row .lj-n{flex:1;font-size:13px;font-weight:700;word-break:break-word}
+    #lj-admin .lj-mini{border:1px solid #ccc;background:#fff;border-radius:7px;padding:7px 9px;font-size:13px !important;cursor:pointer}
+    #lj-admin .lj-add{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+    #lj-prog{margin-top:10px;font-size:12.5px;line-height:1.5;color:#333;white-space:pre-wrap}
+    #lj-bar{height:8px;background:#ddd;border-radius:6px;overflow:hidden;margin-top:8px;display:none}
+    #lj-bar>div{height:100%;width:0;background:#00A651;transition:width .2s}
+    `;
+    document.head.appendChild(s);
+}
+
+function contagens() {
+    const d = (typeof DADOS !== 'undefined' && DADOS) ? DADOS : [];
+    return {
+        total: d.length,
+        marca: d.filter(p => p.marca).length,
+        sub: d.filter(p => p.sub).length,
+        promo: d.filter(p => p.promo).length,
+        novo: d.filter(p => p.novo).length,
+        foto: d.filter(p => chaveFoto(p)).length
+    };
+}
+
+function render() {
+    css();
+    let o = el('lj-admin');
+    if(!o) { o = document.createElement('div'); o.id = 'lj-admin'; document.body.appendChild(o); }
+    const c = contagens();
+    const marcasHtml = CFG.marcas.length ? CFG.marcas.map((m, i) => {
+        const u = previewUrl('lojamarca_' + m.id);
+        return `<div class="lj-row">${u ? `<img src="${u}">` : '<div class="lj-ph">🏷️</div>'}
+            <div class="lj-n">${esc(m.nome)}</div>
+            <button class="lj-mini" onclick="lojaMover('marcas',${i},-1)">▲</button>
+            <button class="lj-mini" onclick="lojaMover('marcas',${i},1)">▼</button>
+            <button class="lj-mini" onclick="lojaRenomearMarca(${i})">✏️</button>
+            <button class="lj-mini" onclick="lojaTrocarFotoMarca(${i})">📷</button>
+            <button class="lj-mini" style="color:#c00" onclick="lojaApagar('marcas',${i})">✕</button></div>`;
+    }).join('') : '<p class="lj-h">Ainda sem marcas.</p>';
+    const bannersHtml = CFG.banners.length ? CFG.banners.map((b, i) => {
+        const u = b.tipo === 'img' ? previewUrl('lojabanner_' + b.id) : '';
+        return `<div class="lj-row">${u ? `<img src="${u}">` : '<div class="lj-ph">🎬</div>'}
+            <div class="lj-n">${b.tipo === 'video' ? 'Vídeo' : 'Foto'} — ${esc(b.nome || '')}</div>
+            <button class="lj-mini" onclick="lojaMover('banners',${i},-1)">▲</button>
+            <button class="lj-mini" onclick="lojaMover('banners',${i},1)">▼</button>
+            <button class="lj-mini" style="color:#c00" onclick="lojaApagar('banners',${i})">✕</button></div>`;
+    }).join('') : '<p class="lj-h">Ainda sem painéis.</p>';
+    const logoUrl = previewUrl('lojalogo') || IMGS.get('dumelhor.png') || IMGS.get('dumelhor.jpg') || IMGS.get('logo.png') || '';
+
+    // mantém o texto escrito se o ecrã for redesenhado
+    const prog = el('lj-prog') ? el('lj-prog').textContent : '';
+    o.innerHTML = `
+    <div class="lj-top"><b>🛒 LOJA ONLINE</b><button class="lj-x" onclick="lojaFechar()">✕ FECHAR</button></div>
+
+    <div class="lj-box"><h3>DADOS DA LOJA</h3>
+      <label>NOME DA LOJA</label><input type="text" id="lj-nome" value="${esc(CFG.nome)}" onchange="lojaCampo('nome',this.value)">
+      <label>WHATSAPP DA LOJA (com indicativo, só números. Ex.: 351912345678)</label><input type="tel" id="lj-wa" value="${esc(CFG.whatsapp)}" onchange="lojaCampo('whatsapp',this.value)">
+      <label>REPOSITÓRIO DA LOJA NO GITHUB (dono/nome)</label><input type="text" id="lj-repo" value="${esc(CFG.repo)}" onchange="lojaCampo('repo',this.value)">
+      <label>LOGÓTIPO DA LOJA</label>
+      <div class="lj-row" style="border:none">${logoUrl ? `<img src="${logoUrl}">` : '<div class="lj-ph">🖼️</div>'}
+        <div class="lj-n" style="font-weight:600;font-size:11.5px;color:#666">Se não escolheres, uso a foto <b>dumelhor</b> / <b>logo</b> que já tens.</div>
+        <button class="lj-btn sec" onclick="el_lj('lj-f-logo').click()">ESCOLHER</button></div>
+      <input type="file" id="lj-f-logo" accept="image/*" style="display:none" onchange="lojaLogo(this)">
+    </div>
+
+    <div class="lj-box"><h3>MARCAS (menu ☰ da loja)</h3>
+      <p class="lj-h">Cada marca = nome + foto. Ao tocar na marca, a loja mostra só os produtos cuja coluna <b>MARCA</b> do Excel tenha esse nome.</p>
+      ${marcasHtml}
+      <div class="lj-add">
+        <input type="text" id="lj-m-nome" placeholder="Nome da marca" style="flex:1;min-width:140px">
+        <input type="file" id="lj-m-foto" accept="image/*" style="max-width:150px;font-size:11px">
+        <button class="lj-btn" onclick="lojaAddMarca()">+ ADICIONAR</button>
+      </div>
+      <div style="margin-top:10px"><button class="lj-btn sec" onclick="lojaImportarMarcas()">⤓ IMPORTAR AS MARCAS QUE JÁ TENHO NA APP</button></div>
+    </div>
+
+    <div class="lj-box"><h3>PAINÉIS (fotos / mini vídeos que deslizam)</h3>
+      <p class="lj-h">Aparecem entre o nome da loja e os filtros. Vídeos: MP4 pequeno (até 15 MB).</p>
+      ${bannersHtml}
+      <div class="lj-add"><input type="file" id="lj-f-banner" accept="image/*,video/mp4" multiple style="flex:1;font-size:11px">
+        <button class="lj-btn" onclick="lojaAddBanners()">+ ADICIONAR</button></div>
+    </div>
+
+    <div class="lj-box"><h3>PRODUTOS (vêm do Excel)</h3>
+      <p class="lj-h">${c.total} produtos · ${c.foto} com foto · ${c.marca} com MARCA · ${c.sub} com SUBFAMILIA · ${c.promo} em PROMO · ${c.novo} em NOVIDADE.<br>
+      Se estes números estiverem a zero, volta a carregar o <b>EXCEL</b> (com as colunas <b>MARCA, SUBFAMILIA, PROMO, NOVIDADE</b> na primeira linha).</p>
+      <button class="lj-btn pub" id="lj-btn-pub" onclick="lojaPublicar()">🚀 PUBLICAR LOJA</button>
+      <div id="lj-bar"><div id="lj-b"></div></div>
+      <div id="lj-prog">${esc(prog)}</div>
+    </div>
+    <div style="height:40px"></div>`;
+}
+
+window.el_lj = id => document.getElementById(id);
+window.abrirLojaAdmin = async function() { await carregarCfg(); render(); };
+window.lojaFechar = function() { if(A_PUBLICAR && !confirm('A publicação está em curso. Fechar mesmo assim?')) return; const o = el('lj-admin'); if(o) o.remove(); };
+window.lojaCampo = function(k, v) {
+    v = String(v || '').trim();
+    if(k === 'whatsapp') v = v.replace(/\D/g, '');
+    if(k === 'repo') v = v.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
+    CFG[k] = v; guardarCfg();
+};
+window.lojaLogo = async function(inp) {
+    const f = inp.files && inp.files[0]; if(!f) return;
+    await guardarFotoLoja('lojalogo', f); render();
+};
+window.lojaAddMarca = async function() {
+    const nome = (el('lj-m-nome').value || '').trim();
+    const f = el('lj-m-foto').files[0];
+    if(!nome) return alert('Escreve o nome da marca.');
+    if(!f) return alert('Escolhe a foto da marca.');
+    const id = novoId();
+    await guardarFotoLoja('lojamarca_' + id, f);
+    CFG.marcas.push({ id, nome }); guardarCfg(); render();
+};
+window.lojaRenomearMarca = function(i) {
+    const n = prompt('Nome da marca (tem de ser igual ao que está na coluna MARCA do Excel):', CFG.marcas[i].nome);
+    if(n === null || !n.trim()) return;
+    CFG.marcas[i].nome = n.trim(); guardarCfg(); render();
+};
+window.lojaTrocarFotoMarca = function(i) {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = async () => { if(inp.files[0]) { await guardarFotoLoja('lojamarca_' + CFG.marcas[i].id, inp.files[0]); render(); } };
+    inp.click();
+};
+window.lojaApagar = async function(lista, i) {
+    const it = CFG[lista][i];
+    if(!confirm('Apagar "' + (it.nome || '') + '"?')) return;
+    await idbDelFoto((lista === 'marcas' ? 'lojamarca_' : 'lojabanner_') + it.id);
+    CFG[lista].splice(i, 1); guardarCfg(); render();
+};
+window.lojaMover = function(lista, i, d) {
+    const j = i + d; if(j < 0 || j >= CFG[lista].length) return;
+    const t = CFG[lista][i]; CFG[lista][i] = CFG[lista][j]; CFG[lista][j] = t; guardarCfg(); render();
+};
+window.lojaImportarMarcas = async function() {
+    let n = 0;
+    for(const m of (typeof MARCAS_CONFIG !== 'undefined' ? MARCAS_CONFIG : [])) {
+        if(CFG.marcas.some(x => norm(x.nome) === norm(m))) continue;
+        const k = m.toLowerCase();
+        let blob = null;
+        for(const c of [k + '.png', k + '.jpg']) { blob = await idbGetFoto(c); if(blob) break; }
+        if(!blob) continue;
+        const id = novoId() + n;
+        await guardarFotoLoja('lojamarca_' + id, blob);
+        CFG.marcas.push({ id, nome: m }); n++;
+    }
+    guardarCfg(); render();
+    alert(n ? n + ' marca(s) importada(s). Confirma os nomes (têm de ser iguais à coluna MARCA do Excel).' : 'Não encontrei marcas novas com foto.');
+};
+window.lojaAddBanners = async function() {
+    const fs = Array.from(el('lj-f-banner').files || []);
+    if(!fs.length) return alert('Escolhe uma ou mais fotos / vídeos.');
+    for(const f of fs) {
+        const video = /^video\//.test(f.type);
+        if(video && f.size > 15 * 1024 * 1024) { alert('"' + f.name + '" tem ' + (f.size / 1048576).toFixed(1) + ' MB. Usa um vídeo até 15 MB.'); continue; }
+        const id = novoId();
+        await guardarFotoLoja('lojabanner_' + id, f);
+        CFG.banners.push({ id, tipo: video ? 'video' : 'img', nome: f.name });
+    }
+    guardarCfg(); render();
+};
+
+function prog(txt, pct) {
+    const p = el('lj-prog'); if(p) p.textContent = txt;
+    const b = el('lj-bar'), bb = el('lj-b');
+    if(b && pct != null) { b.style.display = 'block'; bb.style.width = Math.max(0, Math.min(100, pct)) + '%'; }
+}
+
+window.lojaPublicar = async function() {
+    if(A_PUBLICAR) return;
+    const token = await dbGet('DM_GH_TOKEN');
+    if(!token) return alert('Falta a chave do GitHub. Usa primeiro o botão LIGAR GITHUB no menu.');
+    const mRepo = String(CFG.repo || '').match(/^([\w.-]+)\/([\w.-]+)$/);
+    if(!mRepo) return alert('Repositório inválido. Escreve no formato dono/nome (ex.: orbitapurificante-design/loja).');
+    const own = mRepo[1], rep = mRepo[2], branch = CFG.branch || 'main';
+    if(!DADOS || !DADOS.length) return alert('Não há produtos. Carrega primeiro o EXCEL.');
+
+    A_PUBLICAR = true;
+    const btn = el('lj-btn-pub'); if(btn) { btn.disabled = true; btn.style.opacity = '.6'; }
+    let enviados = 0, saltados = 0;
+    try {
+        prog('A verificar o repositório…', 2);
+        const rr = await fetch(`https://api.github.com/repos/${own}/${rep}`, { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' } });
+        if(rr.status === 404) throw new Error('O repositório ' + own + '/' + rep + ' não existe, ou a chave do GitHub não tem acesso a ele.\nCria o repositório e dá-lhe permissão (Contents: Read and write) na chave.');
+        if(!rr.ok) throw new Error('GitHub (' + rr.status + ') ao verificar o repositório.');
+
+        // ---- produtos + fotos em pacotes ----
+        const marcasCfg = CFG.marcas;
+        const lista = DADOS.map(p => ({ p, marca: marcaDoProduto(p, marcasCfg), key: chaveFoto(p) }));
+        const ordenados = lista.slice().sort((a, b) => (norm(a.marca) || norm(a.p.cat)).localeCompare(norm(b.marca) || norm(b.p.cat)) || String(a.p.nome).localeCompare(String(b.p.nome)));
+        const pacotes = []; let atual = [], grupoAtual = null;
+        ordenados.forEach(x => {
+            if(!x.key) return;
+            const g = norm(x.marca) || norm(x.p.cat);
+            if(atual.length >= 50 || (atual.length >= 30 && g !== grupoAtual)) { pacotes.push(atual); atual = []; }
+            atual.push(x); grupoAtual = g;
+        });
+        if(atual.length) pacotes.push(atual);
+        const pacoteDe = new Map();
+        pacotes.forEach((pk, i) => pk.forEach(x => pacoteDe.set(x.p.id, i)));
+
+        for(let i = 0; i < pacotes.length; i++) {
+            prog('Fotos dos produtos: pacote ' + (i + 1) + ' de ' + pacotes.length + '…\n(enviados ' + enviados + ', iguais ' + saltados + ')', 5 + (i / Math.max(1, pacotes.length)) * 70);
+            const obj = {};
+            for(const x of pacotes[i]) {
+                const b = await idbGetFoto(x.key); if(!b) continue;
+                try { obj[x.p.id] = await dataURLde(b, 420, 0.66); } catch(e) { /* foto ilegível: ignora */ }
+            }
+            const txt = JSON.stringify(obj);
+            const ok = await enviarFicheiro(own, rep, branch, 'fotos/f' + i + '.json', txt, hashTxt(txt), token, 'Loja — fotos ' + (i + 1) + '/' + pacotes.length);
+            if(ok) enviados++; else saltados++;
+        }
+
+        // ---- produtos ----
+        prog('A enviar a lista de produtos…', 78);
+        const subs = [...new Set(DADOS.map(p => String(p.sub || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+        const prodObj = {
+            subs,
+            p: lista.map(x => ({
+                i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
+                pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
+            }))
+        };
+        const ptxt = JSON.stringify(prodObj);
+        if(await enviarFicheiro(own, rep, branch, 'produtos.json', ptxt, hashTxt(ptxt), token, 'Loja — produtos')) enviados++; else saltados++;
+
+        // ---- vídeos dos painéis ----
+        const banners = [];
+        for(let i = 0; i < CFG.banners.length; i++) {
+            const b = CFG.banners[i];
+            prog('A preparar os painéis (' + (i + 1) + '/' + CFG.banners.length + ')…', 84);
+            const blob = await idbGetFoto('lojabanner_' + b.id); if(!blob) continue;
+            if(b.tipo === 'video') {
+                const path = 'banners/' + b.id + '.mp4';
+                if(await enviarFicheiro(own, rep, branch, path, blob, 'v' + blob.size, token, 'Loja — vídeo')) enviados++; else saltados++;
+                banners.push({ t: 'video', s: path });
+            } else {
+                banners.push({ t: 'img', s: await dataURLde(blob, 1100, 0.72) });
+            }
+        }
+
+        // ---- configuração (nome, logo, marcas, painéis) ----
+        prog('A enviar a configuração da loja…', 92);
+        let logo = '';
+        const lb = (await idbGetFoto('lojalogo')) || (await idbGetFoto('dumelhor.png')) || (await idbGetFoto('dumelhor.jpg')) || (await idbGetFoto('logo.png')) || (await idbGetFoto('logo.jpg'));
+        if(lb) logo = await dataURLde(lb, 300, 0.85);
+        const marcasOut = [];
+        for(const m of marcasCfg) {
+            const mb = await idbGetFoto('lojamarca_' + m.id);
+            marcasOut.push({ n: m.nome, img: mb ? await dataURLde(mb, 240, 0.8) : '' });
+        }
+        const cfgObj = { nome: CFG.nome || 'DUMELHOR', wa: CFG.whatsapp || '', logo, marcas: marcasOut, banners, atualizado: new Date().toISOString() };
+        const ctxt = JSON.stringify(cfgObj);
+        await enviarFicheiro(own, rep, branch, 'loja.json', ctxt, 'cfg' + Date.now(), token, 'Loja — configuração'); enviados++;
+
+        prog('✅ Loja publicada!\n' + enviados + ' ficheiro(s) enviados, ' + saltados + ' já estavam iguais.\n\nEndereço: https://' + own + '.github.io/' + rep + '/\n(Pode demorar 1–2 minutos a aparecer.)', 100);
+    } catch(e) {
+        prog('❌ ' + (e && e.message ? e.message : e), null);
+    } finally {
+        A_PUBLICAR = false;
+        const b2 = el('lj-btn-pub'); if(b2) { b2.disabled = false; b2.style.opacity = '1'; }
+    }
+};
+})();
 
 </script>
 </body>
