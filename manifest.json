@@ -1,25 +1,43 @@
 {
-  "id": "dumelhor-encomendas",
-  "name": "DUMELHOR Encomendas",
-  "short_name": "DUMELHOR",
-  "description": "Loja de encomendas DUMELHOR",
-  "start_url": "./index.html",
+  "id": "venda-dumelhor-fs",
+  "name": "DUMELHOR VENDA",
+  "short_name": "DM VENDA",
+  "description": "Aplicação de vendas DUMELHOR PRO VENDA: pedidos, clientes, pagamentos e plano de visitas.",
+  "lang": "pt-PT",
+  "start_url": "./DUMELHOR_PRO-VENDA.html",
   "scope": "./",
-  "display": "standalone",
-  "background_color": "#FFFFFF",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#E60000",
   "theme_color": "#E60000",
-  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
+  ],
+  "display_override": [
+    "fullscreen",
+    "standalone"
   ]
 }
