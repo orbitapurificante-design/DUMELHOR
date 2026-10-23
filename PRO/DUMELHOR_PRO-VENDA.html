@@ -6913,7 +6913,7 @@ window.lojaPublicar = async function() {
                 if(await enviarFicheiro(own, rep, branch, path, blob, 'v' + blob.size, token, 'Loja — vídeo')) enviados++; else saltados++;
                 banners.push({ t: 'video', s: path });
             } else {
-                banners.push({ t: 'img', s: await dataURLde(blob, 1100, 0.72) });
+                banners.push({ t: 'img', s: await dataURLde(blob, 1800, 0.72) });
             }
         }
 
