@@ -2782,13 +2782,14 @@ document.getElementById('f-excel').onchange = e => {
         const _rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
         const _cab = (_rows[0]||[]).map(c => String(c||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''));
         const _ix = (...nomes) => { for(const n of nomes){ const k=_cab.indexOf(n); if(k>=0) return k; } return -1; };
-        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos');
+        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos'), _cEsg=_ix('esgotado','esgotados','esgotada');
         const _sim = v => { const t=String(v==null?'':v).trim().toLowerCase(); return t!=='' && !['0','nao','não','n','no','false','-'].includes(t); };
         DADOS = _rows.slice(1).map((r,i) => ({ 
             marca: _cMarca>=0 ? String(r[_cMarca]||'').trim() : '',
             sub: _cSub>=0 ? String(r[_cSub]||'').trim() : '',
             promo: _cPromo>=0 && _sim(r[_cPromo]),
             novo: _cNovo>=0 && _sim(r[_cNovo]),
+            esg: _cEsg>=0 && _sim(r[_cEsg]),
             id: i, 
             ean: String(r[0]||"").trim(),
             cat: String(r[8]||"GERAL").toUpperCase(), 
@@ -2805,7 +2806,7 @@ document.getElementById('f-excel').onchange = e => {
         dbSave('DM_PRODUTOS_AUTO', DADOS); 
         LOJA_RENDERIZADA = false;
         renderLoja();
-        alert("Excel carregado! " + DADOS.length + " produtos." + (_cMarca>=0||_cSub>=0||_cPromo>=0||_cNovo>=0 ? "\n\nLoja online: MARCA " + DADOS.filter(p=>p.marca).length + " · SUBFAMILIA " + DADOS.filter(p=>p.sub).length + " · PROMO " + DADOS.filter(p=>p.promo).length + " · NOVIDADE " + DADOS.filter(p=>p.novo).length : ""));
+        alert("Excel carregado! " + DADOS.length + " produtos." + (_cMarca>=0||_cSub>=0||_cPromo>=0||_cNovo>=0||_cEsg>=0 ? "\n\nLoja online: MARCA " + DADOS.filter(p=>p.marca).length + " · SUBFAMILIA " + DADOS.filter(p=>p.sub).length + " · PROMO " + DADOS.filter(p=>p.promo).length + " · NOVIDADE " + DADOS.filter(p=>p.novo).length + " · ESGOTADO " + DADOS.filter(p=>p.esg).length : ""));
         e.target.value = '';
     }; 
     reader.readAsArrayBuffer(e.target.files[0]); 
@@ -6695,6 +6696,7 @@ function contagens() {
         sub: d.filter(p => p.sub).length,
         promo: d.filter(p => p.promo).length,
         novo: d.filter(p => p.novo).length,
+        esg: d.filter(p => p.esg).length,
         foto: d.filter(p => chaveFoto(p)).length
     };
 }
@@ -6759,8 +6761,8 @@ function render() {
     </div>
 
     <div class="lj-box"><h3>PRODUTOS (vêm do Excel)</h3>
-      <p class="lj-h">${c.total} produtos · ${c.foto} com foto · ${c.marca} com MARCA · ${c.sub} com SUBFAMILIA · ${c.promo} em PROMO · ${c.novo} em NOVIDADE.<br>
-      Se estes números estiverem a zero, volta a carregar o <b>EXCEL</b> (com as colunas <b>MARCA, SUBFAMILIA, PROMO, NOVIDADE</b> na primeira linha).</p>
+      <p class="lj-h">${c.total} produtos · ${c.foto} com foto · ${c.marca} com MARCA · ${c.sub} com SUBFAMILIA · ${c.promo} em PROMO · ${c.novo} em NOVIDADE · ${c.esg} ESGOTADO.<br>
+      Se estes números estiverem a zero, volta a carregar o <b>EXCEL</b> (com as colunas <b>MARCA, SUBFAMILIA, PROMO, NOVIDADE, ESGOTADO</b> na primeira linha).</p>
       <button class="lj-btn pub" id="lj-btn-pub" onclick="lojaPublicar()">🚀 PUBLICAR LOJA</button>
       <div id="lj-bar"><div id="lj-b"></div></div>
       <div id="lj-prog">${esc(prog)}</div>
@@ -6896,7 +6898,7 @@ window.lojaPublicar = async function() {
             subs,
             p: lista.map(x => ({
                 i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
-                pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
+                pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
             }))
         };
         const ptxt = JSON.stringify(prodObj);
