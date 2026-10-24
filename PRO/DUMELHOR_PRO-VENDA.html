@@ -2782,7 +2782,8 @@ document.getElementById('f-excel').onchange = e => {
         const _rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
         const _cab = (_rows[0]||[]).map(c => String(c||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''));
         const _ix = (...nomes) => { for(const n of nomes){ const k=_cab.indexOf(n); if(k>=0) return k; } return -1; };
-        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos'), _cEsg=_ix('esgotado','esgotados','esgotada');
+        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos'), _cEsg=_ix('esgotado','esgotados','esgotada'), _cGer=_ix('geral');
+        const _iN=_cGer>=0?_cGer:13;
         const _sim = v => { const t=String(v==null?'':v).trim().toLowerCase(); return t!=='' && !['0','nao','não','n','no','false','-'].includes(t); };
         DADOS = _rows.slice(1).map((r,i) => ({ 
             marca: _cMarca>=0 ? String(r[_cMarca]||'').trim() : '',
@@ -2800,13 +2801,18 @@ document.getElementById('f-excel').onchange = e => {
             foto: String(r[11]||"").trim(),
             colL: String(r[11]||"").trim().toLowerCase(),
             colM: String(r[12]||"").trim().toLowerCase(),
-            colN: String(r[13]||"").trim().toLowerCase(),
+            colN: String(r[_iN]||"").trim().toLowerCase(),
             unidades: parseInt(r[7]) || 1 
         })).filter(p => p.nome).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome)); 
+        // coluna GERAL: só carrega GERAL e LOJA (em branco = não carrega). Se a coluna estiver toda vazia, carrega tudo.
+        const _totalExcel = DADOS.length, _temCol = DADOS.some(p => p.colN);
+        if(_temCol) DADOS = DADOS.filter(p => p.colN.includes('geral') || p.colN.includes('loja'));
+        DADOS.forEach((p,i) => p.id = i);
+        const _nLoja = DADOS.filter(p => p.colN.includes('loja')).length;
         dbSave('DM_PRODUTOS_AUTO', DADOS); 
         LOJA_RENDERIZADA = false;
         renderLoja();
-        alert("Excel carregado! " + DADOS.length + " produtos." + (_cMarca>=0||_cSub>=0||_cPromo>=0||_cNovo>=0||_cEsg>=0 ? "\n\nLoja online: MARCA " + DADOS.filter(p=>p.marca).length + " · SUBFAMILIA " + DADOS.filter(p=>p.sub).length + " · PROMO " + DADOS.filter(p=>p.promo).length + " · NOVIDADE " + DADOS.filter(p=>p.novo).length + " · ESGOTADO " + DADOS.filter(p=>p.esg).length : ""));
+        alert("Excel carregado! " + DADOS.length + " produtos" + (_temCol ? " (GERAL + LOJA; " + (_totalExcel - DADOS.length) + " em branco ignorados) · " + _nLoja + " marcados LOJA" : " (coluna GERAL vazia: carreguei tudo)") + "." + (_cMarca>=0||_cSub>=0||_cPromo>=0||_cNovo>=0||_cEsg>=0 ? "\n\nLoja online: MARCA " + DADOS.filter(p=>p.marca).length + " · SUBFAMILIA " + DADOS.filter(p=>p.sub).length + " · PROMO " + DADOS.filter(p=>p.promo).length + " · NOVIDADE " + DADOS.filter(p=>p.novo).length + " · ESGOTADO " + DADOS.filter(p=>p.esg).length : ""));
         e.target.value = '';
     }; 
     reader.readAsArrayBuffer(e.target.files[0]); 
@@ -6893,16 +6899,19 @@ window.lojaPublicar = async function() {
 
         // ---- produtos ----
         prog('A enviar a lista de produtos…', 78);
-        const subs = [...new Set(DADOS.map(p => String(p.sub || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-        const prodObj = {
-            subs,
-            p: lista.map(x => ({
-                i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
-                pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
-            }))
-        };
-        const ptxt = JSON.stringify(prodObj);
+        const mapaP = x => ({
+            i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
+            pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
+        });
+        const subsDe = arr => [...new Set(arr.map(x => String(x.p.sub || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+        const soLoja = lista.filter(x => String(x.p.colN || '').includes('loja'));
+        // loja pública: só os produtos marcados LOJA na coluna GERAL
+        const ptxt = JSON.stringify({ subs: subsDe(soLoja), p: soLoja.map(mapaP) });
         if(await enviarFicheiro(own, rep, branch, 'produtos.json', ptxt, hashTxt(ptxt), token, 'Loja — produtos')) enviados++; else saltados++;
+        // vendedores (index_vendas): GERAL + LOJA
+        prog('A enviar a lista dos vendedores…', 80);
+        const vtxt = JSON.stringify({ subs: subsDe(lista), p: lista.map(mapaP) });
+        if(await enviarFicheiro(own, rep, branch, 'produtos_vendas.json', vtxt, hashTxt(vtxt), token, 'Loja — produtos vendedores')) enviados++; else saltados++;
 
         // ---- vídeos dos painéis ----
         const banners = [];
