@@ -491,23 +491,33 @@ async function sincronizarGithub(mostrarFeedback){
     if(!resp.ok) throw new Error('Erro ao ligar ao GitHub (' + resp.status + ')');
     const arquivos = await resp.json();
 
-    let totalNovas = 0, totalFotos = 0;
-    for(const f of arquivos){
-      if(f.type !== 'file' || !f.name.toLowerCase().endsWith('.json')) continue;
+    let totalNovas = 0, totalFotos = 0, lidos = 0;
+    const falhas = [];
+    const jsonFiles = arquivos.filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.json'));
+    for(const f of jsonFiles){
       try{
-        const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
-        if(!rawResp.ok) continue;
-        const dados = await rawResp.json();
+        let dados = null, motivo = '';
+        // 1) endereço direto (raw); 2) se falhar, o mesmo ficheiro pela API do GitHub
+        try{
+          const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
+          if(rawResp.ok) dados = await rawResp.json(); else motivo = 'raw ' + rawResp.status;
+        }catch(e1){ motivo = 'raw: ' + e1.message; }
+        if(!dados){
+          const apiResp = await fetch(f.url, { cache: 'no-store', headers: { 'Accept': 'application/vnd.github.raw+json' } });
+          if(!apiResp.ok) throw new Error(motivo + ' / api ' + apiResp.status);
+          dados = JSON.parse(await apiResp.text());
+        }
         const res = await importarPacote(dados, false); // todas as datas enviadas pelo vendedor
+        lidos++;
         totalNovas += res.novas;
         totalFotos += res.fotos;
-      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
+      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); falhas.push(f.name + ': ' + erroFicheiro.message); }
     }
 
     renderLista();
     atualizarBotaoEncomendas();
     if(status) status.textContent = '✅ Sincronizado agora mesmo';
-    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📁 ' + jsonFiles.length + ' ficheiro(s) no GitHub, ' + lidos + ' lido(s)\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)' + (falhas.length ? '\n\n⚠️ Erros:\n' + falhas.join('\n') : ''));
   }catch(e){
     console.error(e);
     if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
