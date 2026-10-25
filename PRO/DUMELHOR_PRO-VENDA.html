@@ -2782,7 +2782,9 @@ document.getElementById('f-excel').onchange = e => {
         const _rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
         const _cab = (_rows[0]||[]).map(c => String(c||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''));
         const _ix = (...nomes) => { for(const n of nomes){ const k=_cab.indexOf(n); if(k>=0) return k; } return -1; };
-        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos'), _cEsg=_ix('esgotado','esgotados','esgotada'), _cGer=_ix('geral');
+        const _cMarca=_ix('marca'), _cSub=_ix('subfamilia','subfamilias','subcategoria'), _cPromo=_ix('promo','promocao','promocoes'), _cNovo=_ix('novidade','novidades','novo','novos'), _cEsg=_ix('esgotado','esgotados','esgotada'), _cGer=_ix('geral'), _cGrupo=_ix('grupo','grupos');
+        const _col = (fb, ...nomes) => { const k=_ix(...nomes); return k>=0 ? k : fb; };
+        const _iEan=_col(0,'codigobarras','ean','codigo'), _iNome=_col(2,'nome','descricao'), _iPreco=_col(3,'preco','pvp'), _iCusto=_col(4,'precocusto','custo'), _iFam=_col(8,'familia','familias'), _iVap=_col(7,'vap');
         const _iN=_cGer>=0?_cGer:13;
         const _sim = v => { const t=String(v==null?'':v).trim().toLowerCase(); return t!=='' && !['0','nao','não','n','no','false','-'].includes(t); };
         DADOS = _rows.slice(1).map((r,i) => ({ 
@@ -2792,17 +2794,18 @@ document.getElementById('f-excel').onchange = e => {
             novo: _cNovo>=0 && _sim(r[_cNovo]),
             esg: _cEsg>=0 && _sim(r[_cEsg]),
             id: i, 
-            ean: String(r[0]||"").trim(),
-            cat: String(r[8]||"GERAL").toUpperCase(), 
-            nome: r[2], 
-            preco: parseFloat(String(r[3]).replace(',','.'))||0,
-            precoCusto: parseFloat(String(r[4]).replace(',','.'))||0,
+            grupo: _cGrupo>=0 ? String(r[_cGrupo]||'').trim().toUpperCase() : '',
+            ean: String(r[_iEan]||"").trim(),
+            cat: String(r[_iFam]||"GERAL").toUpperCase(), 
+            nome: r[_iNome], 
+            preco: parseFloat(String(r[_iPreco]).replace(',','.'))||0,
+            precoCusto: parseFloat(String(r[_iCusto]).replace(',','.'))||0,
             f: String(r[10]||"").trim(), 
             foto: String(r[11]||"").trim(),
             colL: String(r[11]||"").trim().toLowerCase(),
             colM: String(r[12]||"").trim().toLowerCase(),
             colN: String(r[_iN]||"").trim().toLowerCase(),
-            unidades: parseInt(r[7]) || 1 
+            unidades: parseInt(r[_iVap]) || 1 
         })).filter(p => p.nome).sort((a,b) => a.cat.localeCompare(b.cat) || a.nome.localeCompare(b.nome)); 
         // coluna GERAL: só carrega GERAL e LOJA (em branco = não carrega). Se a coluna estiver toda vazia, carrega tudo.
         const _totalExcel = DADOS.length, _temCol = DADOS.some(p => p.colN);
@@ -6901,7 +6904,7 @@ window.lojaPublicar = async function() {
         prog('A enviar a lista de produtos…', 78);
         const mapaP = x => ({
             i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
-            pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
+            g: x.p.grupo || '', pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
         });
         const subsDe = arr => [...new Set(arr.map(x => String(x.p.sub || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
         const soLoja = lista.filter(x => String(x.p.colN || '').includes('loja'));
