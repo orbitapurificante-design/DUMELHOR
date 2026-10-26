@@ -296,7 +296,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .lst-head .r b{font-size:13px;color:#111;}
 .lst-cols{flex:1;display:flex;gap:6mm;min-height:0;}
 .lst-col{flex:1;min-width:0;}
-.lst-fam{height:5.4mm;line-height:5.4mm;background:#1A1A1A;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:0 2mm;overflow:hidden;white-space:nowrap;}
+.lst-fam{height:5.4mm;line-height:5.4mm;background:#dcdcdc;color:#000;font-size:12.5px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;padding:0 2mm;overflow:hidden;white-space:nowrap;border-top:1px solid #000;border-bottom:1px solid #000;}
 .lst-lin{height:5.4mm;display:flex;align-items:center;margin-left:4mm;border-bottom:1px solid #ddd;font-size:10px;overflow:hidden;white-space:nowrap;}
 .lst-lin .q{width:9mm;text-align:center;font-weight:900;flex-shrink:0;}
 .lst-lin .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;padding:0 1.5mm;}
@@ -1330,10 +1330,10 @@ function imprimirListagemEncomenda(){
   const paginas = [];
   for(let i = 0; i < colunas.length; i += 2) paginas.push([colunas[i], colunas[i+1] || []]);
 
-  const htmlCol = c => (c.length ? `<div class="lst-lin cab"><span class="q">QNT</span><span class="n">Nome do produto</span><span class="v">Preço</span></div>` : '') +
+  const htmlCol = c => (c.length ? `<div class="lst-lin cab"><span class="q">QNT</span><span class="n">Nome do produto</span><span class="v">Preço un.</span></div>` : '') +
     c.map(l => l.tipo === 'fam'
       ? `<div class="lst-fam">${esc(l.cat)}${l.cont ? ' (cont.)' : ''}</div>`
-      : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(l.it.q*(Number(l.it.preco)||0))}</span></div>`
+      : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(Number(l.it.preco)||0)}</span></div>`
     ).join('');
 
   const html = paginas.map((pg, i) => {
