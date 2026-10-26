@@ -283,6 +283,27 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
   body.print-resumo #print-area{display:block !important;position:absolute;top:0;left:0;width:100%;padding:10px;}
 }
 #print-area{display:none;}
+@page{size:A4;margin:8mm;}
+@media print{
+  body.print-listagem #print-area{padding:0 !important;}
+}
+.lst-page{width:100%;height:281mm;display:flex;flex-direction:column;page-break-after:always;break-after:page;overflow:hidden;font-family:Arial,sans-serif;color:#111;}
+.lst-page:last-child{page-break-after:avoid;break-after:avoid;}
+.lst-head{height:14mm;flex-shrink:0;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #E60000;padding-bottom:1.5mm;margin-bottom:2mm;}
+.lst-head .l1{font-size:15px;font-weight:900;}
+.lst-head .l2{font-size:10px;color:#444;margin-top:1px;}
+.lst-head .r{text-align:right;font-size:10px;color:#444;}
+.lst-head .r b{font-size:13px;color:#111;}
+.lst-cols{flex:1;display:flex;gap:6mm;min-height:0;}
+.lst-col{flex:1;min-width:0;}
+.lst-fam{height:5.4mm;line-height:5.4mm;background:#1A1A1A;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:0 2mm;overflow:hidden;white-space:nowrap;}
+.lst-lin{height:5.4mm;display:flex;align-items:center;margin-left:4mm;border-bottom:1px solid #ddd;font-size:10px;overflow:hidden;white-space:nowrap;}
+.lst-lin .q{width:9mm;text-align:center;font-weight:900;flex-shrink:0;}
+.lst-lin .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;padding:0 1.5mm;}
+.lst-lin .v{width:17mm;text-align:right;font-weight:700;flex-shrink:0;}
+.lst-lin.cab{background:#eee;font-weight:800;font-size:8.5px;text-transform:uppercase;border-bottom:1px solid #bbb;}
+.lst-foot{height:9mm;flex-shrink:0;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#555;border-top:1px solid #ccc;margin-top:1mm;}
+.lst-foot .tot{font-size:14px;font-weight:900;color:#111;}
 </style>
 </head>
 <body>
@@ -302,7 +323,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
     <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/MARINHA-APP/index.html','_blank')">
       <img src="./promocoes.jpg" alt="Promoções" onerror="this.style.display='none'">
     </button>
-    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/DUMELHOR/PRO/DUMELHOR_PRO-VENDA.html','_blank')">
+    <button class="m1-mini-btn" onclick="window.open('https://orbitapurificante-design.github.io/DUMELHOR/DUMELHOR/DUMELHOR_PRO-VENDA.html','_blank')">
       <img src="./logo.png" alt="Pro-Venda" onerror="this.style.display='none'">
     </button>
   </div>
@@ -393,69 +414,15 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         <span>RESUMO</span>
     </button>
+    <button class="bbar-btn" onclick="imprimirListagemEncomenda()" title="Imprimir listagem da encomenda por família">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span>LISTAGEM</span>
+    </button>
 </div>
 
 <div id="print-area"></div>
 
 <script>
-/* Armazenamento deste tablet: IndexedDB (sem o limite de ~5 MB do localStorage, que é partilhado por todo o site)
-   com os mesmos métodos getItem/setItem/removeItem. Na primeira abertura migra os dados antigos do localStorage. */
-(function(){
-  const KV = {}; let DB = null, falhou = false;
-  const LSX = window.LSX = {
-    getItem(k){ if(k in KV) return KV[k]; try{ return localStorage.getItem(k); }catch(e){ return null; } },
-    setItem(k,v){
-      v = String(v); KV[k] = v;
-      if(DB){
-        try{ const tx = DB.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.onerror = tx.onabort = () => erro(); }catch(e){ erro(); }
-      }else{ try{ localStorage.setItem(k,v); }catch(e){ erro(); } }
-    },
-    removeItem(k){
-      delete KV[k];
-      if(DB){ try{ DB.transaction('kv','readwrite').objectStore('kv').delete(k); }catch(e){} }
-      try{ localStorage.removeItem(k); }catch(e){}
-    }
-  };
-  function erro(){ if(falhou) return; falhou = true; alert('⚠️ Não consegui guardar no tablet (memória cheia). Liberta espaço no tablet e tenta de novo.'); }
-  function arranca(){
-    const el = document.getElementById('appcode'), sc = document.createElement('script');
-    sc.textContent = el.textContent; document.body.appendChild(sc);
-  }
-  function carrega(){
-    return new Promise(res => {
-      try{
-        const r = indexedDB.open('DM_RESIDUAL_KV',1);
-        r.onupgradeneeded = () => r.result.createObjectStore('kv');
-        r.onerror = () => res();
-        r.onsuccess = () => {
-          DB = r.result;
-          try{
-            const tx = DB.transaction('kv','readonly'), st = tx.objectStore('kv'), ks = st.getAllKeys(), vs = st.getAll();
-            tx.oncomplete = () => { ks.result.forEach((k,i) => { KV[k] = vs.result[i]; }); res(); };
-            tx.onerror = () => res();
-          }catch(e){ res(); }
-        };
-      }catch(e){ res(); }
-    });
-  }
-  function migra(){
-    // passa as chaves DM_RESIDUAL* do localStorage para o IndexedDB e liberta o espaço
-    if(!DB) return Promise.resolve();
-    let ks = []; try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && k.indexOf('DM_RESIDUAL') === 0) ks.push(k); } }catch(e){ return Promise.resolve(); }
-    const vazio = v => v == null || v === '' || v === '[]' || v === '{}' || v === 'null';
-    const pend = ks.filter(k => !(k in KV) || vazio(KV[k]));
-    return new Promise(res => {
-      if(!pend.length){ ks.forEach(k => { try{ localStorage.removeItem(k); }catch(e){} }); return res(); }
-      const tx = DB.transaction('kv','readwrite'), st = tx.objectStore('kv');
-      pend.forEach(k => { const v = localStorage.getItem(k); if(v != null){ st.put(v,k); KV[k] = v; } });
-      tx.oncomplete = () => { ks.forEach(k => { try{ localStorage.removeItem(k); }catch(e){} }); res(); };
-      tx.onerror = tx.onabort = () => res();
-    });
-  }
-  carrega().then(migra).then(arranca, arranca);
-})();
-</script>
-<script type="text/plain" id="appcode">
 /* =========================================================
    FOTOS (IndexedDB próprio deste tablet — mais leve que localStorage)
    ========================================================= */
@@ -509,8 +476,8 @@ const LS_PEDIDOS = 'DM_RESIDUAL_PEDIDOS';
 const LS_SEP = id => 'DM_RESIDUAL_SEP_' + id;
 const LS_NOTAS = id => 'DM_RESIDUAL_NOTAS_' + id;
 
-function getPedidos(){ try{ return JSON.parse(LSX.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
-function savePedidos(lista){ LSX.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
+function getPedidos(){ try{ return JSON.parse(localStorage.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
+function savePedidos(lista){ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
 
 function chaveOrdenacao(p){
   const porId = Number(p.id);
@@ -549,33 +516,23 @@ async function sincronizarGithub(mostrarFeedback){
     if(!resp.ok) throw new Error('Erro ao ligar ao GitHub (' + resp.status + ')');
     const arquivos = await resp.json();
 
-    let totalNovas = 0, totalFotos = 0, lidos = 0;
-    const falhas = [];
-    const jsonFiles = arquivos.filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.json'));
-    for(const f of jsonFiles){
+    let totalNovas = 0, totalFotos = 0;
+    for(const f of arquivos){
+      if(f.type !== 'file' || !f.name.toLowerCase().endsWith('.json')) continue;
       try{
-        let dados = null, motivo = '';
-        // 1) endereço direto (raw); 2) se falhar, o mesmo ficheiro pela API do GitHub
-        try{
-          const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
-          if(rawResp.ok) dados = await rawResp.json(); else motivo = 'raw ' + rawResp.status;
-        }catch(e1){ motivo = 'raw: ' + e1.message; }
-        if(!dados){
-          const apiResp = await fetch(f.url, { cache: 'no-store', headers: { 'Accept': 'application/vnd.github.raw+json' } });
-          if(!apiResp.ok) throw new Error(motivo + ' / api ' + apiResp.status);
-          dados = JSON.parse(await apiResp.text());
-        }
+        const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
+        if(!rawResp.ok) continue;
+        const dados = await rawResp.json();
         const res = await importarPacote(dados, false); // todas as datas enviadas pelo vendedor
-        lidos++;
         totalNovas += res.novas;
         totalFotos += res.fotos;
-      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); falhas.push(f.name + ': ' + erroFicheiro.message); }
+      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
     }
 
     renderLista();
     atualizarBotaoEncomendas();
     if(status) status.textContent = '✅ Sincronizado agora mesmo';
-    if(mostrarFeedback) alert('🔄 Sincronizado.\n📁 ' + jsonFiles.length + ' ficheiro(s) no GitHub, ' + lidos + ' lido(s)\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)' + (falhas.length ? '\n\n⚠️ Erros:\n' + falhas.join('\n') : ''));
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
   }catch(e){
     console.error(e);
     if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
@@ -695,8 +652,8 @@ async function importarPacote(dados, apenasHoje){
    GERAL DO DIA — recebido dos vendedores; vários gerais do mesmo dia somam-se
    ========================================================= */
 const LS_GERAIS = 'DM_RESIDUAL_GERAIS'; // { 'yyyy-mm-dd': { uid: {uid, dia, vendedor, itens:[], obs, fontes:[]} } }
-function getGerais(){ try{ return JSON.parse(LSX.getItem(LS_GERAIS)) || {}; }catch(e){ return {}; } }
-function saveGerais(o){ LSX.setItem(LS_GERAIS, JSON.stringify(o)); }
+function getGerais(){ try{ return JSON.parse(localStorage.getItem(LS_GERAIS)) || {}; }catch(e){ return {}; } }
+function saveGerais(o){ localStorage.setItem(LS_GERAIS, JSON.stringify(o)); }
 
 // Cada origem (tablet/vendedor) tem o seu id. Reenviar a mesma origem ATUALIZA; origens diferentes SOMAM.
 function adicionarGeralRecebido(g){
@@ -765,7 +722,7 @@ function linhasNotasPedido(p){
    M2 — LISTA DE ENCOMENDAS
    ========================================================= */
 function estadoGeralEncomenda(pedido){
-  const sep = JSON.parse(LSX.getItem(LS_SEP(pedido.id)) || '{"status":{}}');
+  const sep = JSON.parse(localStorage.getItem(LS_SEP(pedido.id)) || '{"status":{}}');
   const vals = Object.values(sep.status || {});
   if(!vals.length) return null;
   if(vals.includes('vermelho')) return 'vermelho';
@@ -845,7 +802,7 @@ function apagarSelecionadas(){
   if(!confirm('Remover ' + SELECIONADOS.size + ' encomenda(s) selecionada(s) do tablet de separação?')) return;
   const idsRemover = new Set(SELECIONADOS);
   savePedidos(getPedidos().filter(p => !idsRemover.has(p.id)));
-  idsRemover.forEach(id => LSX.removeItem(LS_SEP(id)));
+  idsRemover.forEach(id => localStorage.removeItem(LS_SEP(id)));
   SELECIONADOS.clear();
   MODO_SELECAO = false;
   document.getElementById('btn-selecionar').textContent = '☑️ Selecionar';
@@ -909,13 +866,13 @@ function apagarEncomenda(id){
   if(String(id).startsWith('GERAL-')){
     if(!confirm('Apagar este geral do dia deste tablet?')) return;
     const todos = getGerais(); delete todos[String(id).slice(6)]; saveGerais(todos);
-    LSX.removeItem(LS_SEP(id)); LSX.removeItem(LS_NOTAS(id));
+    localStorage.removeItem(LS_SEP(id)); localStorage.removeItem(LS_NOTAS(id));
     renderLista();
     return;
   }
   if(!confirm('Remover esta encomenda do tablet de separação?')) return;
   savePedidos(getPedidos().filter(p=>p.id!==id));
-  LSX.removeItem(LS_SEP(id));
+  localStorage.removeItem(LS_SEP(id));
   renderLista();
   atualizarBotaoEncomendas();
 }
@@ -932,7 +889,7 @@ let SEPARACAO_QTD = {};
 let NOTAS_ESTADO = {};
 let _cliqueTimerSeparacao = {};
 let FILTRO_SEPARACAO_TICKET = 'todos';
-let CAT_COLUNAS = parseInt(LSX.getItem('DM_RESIDUAL_CAT_COLUNAS')) || 5;
+let CAT_COLUNAS = parseInt(localStorage.getItem('DM_RESIDUAL_CAT_COLUNAS')) || 5;
 
 async function abrirM3(id){
   history.pushState({tela:'m3', id}, '', location.href);
@@ -944,10 +901,10 @@ async function mostrarM3(id){
   if(!p) return;
   PEDIDO_ATUAL = p;
 
-  const guardado = JSON.parse(LSX.getItem(LS_SEP(id)) || '{"status":{},"qtd":{}}');
+  const guardado = JSON.parse(localStorage.getItem(LS_SEP(id)) || '{"status":{},"qtd":{}}');
   SEPARACAO_STATUS = guardado.status || {};
   SEPARACAO_QTD = guardado.qtd || {};
-  NOTAS_ESTADO = JSON.parse(LSX.getItem(LS_NOTAS(id)) || '{}');
+  NOTAS_ESTADO = JSON.parse(localStorage.getItem(LS_NOTAS(id)) || '{}');
   FAM_ESTADOS_TICKET = {};
   FILTRO_SEPARACAO_TICKET = 'todos';
 
@@ -970,7 +927,7 @@ async function mostrarM3(id){
 
 function guardarSeparacaoAtual(){
   if(!PEDIDO_ATUAL) return;
-  LSX.setItem(LS_SEP(PEDIDO_ATUAL.id), JSON.stringify({status:SEPARACAO_STATUS, qtd:SEPARACAO_QTD}));
+  localStorage.setItem(LS_SEP(PEDIDO_ATUAL.id), JSON.stringify({status:SEPARACAO_STATUS, qtd:SEPARACAO_QTD}));
 }
 
 // Marca todos os produtos da encomenda como separados (verde) de uma só vez,
@@ -1061,7 +1018,7 @@ const NOTA_SEQ   = ['normal','visto','atencao','pendente'];
 
 function guardarNotasAtual(){
   if(!PEDIDO_ATUAL) return;
-  LSX.setItem(LS_NOTAS(PEDIDO_ATUAL.id), JSON.stringify(NOTAS_ESTADO));
+  localStorage.setItem(LS_NOTAS(PEDIDO_ATUAL.id), JSON.stringify(NOTAS_ESTADO));
 }
 
 function ciclarNota(idx){
@@ -1154,7 +1111,7 @@ function aplicarFiltroSeparacaoTicket(){
 // Zoom de colunas por pinça (2 dedos) — igual ao catálogo original
 function aplicarColunasCatalogo(n){
   CAT_COLUNAS = Math.max(2, Math.min(6, n));
-  LSX.setItem('DM_RESIDUAL_CAT_COLUNAS', CAT_COLUNAS);
+  localStorage.setItem('DM_RESIDUAL_CAT_COLUNAS', CAT_COLUNAS);
   document.querySelectorAll('#ticket-area .cat-fam-content').forEach(el=>{
     el.style.gridTemplateColumns = `repeat(${CAT_COLUNAS}, 1fr)`;
   });
@@ -1321,6 +1278,82 @@ function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
   return html;
 }
 
+/* =========================================================
+   LISTAGEM DA ENCOMENDA — QNT / PRODUTO / PREÇO por família,
+   em 2 colunas por folha A4, com o máximo de linhas por página
+   ========================================================= */
+function imprimirListagemEncomenda(){
+  if(!PEDIDO_ATUAL) return;
+  const itens = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => it.q > 0));
+  if(!itens.length){ alert('Esta encomenda não tem produtos.'); return; }
+  const esc = t => String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const eur = n => n.toFixed(2).replace('.', ',') + '€';
+
+  const clienteNome = (PEDIDO_ATUAL.cliente && PEDIDO_ATUAL.cliente.nome) || 'Cliente';
+  const dataTxt = PEDIDO_ATUAL.data || (PEDIDO_ATUAL.dataISO ? new Date(PEDIDO_ATUAL.dataISO).toLocaleDateString('pt-PT') : '');
+  let totalQ = 0, totalV = 0;
+  itens.forEach(it => { totalQ += it.q; totalV += it.q * (Number(it.preco)||0); });
+
+  // Capacidade (em linhas de 5,4mm) de cada coluna: 281mm - cabeçalho 14mm - rodapé 9mm - margens ≈ 47 linhas
+  const CAP = 47;
+
+  // 1) Lista plana de linhas: cabeçalho de família + produtos
+  const flat = [];
+  let catAtual = null;
+  itens.forEach(it => {
+    const cat = it.cat || 'Sem família';
+    if(cat !== catAtual){ catAtual = cat; flat.push({tipo:'fam', cat}); }
+    flat.push({tipo:'prod', cat, it});
+  });
+
+  // 2) Distribui por colunas: título de família nunca fica sozinho no fim da coluna;
+  //    se a família continua na coluna seguinte, repete-se o título com "(cont.)"
+  const colunas = [];
+  let col = [];
+  const novaColuna = () => { colunas.push(col); col = []; };
+  for(let i = 0; i < flat.length; i++){
+    const l = flat[i];
+    if(l.tipo === 'fam'){
+      if(col.length + 2 > CAP) novaColuna();
+      col.push(l);
+    } else {
+      if(col.length + 1 > CAP){
+        novaColuna();
+        col.push({tipo:'fam', cat:l.cat, cont:true});
+      }
+      col.push(l);
+    }
+  }
+  if(col.length) colunas.push(col);
+
+  // 3) Duas colunas por página
+  const paginas = [];
+  for(let i = 0; i < colunas.length; i += 2) paginas.push([colunas[i], colunas[i+1] || []]);
+
+  const htmlCol = c => (c.length ? `<div class="lst-lin cab"><span class="q">QNT</span><span class="n">Nome do produto</span><span class="v">Preço</span></div>` : '') +
+    c.map(l => l.tipo === 'fam'
+      ? `<div class="lst-fam">${esc(l.cat)}${l.cont ? ' (cont.)' : ''}</div>`
+      : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(l.it.q*(Number(l.it.preco)||0))}</span></div>`
+    ).join('');
+
+  const html = paginas.map((pg, i) => {
+    const ultima = i === paginas.length - 1;
+    return `<div class="lst-page">
+      <div class="lst-head">
+        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Encomenda · ${esc(dataTxt)}${PEDIDO_ATUAL.vendedor ? ' · ' + esc(PEDIDO_ATUAL.vendedor) : ''}</div></div>
+        <div class="r"><b>DUMELHOR</b><br>Valor total: <b>${eur(totalV)}</b></div>
+      </div>
+      <div class="lst-cols"><div class="lst-col">${htmlCol(pg[0])}</div><div class="lst-col">${htmlCol(pg[1])}</div></div>
+      <div class="lst-foot"><span>Página ${i+1} de ${paginas.length}</span>${ultima ? `<span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span>` : '<span>continua…</span>'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('print-area').innerHTML = html;
+  document.body.classList.add('print-resumo', 'print-listagem');
+  window.print();
+  setTimeout(()=> document.body.classList.remove('print-resumo', 'print-listagem'), 500);
+}
+
 function imprimirResumo(){
   if(!PEDIDO_ATUAL) return;
   const faltam = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => SEPARACAO_STATUS[it.id]==='vermelho'));
@@ -1380,7 +1413,7 @@ function imprimirResumoGeral(){
 
   pedidos.forEach(p=>{
     let sep;
-    try{ sep = JSON.parse(LSX.getItem(LS_SEP(p.id)) || '{"status":{},"qtd":{}}'); }
+    try{ sep = JSON.parse(localStorage.getItem(LS_SEP(p.id)) || '{"status":{},"qtd":{}}'); }
     catch(e){ sep = {status:{}, qtd:{}}; }
     const status = sep.status || {};
     const qtdSep = sep.qtd || {};
@@ -1413,7 +1446,7 @@ function imprimirResumoGeral(){
   const notasPendentesGeral = [];
   pedidos.forEach(p=>{
     let notasEstado;
-    try{ notasEstado = JSON.parse(LSX.getItem(LS_NOTAS(p.id)) || '{}'); }
+    try{ notasEstado = JSON.parse(localStorage.getItem(LS_NOTAS(p.id)) || '{}'); }
     catch(e){ notasEstado = {}; }
     linhasNotasPedido(p).forEach((n, idx)=>{
       const texto = n.texto;
