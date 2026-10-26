@@ -1935,7 +1935,7 @@ function renderLoja() {
             const s = FILTRO_SEGMENTO.toLowerCase();
             if (s === 'lares') return p.colM && p.colM.includes('lares');
             if (s === 'restauracao') return p.colL && p.colL.includes('restauracao');
-            if (s === 'geral') return p.colN && p.colN.includes('geral');
+            if (s === 'geral') return p.colN && (p.colN.includes('geral') || p.colN.includes('loja'));
             return true;
           })
         : DADOS;
