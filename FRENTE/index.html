@@ -287,8 +287,9 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 @media print{
   /* Os ecrãs e barras só ficavam invisíveis (visibility:hidden) mas continuavam a ocupar
      espaço, gerando páginas em branco extra. Aqui saem mesmo do fluxo de impressão. */
-  body.print-resumo .screen, body.print-resumo .bottom-bar{display:none !important;}
+  body.print-resumo > *:not(#print-area){display:none !important;}
   body.print-listagem #print-area{padding:0 !important;position:static !important;}
+  body.print-listagem{background:#fff !important;}
 }
 .lst-page{width:100%;height:281mm;display:flex;flex-direction:column;page-break-after:always;break-after:page;overflow:hidden;font-family:Arial,sans-serif;color:#111;}
 .lst-page:last-child{page-break-after:avoid;break-after:avoid;}
@@ -485,7 +486,7 @@ const LS_SEP = id => 'DM_RESIDUAL_SEP_' + id;
 const LS_NOTAS = id => 'DM_RESIDUAL_NOTAS_' + id;
 
 function getPedidos(){ try{ return JSON.parse(localStorage.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
-function savePedidos(lista){ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
+function savePedidos(lista){ try{ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }catch(e){ console.error('Memória cheia ao guardar encomendas', e); alert('⚠️ Memória do navegador cheia — não foi possível guardar todas as encomendas. Apaga encomendas antigas.'); } }
 
 function chaveOrdenacao(p){
   const porId = Number(p.id);
@@ -514,36 +515,50 @@ async function sincronizarGithub(mostrarFeedback){
   if(status) status.textContent = '🔄 A sincronizar…';
   if(btn) btn.style.opacity = '0.5';
   try{
-    const listUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PASTA_ENCOMENDAS}?ref=${GH_BRANCH}`;
-    const resp = await fetch(listUrl, { cache: 'no-store' });
-    if(resp.status === 404){
-      if(status) status.textContent = '🕓 Mais recentes primeiro';
-      if(mostrarFeedback) alert('Ainda não há nenhuma encomenda enviada pelos vendedores via GitHub.');
-      return;
+    // 1) lista de ficheiros: API do GitHub; se falhar (limite de 60 pedidos/hora sem chave, rede, etc.)
+    //    usa a lista do jsDelivr como alternativa
+    let ficheiros = [];
+    let motivoApi = '';
+    try{
+      const resp = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PASTA_ENCOMENDAS}?ref=${GH_BRANCH}`, { cache: 'no-store' });
+      if(resp.status === 404){
+        if(status) status.textContent = '🕓 Mais recentes primeiro';
+        if(mostrarFeedback) alert('Ainda não há nenhuma encomenda enviada pelos vendedores via GitHub.');
+        return;
+      }
+      if(!resp.ok) throw new Error('GitHub ' + resp.status + (resp.status === 403 ? ' (limite de pedidos atingido)' : ''));
+      const arr = await resp.json();
+      ficheiros = arr.filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.json'))
+                     .map(f => ({nome:f.name, url:f.download_url}));
+    }catch(eApi){
+      motivoApi = eApi.message || 'sem rede';
+      const r2 = await fetch(`https://data.jsdelivr.com/v1/packages/gh/${GH_OWNER}/${GH_REPO}@${GH_BRANCH}?structure=flat`, { cache: 'no-store' });
+      if(!r2.ok) throw new Error(motivoApi + ' / jsDelivr ' + r2.status);
+      const d2 = await r2.json();
+      ficheiros = (d2.files || []).filter(f => f.name.startsWith('/' + GH_PASTA_ENCOMENDAS + '/') && f.name.toLowerCase().endsWith('.json'))
+        .map(f => ({nome:f.name.split('/').pop(), url:`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}${f.name}`}));
     }
-    if(!resp.ok) throw new Error('Erro ao ligar ao GitHub (' + resp.status + ')');
-    const arquivos = await resp.json();
 
-    let totalNovas = 0, totalFotos = 0;
-    for(const f of arquivos){
-      if(f.type !== 'file' || !f.name.toLowerCase().endsWith('.json')) continue;
+    // 2) descarrega e importa cada ficheiro (os erros de um ficheiro não param os outros)
+    let totalNovas = 0, totalFotos = 0, falhas = 0, ultimaFalha = '';
+    for(const f of ficheiros){
       try{
-        const rawResp = await fetch(f.download_url + (f.download_url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
-        if(!rawResp.ok) continue;
+        const rawResp = await fetch(f.url + (f.url.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { cache: 'no-store' });
+        if(!rawResp.ok) throw new Error('HTTP ' + rawResp.status);
         const dados = await rawResp.json();
-        const res = await importarPacote(dados, false); // todas as datas enviadas pelo vendedor
+        const res = await importarPacote(dados, false);
         totalNovas += res.novas;
         totalFotos += res.fotos;
-      }catch(erroFicheiro){ console.error('Erro ao ler', f.name, erroFicheiro); }
+      }catch(erroFicheiro){ falhas++; ultimaFalha = f.nome + ': ' + (erroFicheiro.message || erroFicheiro); console.error('Erro ao ler', f.nome, erroFicheiro); }
     }
 
     renderLista();
     atualizarBotaoEncomendas();
-    if(status) status.textContent = '✅ Sincronizado agora mesmo';
-    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)');
+    if(status) status.textContent = falhas ? ('⚠️ ' + falhas + ' ficheiro(s) com erro') : (motivoApi ? '✅ Sincronizado (via alternativa)' : '✅ Sincronizado agora mesmo');
+    if(mostrarFeedback) alert('🔄 Sincronizado.\n📦 ' + totalNovas + ' encomenda(s)\n📸 ' + totalFotos + ' foto(s)' + (motivoApi ? '\n\nℹ️ API do GitHub falhou (' + motivoApi + '), usei a alternativa.' : '') + (falhas ? '\n\n⚠️ ' + falhas + ' ficheiro(s) falharam.\nÚltimo: ' + ultimaFalha : ''));
   }catch(e){
     console.error(e);
-    if(status) status.textContent = '⚠️ Sem ligação ao GitHub';
+    if(status) status.textContent = '⚠️ ' + (e.message || 'Sem ligação ao GitHub');
     if(mostrarFeedback) alert('❌ Não foi possível sincronizar: ' + e.message);
   }finally{
     A_SINCRONIZAR = false;
@@ -628,7 +643,7 @@ async function importarPacote(dados, apenasHoje){
   let novasEncomendas = [];
   let fotosObj = (dados && dados.fotos) || {};
   if(dados && dados.tipo === 'dumelhor_encomendas' && Array.isArray(dados.encomendas)){
-    novasEncomendas = dados.encomendas.map(en => ({...en, vendedor: dados.vendedor || ''}));
+    novasEncomendas = dados.encomendas.map(en => ({...en, vendedor: dados.vendedor || '', itens: (en.itens||[]).map(it => (it.precoCustom != null ? {...it, preco: it.precoCustom} : it))}));
     if(Array.isArray(dados.gerais)) dados.gerais.forEach(g => adicionarGeralRecebido({...g, vendedor: g.vendedor || dados.vendedor || ''}));
   } else if(dados && Array.isArray(dados.pedidos)){
     novasEncomendas = dados.pedidos.map(p => ({
@@ -1296,14 +1311,15 @@ function imprimirListagemEncomenda(){
   if(!itens.length){ alert('Esta encomenda não tem produtos.'); return; }
   const esc = t => String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const eur = n => n.toFixed(2).replace('.', ',') + '€';
+  const precoDe = it => Number((it.precoCustom ?? it.preco) || 0);
 
   const clienteNome = (PEDIDO_ATUAL.cliente && PEDIDO_ATUAL.cliente.nome) || 'Cliente';
   const dataTxt = PEDIDO_ATUAL.data || (PEDIDO_ATUAL.dataISO ? new Date(PEDIDO_ATUAL.dataISO).toLocaleDateString('pt-PT') : '');
   let totalQ = 0, totalV = 0;
-  itens.forEach(it => { totalQ += it.q; totalV += it.q * (Number(it.preco)||0); });
+  itens.forEach(it => { totalQ += it.q; totalV += it.q * precoDe(it); });
 
   // Capacidade (em linhas de 5,4mm) de cada coluna: 281mm - cabeçalho 14mm - rodapé 9mm - margens ≈ 47 linhas
-  const CAP = 47;
+  const CAP = 45;
 
   // 1) Lista plana de linhas: cabeçalho de família + produtos
   const flat = [];
@@ -1341,7 +1357,7 @@ function imprimirListagemEncomenda(){
   const htmlCol = c => (c.length ? `<div class="lst-lin cab"><span class="q">QNT</span><span class="n">Nome do produto</span><span class="v">Preço un.</span></div>` : '') +
     c.map(l => l.tipo === 'fam'
       ? `<div class="lst-fam">${esc(l.cat)}${l.cont ? ' (cont.)' : ''}</div>`
-      : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(Number(l.it.preco)||0)}</span></div>`
+      : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(precoDe(l.it))}</span></div>`
     ).join('');
 
   const todasNotas = linhasNotasPedido(PEDIDO_ATUAL);
