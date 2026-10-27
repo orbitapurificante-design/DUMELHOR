@@ -285,7 +285,10 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 #print-area{display:none;}
 @page{size:A4;margin:8mm;}
 @media print{
-  body.print-listagem #print-area{padding:0 !important;}
+  /* Os ecrãs e barras só ficavam invisíveis (visibility:hidden) mas continuavam a ocupar
+     espaço, gerando páginas em branco extra. Aqui saem mesmo do fluxo de impressão. */
+  body.print-resumo .screen, body.print-resumo .bottom-bar{display:none !important;}
+  body.print-listagem #print-area{padding:0 !important;position:static !important;}
 }
 .lst-page{width:100%;height:281mm;display:flex;flex-direction:column;page-break-after:always;break-after:page;overflow:hidden;font-family:Arial,sans-serif;color:#111;}
 .lst-page:last-child{page-break-after:avoid;break-after:avoid;}
