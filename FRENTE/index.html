@@ -303,6 +303,11 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .lst-lin .v{width:17mm;text-align:right;font-weight:700;flex-shrink:0;}
 .lst-lin.cab{background:#eee;font-weight:800;font-size:8.5px;text-transform:uppercase;border-bottom:1px solid #bbb;}
 .lst-foot{height:9mm;flex-shrink:0;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#555;border-top:1px solid #ccc;margin-top:1mm;}
+.lst-page.notas{height:auto;min-height:281mm;}
+.lst-nbloco{border:1px solid #000;border-radius:2mm;padding:3mm 4mm;margin-top:4mm;}
+.lst-nbloco h4{margin:0 0 2mm;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;}
+.lst-nlin{font-size:13px;line-height:1.45;padding:1.6mm 0;border-bottom:1px dashed #bbb;white-space:pre-wrap;}
+.lst-nlin:last-child{border-bottom:none;}
 .lst-foot .tot{font-size:14px;font-weight:900;color:#111;}
 </style>
 </head>
@@ -1336,7 +1341,16 @@ function imprimirListagemEncomenda(){
       : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(Number(l.it.preco)||0)}</span></div>`
     ).join('');
 
-  const html = paginas.map((pg, i) => {
+  const todasNotas = linhasNotasPedido(PEDIDO_ATUAL);
+  const blocoNota = (titulo, tipo) => {
+    const sel = todasNotas.filter(n => n.tipo === tipo);
+    if(!sel.length) return '';
+    return `<div class="lst-nbloco"><h4>${titulo}</h4>${sel.map(n => `<div class="lst-nlin">${esc(n.texto)}</div>`).join('')}</div>`;
+  };
+  const blocosNotas = blocoNota('📦 Outros produtos', 'outro') + blocoNota('📝 Notas', 'nota');
+  const totalPaginas = paginas.length + (blocosNotas ? 1 : 0);
+
+  let html = paginas.map((pg, i) => {
     const ultima = i === paginas.length - 1;
     return `<div class="lst-page">
       <div class="lst-head">
@@ -1344,9 +1358,20 @@ function imprimirListagemEncomenda(){
         <div class="r"><b>DUMELHOR</b><br>Valor total: <b>${eur(totalV)}</b></div>
       </div>
       <div class="lst-cols"><div class="lst-col">${htmlCol(pg[0])}</div><div class="lst-col">${htmlCol(pg[1])}</div></div>
-      <div class="lst-foot"><span>Página ${i+1} de ${paginas.length}</span>${ultima ? `<span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span>` : '<span>continua…</span>'}</div>
+      <div class="lst-foot"><span>Página ${i+1} de ${totalPaginas}</span>${ultima ? `<span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span>` : '<span>continua…</span>'}</div>
     </div>`;
   }).join('');
+
+  if(blocosNotas){
+    html += `<div class="lst-page notas">
+      <div class="lst-head">
+        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Outros produtos e notas · ${esc(dataTxt)}${PEDIDO_ATUAL.vendedor ? ' · ' + esc(PEDIDO_ATUAL.vendedor) : ''}</div></div>
+        <div class="r"><b>DUMELHOR</b></div>
+      </div>
+      <div style="flex:1;">${blocosNotas}</div>
+      <div class="lst-foot"><span>Página ${totalPaginas} de ${totalPaginas}</span><span></span></div>
+    </div>`;
+  }
 
   document.getElementById('print-area').innerHTML = html;
   document.body.classList.add('print-resumo', 'print-listagem');
