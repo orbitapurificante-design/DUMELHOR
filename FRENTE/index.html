@@ -445,7 +445,8 @@ function abrirFotosDb(){
     req.onerror = () => resolve(null);
   });
 }
-function guardarFotos(fotosObj){
+async function guardarFotos(fotosObj){
+  if(!fotosDb && fotosObj && Object.keys(fotosObj).length) await abrirFotosDb();
   return new Promise((resolve)=>{
     if(!fotosDb || !fotosObj) return resolve();
     const entradas = Object.entries(fotosObj);
@@ -486,7 +487,43 @@ const LS_SEP = id => 'DM_RESIDUAL_SEP_' + id;
 const LS_NOTAS = id => 'DM_RESIDUAL_NOTAS_' + id;
 
 function getPedidos(){ try{ return JSON.parse(localStorage.getItem(LS_PEDIDOS)) || []; }catch(e){ return []; } }
-function savePedidos(lista){ try{ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }catch(e){ console.error('Memória cheia ao guardar encomendas', e); alert('⚠️ Memória do navegador cheia — não foi possível guardar todas as encomendas. Apaga encomendas antigas.'); } }
+// Remove textos gigantes (fotos em base64 coladas dentro da encomenda) — as fotos vivem no IndexedDB
+function limparEncomenda(o, fotosObj){
+  if(Array.isArray(o)) return o.map(x => limparEncomenda(x, fotosObj));
+  if(o && typeof o === 'object'){
+    const r = {};
+    for(const k in o){
+      const v = o[k];
+      if(typeof v === 'string' && v.length > 3000){
+        if(v.startsWith('data:') && fotosObj){
+          // foto colada no próprio produto (campo f/foto) ou numa lista de fotos {nome: dataUrl}
+          let nome;
+          if(k === 'f' || k === 'foto') nome = 'foto_' + String(o.id != null ? o.id : (o.ean || Math.random().toString(36).slice(2)));
+          else nome = k;
+          if(!fotosObj[nome]) fotosObj[nome] = v;
+          r[k] = (k === 'f' || k === 'foto') ? nome : '';
+        } else r[k] = '';
+      } else r[k] = limparEncomenda(v, fotosObj);
+    }
+    return r;
+  }
+  return o;
+}
+let AVISOU_MEMORIA = false;
+function diagnosticoMemoria(){
+  const lista = [];
+  try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); lista.push([k,(localStorage.getItem(k)||'').length]); } }catch(e){}
+  lista.sort((a,b)=>b[1]-a[1]);
+  return lista.slice(0,4).map(([k,n])=>k+': '+(n/1024/1024).toFixed(2)+' MB').join('\n');
+}
+function savePedidos(lista){
+  try{ localStorage.setItem(LS_PEDIDOS, JSON.stringify(lista)); }
+  catch(e){
+    console.error('Memória cheia ao guardar encomendas', e);
+    if(!AVISOU_MEMORIA){ AVISOU_MEMORIA = true; setTimeout(()=>AVISOU_MEMORIA=false, 30000);
+      alert('⚠️ Memória do navegador cheia.\nO que ocupa mais espaço:\n' + diagnosticoMemoria()); }
+  }
+}
 
 function chaveOrdenacao(p){
   const porId = Number(p.id);
@@ -655,10 +692,11 @@ async function importarPacote(dados, apenasHoje){
     return {novas:0, fotos:0};
   }
 
+  novasEncomendas = limparEncomenda(novasEncomendas, fotosObj);
   if(apenasHoje) novasEncomendas = novasEncomendas.filter(ehDeHoje);
 
   if(novasEncomendas.length){
-    const atuais = getPedidos();
+    const atuais = limparEncomenda(getPedidos(), fotosObj);
     novasEncomendas.forEach(nova => {
       const idx = atuais.findIndex(p => p.id === nova.id);
       if(idx >= 0) atuais[idx] = nova; else atuais.push(nova);
@@ -676,7 +714,7 @@ async function importarPacote(dados, apenasHoje){
    ========================================================= */
 const LS_GERAIS = 'DM_RESIDUAL_GERAIS'; // { 'yyyy-mm-dd': { uid: {uid, dia, vendedor, itens:[], obs, fontes:[]} } }
 function getGerais(){ try{ return JSON.parse(localStorage.getItem(LS_GERAIS)) || {}; }catch(e){ return {}; } }
-function saveGerais(o){ localStorage.setItem(LS_GERAIS, JSON.stringify(o)); }
+function saveGerais(o){ try{ localStorage.setItem(LS_GERAIS, JSON.stringify(o)); }catch(e){ console.error('Memória cheia (gerais)', e); } }
 
 // Cada origem (tablet/vendedor) tem o seu id. Reenviar a mesma origem ATUALIZA; origens diferentes SOMAM.
 function adicionarGeralRecebido(g){
