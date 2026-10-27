@@ -6904,7 +6904,7 @@ window.lojaPublicar = async function() {
         prog('A enviar a lista de produtos…', 78);
         const mapaP = x => ({
             i: x.p.id, e: x.p.ean || '', n: x.p.nome, p: x.p.preco, c: x.p.cat, s: x.p.sub || '', m: x.marca,
-            g: x.p.grupo || '', pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
+            g: x.p.grupo || '', pr: x.p.promo ? 1 : 0, nv: x.p.novo ? 1 : 0, ex: x.p.esg ? 1 : 0, u: x.p.unidades || 1, f: x.p.f || '', k: pacoteDe.has(x.p.id) ? pacoteDe.get(x.p.id) : -1
         });
         const subsDe = arr => [...new Set(arr.map(x => String(x.p.sub || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
         const soLoja = lista.filter(x => String(x.p.colN || '').includes('loja'));
