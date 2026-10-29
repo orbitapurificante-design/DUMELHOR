@@ -526,15 +526,42 @@ function obterFotoDb(chave){
     }catch(e){ resolve(null); }
   });
 }
-async function obterFotoParaProduto(nomeFoto){
-  if(!nomeFoto) return null;
-  const nome = String(nomeFoto).toLowerCase();
-  const candidatos = [nome, nome + '.jpg', nome + '.png', nome + '.jpeg'];
-  for(const c of candidatos){
-    const url = await obterFotoDb(c);
-    if(url) return url;
+async function obterFotoParaProduto(nomeFoto, id){
+  if(nomeFoto){
+    const nome = String(nomeFoto).toLowerCase();
+    for(const c of [nome, nome + '.jpg', nome + '.png', nome + '.jpeg']){
+      const url = await obterFotoDb(c);
+      if(url) return url;
+    }
   }
-  return await buscarFotoOnline(String(nomeFoto).trim(), nome);
+  // 1) fotos da loja (os mesmos pacotes do index/index_vendas, publicados pelo DUMELHOR_PRO-VENDA), por id do produto
+  if(id != null){
+    const u = await obterFotoDb('loja:' + id) || await fotoDaLoja(id);
+    if(u) return u;
+  }
+  // 2) pasta images do repositório, pelo nome da foto
+  return nomeFoto ? await buscarFotoOnline(String(nomeFoto).trim(), String(nomeFoto).toLowerCase()) : null;
+}
+// Pacotes de fotos da loja: cada pacote traz ~50 fotos pequenas; só se descarrega o pacote do produto que falta e guarda-se tudo no tablet
+const LOJA_URL = 'https://orbitapurificante-design.github.io/loja/';
+let _LOJA_MAPA = null; const _LOJA_PAC = {};
+async function fotoDaLoja(id){
+  if(navigator.onLine === false) return null;
+  try{
+    if(!_LOJA_MAPA){
+      _LOJA_MAPA = fetch(LOJA_URL + 'produtos_vendas.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.json() : []).then(a => {
+        const m = {}; (Array.isArray(a) ? a : (a.p || [])).forEach(p => { if(p && p.k >= 0) m[p.i] = p.k; }); return m;
+      }).catch(() => { _LOJA_MAPA = null; return {}; });
+    }
+    const mapa = await _LOJA_MAPA; const k = mapa[id];
+    if(k == null) return null;
+    if(!_LOJA_PAC[k]) _LOJA_PAC[k] = fetch(LOJA_URL + 'fotos/f' + k + '.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : {}).then(async o => {
+      const grav = {}; Object.keys(o).forEach(i => { if(o[i]) grav['loja:' + i] = o[i]; });
+      await guardarFotos(grav); return o;
+    }).catch(() => { delete _LOJA_PAC[k]; return {}; });
+    const o = await _LOJA_PAC[k];
+    return o[id] || null;
+  }catch(e){ return null; }
 }
 // Foto não está guardada neste tablet: vai buscá-la à pasta "images" do repositório e guarda-a para a próxima vez (e offline)
 const FOTOS_URL = 'https://orbitapurificante-design.github.io/DUMELHOR/images/';
@@ -1059,13 +1086,10 @@ async function mostrarM3(id){
   IMGS_LOCAL = new Map();
   const itens = Object.values(p.itens || {});
   for(const it of itens){
-    if(it.f){
-      const key = String(it.f).toLowerCase();
-      if(!IMGS_LOCAL.has(key)){
-        const url = await obterFotoParaProduto(it.f);
-        if(url) IMGS_LOCAL.set(key, url);
-      }
-    }
+    const key = it.f ? String(it.f).toLowerCase() : ('id:' + it.id);
+    if(IMGS_LOCAL.has(key)) continue;
+    const url = await obterFotoParaProduto(it.f, it.id);
+    if(url) IMGS_LOCAL.set(key, url);
   }
 
   mostrarTela('m3');
@@ -1293,7 +1317,7 @@ function renderCatalogoM3(){
   let lastCat = null;
   itens.forEach(it=>{
     const nomeFoto = String(it.f||'').toLowerCase();
-    const imgUrl = IMGS_LOCAL.get(nomeFoto) || IMGS_LOCAL.get(nomeFoto+'.jpg') || IMGS_LOCAL.get(nomeFoto+'.png') || '';
+    const imgUrl = (nomeFoto ? '' : (IMGS_LOCAL.get('id:'+it.id) || '')) || IMGS_LOCAL.get(nomeFoto) || IMGS_LOCAL.get(nomeFoto+'.jpg') || IMGS_LOCAL.get(nomeFoto+'.png') || '';
 
     const qPedida = it.q > 0 ? it.q : '';
     const qtyBadge = qPedida !== '' ? `<div class="cat-qtd-encomenda">${qPedida}</div>` : '';
