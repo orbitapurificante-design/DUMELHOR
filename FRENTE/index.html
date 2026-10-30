@@ -312,6 +312,11 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
 .lst-nbloco h4{margin:0 0 2mm;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;}
 .lst-nlin{font-size:13px;line-height:1.45;padding:1.6mm 0;border-bottom:1px dashed #bbb;white-space:pre-wrap;}
 .lst-nlin:last-child{border-bottom:none;}
+.lst-notas1{flex-shrink:0;margin-top:1mm}
+.lst-notas1 .lst-nbloco{margin-top:2mm;padding:2mm 3mm}
+.lst-notas1 .lst-nbloco h4{font-size:11px;margin-bottom:1mm}
+.lst-notas1 .lst-nlin{font-size:11px;line-height:1.3;padding:.8mm 0}
+.lst-foot .verso{font-size:12px;font-weight:900;color:#E60000;border:1.5px solid #E60000;border-radius:2mm;padding:.6mm 3mm}
 .lst-foot .tot{font-size:14px;font-weight:900;color:#111;}
 </style>
 </head>
@@ -422,10 +427,6 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:'Montserrat',sans-
     <button class="bbar-btn" onclick="imprimirResumo()">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         <span>RESUMO</span>
-    </button>
-    <button class="bbar-btn" onclick="imprimirListagemEncomenda()" title="Imprimir listagem da encomenda por família">
-        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        <span>LISTAGEM</span>
     </button>
 </div>
 
@@ -1028,7 +1029,7 @@ function renderLista(){
         ${p.nota ? '<div style="font-size:11px;color:#B45309;font-weight:700;margin-top:3px;white-space:pre-wrap;">📝 ' + String(p.nota).replace(/</g,'&lt;') + '</div>' : ''}
       </div>
       <div class="enc-side">
-        ${MODO_SELECAO ? '' : `<button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${jsId(p.id)})">🗑️</button><span class="chevron">›</span>`}
+        ${MODO_SELECAO ? '' : `<button class="apagar" style="color:#0B63C5" title="Imprimir listagem" onclick="event.stopPropagation(); imprimirListagemDe(${jsId(p.id)})">🖨️</button><button class="apagar" onclick="event.stopPropagation(); apagarEncomenda(${jsId(p.id)})">🗑️</button><span class="chevron">›</span>`}
       </div>
     </div>`;
   }).join('');
@@ -1453,21 +1454,31 @@ function tabelaComFamilias(itensOrdenados, colunas, linhaFn){
    LISTAGEM DA ENCOMENDA — QNT / PRODUTO / PREÇO por família,
    em 2 colunas por folha A4, com o máximo de linhas por página
    ========================================================= */
-function imprimirListagemEncomenda(){
-  if(!PEDIDO_ATUAL) return;
-  const itens = ordenarPorFamiliaENome((PEDIDO_ATUAL.itens||[]).filter(it => it.q > 0));
+function imprimirListagemEncomenda(pedido){
+  const P = pedido || PEDIDO_ATUAL;
+  if(!P) return;
+  const itens = ordenarPorFamiliaENome(Object.values(P.itens||{}).filter(it => it.q > 0));
   if(!itens.length){ alert('Esta encomenda não tem produtos.'); return; }
   const esc = t => String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const eur = n => n.toFixed(2).replace('.', ',') + '€';
   const precoDe = it => Number((it.precoCustom ?? it.preco) || 0);
 
-  const clienteNome = (PEDIDO_ATUAL.cliente && PEDIDO_ATUAL.cliente.nome) || 'Cliente';
-  const dataTxt = PEDIDO_ATUAL.data || (PEDIDO_ATUAL.dataISO ? new Date(PEDIDO_ATUAL.dataISO).toLocaleDateString('pt-PT') : '');
+  const clienteNome = (P.cliente && P.cliente.nome) || 'Cliente';
+  const dataTxt = P.data || (P.dataISO ? new Date(P.dataISO).toLocaleDateString('pt-PT') : '');
   let totalQ = 0, totalV = 0;
   itens.forEach(it => { totalQ += it.q; totalV += it.q * precoDe(it); });
 
   // Capacidade (em linhas de 5,4mm) de cada coluna: 281mm - cabeçalho 14mm - rodapé 9mm - margens ≈ 47 linhas
   const CAP = 45;
+  const todasNotas = linhasNotasPedido(P);
+  // Notas e outros produtos ficam na 1ª página (por baixo das colunas) sempre que couberem: reserva-se esse espaço (linhas de 5,4mm)
+  const estLin = t => Math.max(1, Math.ceil(String(t).length / 95));
+  let linhasNotas = 0;
+  [['outro'],['nota']].forEach(([tp]) => { const sel = todasNotas.filter(n => n.tipo === tp); if(sel.length) linhasNotas += 2 + sel.reduce((a, n) => a + estLin(n.texto) * 0.95, 0); });
+  const reservaLin = Math.ceil(linhasNotas) + 2;
+  const notasNaPrimeira = todasNotas.length > 0 && reservaLin <= 24;
+  const CAP1 = notasNaPrimeira ? CAP - reservaLin : CAP;
+  const capDe = n => n < 2 ? CAP1 : CAP;
 
   // 1) Lista plana de linhas: cabeçalho de família + produtos
   const flat = [];
@@ -1486,10 +1497,10 @@ function imprimirListagemEncomenda(){
   for(let i = 0; i < flat.length; i++){
     const l = flat[i];
     if(l.tipo === 'fam'){
-      if(col.length + 2 > CAP) novaColuna();
+      if(col.length + 2 > capDe(colunas.length)) novaColuna();
       col.push(l);
     } else {
-      if(col.length + 1 > CAP){
+      if(col.length + 1 > capDe(colunas.length)){
         novaColuna();
         col.push({tipo:'fam', cat:l.cat, cont:true});
       }
@@ -1508,35 +1519,36 @@ function imprimirListagemEncomenda(){
       : `<div class="lst-lin"><span class="q">${l.it.q}</span><span class="n">${esc(l.it.nome)}</span><span class="v">${eur(precoDe(l.it))}</span></div>`
     ).join('');
 
-  const todasNotas = linhasNotasPedido(PEDIDO_ATUAL);
   const blocoNota = (titulo, tipo) => {
     const sel = todasNotas.filter(n => n.tipo === tipo);
     if(!sel.length) return '';
     return `<div class="lst-nbloco"><h4>${titulo}</h4>${sel.map(n => `<div class="lst-nlin">${esc(n.texto)}</div>`).join('')}</div>`;
   };
   const blocosNotas = blocoNota('📦 Outros produtos', 'outro') + blocoNota('📝 Notas', 'nota');
-  const totalPaginas = paginas.length + (blocosNotas ? 1 : 0);
+  const notasSeparadas = !!blocosNotas && !notasNaPrimeira;
+  const totalPaginas = paginas.length + (notasSeparadas ? 1 : 0);
 
   let html = paginas.map((pg, i) => {
-    const ultima = i === paginas.length - 1;
+    const temMais = i < totalPaginas - 1;
     return `<div class="lst-page">
       <div class="lst-head">
-        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Encomenda · ${esc(dataTxt)}${PEDIDO_ATUAL.vendedor ? ' · ' + esc(PEDIDO_ATUAL.vendedor) : ''}</div></div>
+        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Encomenda · ${esc(dataTxt)}${P.vendedor ? ' · ' + esc(P.vendedor) : ''}</div></div>
         <div class="r"><b>DUMELHOR</b><br>Valor total: <b>${eur(totalV)}</b></div>
       </div>
       <div class="lst-cols"><div class="lst-col">${htmlCol(pg[0])}</div><div class="lst-col">${htmlCol(pg[1])}</div></div>
-      <div class="lst-foot"><span>Página ${i+1} de ${totalPaginas}</span>${ultima ? `<span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span>` : '<span>continua…</span>'}</div>
+      ${i === 0 && notasNaPrimeira ? `<div class="lst-notas1">${blocosNotas}</div>` : ''}
+      <div class="lst-foot"><span>Página ${i+1} de ${totalPaginas}</span>${temMais ? '<span class="verso">↻ VIRAR — continua no verso</span>' : `<span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span>`}</div>
     </div>`;
   }).join('');
 
-  if(blocosNotas){
+  if(notasSeparadas){
     html += `<div class="lst-page notas">
       <div class="lst-head">
-        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Outros produtos e notas · ${esc(dataTxt)}${PEDIDO_ATUAL.vendedor ? ' · ' + esc(PEDIDO_ATUAL.vendedor) : ''}</div></div>
+        <div><div class="l1">${esc(clienteNome)}</div><div class="l2">Outros produtos e notas · ${esc(dataTxt)}${P.vendedor ? ' · ' + esc(P.vendedor) : ''}</div></div>
         <div class="r"><b>DUMELHOR</b></div>
       </div>
       <div style="flex:1;">${blocosNotas}</div>
-      <div class="lst-foot"><span>Página ${totalPaginas} de ${totalPaginas}</span><span></span></div>
+      <div class="lst-foot"><span>Página ${totalPaginas} de ${totalPaginas}</span><span class="tot">${itens.length} produtos · ${totalQ} un · TOTAL ${eur(totalV)}</span></div>
     </div>`;
   }
 
@@ -1544,6 +1556,13 @@ function imprimirListagemEncomenda(){
   document.body.classList.add('print-resumo', 'print-listagem');
   window.print();
   setTimeout(()=> document.body.classList.remove('print-resumo', 'print-listagem'), 500);
+}
+
+// Imprime a listagem direto do painel das encomendas (sem abrir a encomenda): fica no painel quando termina
+function imprimirListagemDe(id){
+  const p = getPedidoPorId(id);
+  if(!p) return;
+  imprimirListagemEncomenda(p);
 }
 
 function imprimirResumo(){
